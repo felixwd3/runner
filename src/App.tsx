@@ -1,4 +1,5 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect } from 'react';
+import type { ChangeEvent, MouseEvent, FormEvent } from 'react';
 import { supabase } from './supabaseClient';
 import gpxParser from 'gpxparser';
 import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
@@ -152,7 +153,7 @@ export default function App() {
     }
   };
 
-  const toggleWorkoutCompleted = async (workoutId: string, currentStatus: boolean, e?: React.MouseEvent) => {
+  const toggleWorkoutCompleted = async (workoutId: string, currentStatus: boolean, e?: MouseEvent) => {
     if (e) e.stopPropagation();
     const { error } = await supabase
       .from('workouts')
@@ -167,7 +168,7 @@ export default function App() {
     }
   };
 
-  const postponeWorkout = async (workoutId: string, currentDateStr: string, e?: React.MouseEvent) => {
+  const postponeWorkout = async (workoutId: string, currentDateStr: string, e?: MouseEvent) => {
     if (e) e.stopPropagation();
     const curr = new Date(currentDateStr);
     const nextDay = new Date(curr.getTime() + 86400000).toISOString().split('T')[0];
@@ -180,7 +181,7 @@ export default function App() {
     if (!error) loadWorkouts();
   };
 
-  const deleteWorkout = async (workoutId: string, e?: React.MouseEvent) => {
+  const deleteWorkout = async (workoutId: string, e?: MouseEvent) => {
     if (e) e.stopPropagation();
     const { error } = await supabase
       .from('workouts')
@@ -376,7 +377,7 @@ export default function App() {
     setLoading(false);
   };
 
-  const handleCreateRaceEvent = async (e: React.FormEvent) => {
+  const handleCreateRaceEvent = async (e: FormEvent) => {
     e.preventDefault();
     if (!user || !eventTitle || !eventDate) return;
 
@@ -575,7 +576,7 @@ export default function App() {
         let accumDistance = 0;
         let lastSplitTime = track.points[0] ? new Date(track.points[0].time).getTime() : 0;
 
-        track.points.forEach((p, idx) => {
+        track.points.forEach((p: any, idx: number) => {
           if (idx % 5 === 0) {
             elevationData.push({
               dist: (p.cumulDistance / 1000).toFixed(2),
@@ -600,7 +601,7 @@ export default function App() {
           }
         });
 
-        const routeCoords = track.points.map((p) => ({
+        const routeCoords = track.points.map((p: any) => ({
           lat: p.lat,
           lng: p.lon,
           ele: p.ele,
