@@ -574,7 +574,7 @@ export default function App() {
 
         let currentSplitKm = 1;
         let accumDistance = 0;
-        let lastSplitTime = track.points[0] ? new Date(track.points[0].time).getTime() : 0;
+        let lastSplitTime = track.points[0] ? new Date((track.points[0] as any).time).getTime() : 0;
 
         track.points.forEach((p: any, idx: number) => {
           if (idx % 5 === 0) {
@@ -1005,7 +1005,7 @@ export default function App() {
                                   cursor: 'pointer',
                                   display: 'flex',
                                   alignItems: 'center',
-                                  justify: 'center',
+                                  justifyContent: 'center',
                                 }}
                               >
                                 {isCompleted ? '✓' : ''}
