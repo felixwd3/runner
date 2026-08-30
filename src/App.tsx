@@ -561,8 +561,8 @@ export default function App() {
         let startTime = new Date().toISOString();
 
         if (track.points.length > 1) {
-          const startPointTime = new Date(track.points[0].time).getTime();
-          const endPointTime = new Date(track.points[track.points.length - 1].time).getTime();
+          const startPointTime = new Date((track.points[0] as any).time).getTime();
+          const endPointTime = new Date((track.points[track.points.length - 1] as any).time).getTime();
           durationSeconds = Math.round((endPointTime - startPointTime) / 1000);
           startTime = new Date(startPointTime).toISOString();
         }
@@ -726,7 +726,7 @@ export default function App() {
 
         {!user ? (
           <div style={{ textAlign: 'center', padding: '60px 20px', backgroundColor: '#121316', borderRadius: '16px', border: '1px solid #27272A', marginTop: '20px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '8px' }}>Log ind på din profil</h2>
+            <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '8px', color: '#FFFFFF' }}>Log ind på din profil</h2>
             <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>Struktureret træningsstyring og rutebygger.</p>
             <button
               onClick={handleGoogleLogin}
@@ -891,7 +891,7 @@ export default function App() {
 
                 {workouts.length === 0 ? (
                   <div style={{ backgroundColor: '#121316', border: '1px solid #27272A', borderRadius: '16px', padding: '30px 20px', textAlign: 'center' }}>
-                    <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700' }}>Ingen aktiv træningsplan</h3>
+                    <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#FFFFFF' }}>Ingen aktiv træningsplan</h3>
                     <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Vælg en tilstand for at generere dit træningsforløb.</p>
                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                       <button onClick={generateMaintenancePlan} disabled={loading} style={{ backgroundColor: '#27272A', color: '#FFF', border: '1px solid #3F3F46', padding: '10px 18px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>
@@ -1129,7 +1129,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <h3 style={{ fontSize: '16px', fontWeight: '800', marginBottom: '12px' }}>Gemte Ruter</h3>
+                <h3 style={{ fontSize: '16px', fontWeight: '800', marginBottom: '12px', color: '#FFFFFF' }}>Gemte Ruter</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {savedRoutes.map((r) => (
                     <div key={r.id} style={{ backgroundColor: '#121316', border: '1px solid #27272A', padding: '12px 16px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
