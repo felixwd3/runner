@@ -699,7 +699,7 @@ export default function App() {
   };
 
   if (!isClient) {
-    return <div style={{ backgroundColor: '#090A0C', minHeight: '100vh' }}></div>;
+    return <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#FFFFFF', padding: '40px', textAlign: 'center' }}>Indlæser app...</div>;
   }
 
   return (
@@ -1302,7 +1302,7 @@ export default function App() {
                   {selectedWorkoutModal.exercises.map((ex: any, idx: number) => (
                     <div key={idx} style={{ backgroundColor: '#18191E', border: '1px solid #27272A', padding: '8px 12px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
-                        <div style={{ fontWeight: '700', fontSize: '13px', color: '#FFF' }}>{ex.name}</div>
+                        <div style={{ fontWeight: '700', fontSize: '13px', color: '#FFF'}>{ex.name}</div>
                         <div style={{ fontSize: '11px', color: '#6B7280' }}>{ex.note}</div>
                       </div>
                       <span style={{ fontSize: '11px', fontWeight: '800', color: '#A855F7' }}>{ex.sets}</span>
