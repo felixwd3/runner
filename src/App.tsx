@@ -60,6 +60,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'plan' | 'builder' | 'feed' | 'stats'>('plan');
+  const [isClient, setIsClient] = useState(false);
 
   const [selectedWorkoutModal, setSelectedWorkoutModal] = useState<any>(null);
   const [selectedWeek, setSelectedWeek] = useState<number>(1);
@@ -76,6 +77,7 @@ export default function App() {
   const [routeTitle, setRouteTitle] = useState('');
 
   useEffect(() => {
+    setIsClient(true);
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -695,6 +697,10 @@ export default function App() {
       default: return { bg: '#27272A', color: '#9CA3AF', border: '#9CA3AF', label: 'TRÆNING' };
     }
   };
+
+  if (!isClient) {
+    return <div style={{ backgroundColor: '#090A0C', minHeight: '100vh' }}></div>;
+  }
 
   return (
     <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#F3F4F6', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '40px' }}>
