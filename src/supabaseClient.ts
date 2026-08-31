@@ -1,16 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Manglende Supabase miljøvariabler i .env eller Vercel');
-}
+const supabaseUrl = 'https://czpvihbjnbpjueoowjnp.supabase.co';
+const supabaseAnonKey = 'sb_publishable_LYP2WntkDtQ3ahSAHNzhhQ_WyOA_0I9';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true, // SKAL STÅ TIL TRUE HER!
+    detectSessionInUrl: true,
   },
 });
