@@ -59,7 +59,7 @@ function RouteBuilderClicker({ onPointAdd }: { onPointAdd: (latlng: [number, num
 }
 
 export default function App() {
-const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
   const [activities, setActivities] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [savedRoutes, setSavedRoutes] = useState<any[]>([]);
@@ -77,6 +77,7 @@ const [user, setUser] = useState<any>(null);
   const [selectedWorkoutModal, setSelectedWorkoutModal] = useState<any>(null);
   const [selectedWeek, setSelectedWeek] = useState<number>(1);
   const [planFilter, setPlanFilter] = useState<'all' | 'running' | 'strength'>('all');
+
   // Coach Onboarding State
   const [showCoachWizard, setShowCoachWizard] = useState(false);
   const [coachLevel, setCoachLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('intermediate');
@@ -95,7 +96,6 @@ const [user, setUser] = useState<any>(null);
         loadSavedActivities();
         loadWorkouts();
         loadSavedRoutes();
-        loadRaceEvents();
       }
     });
 
@@ -105,7 +105,6 @@ const [user, setUser] = useState<any>(null);
         loadSavedActivities();
         loadWorkouts();
         loadSavedRoutes();
-        loadRaceEvents();
       }
     });
 
@@ -168,18 +167,6 @@ const [user, setUser] = useState<any>(null);
     if (!error && data) setSavedRoutes(data);
   };
 
-  const loadRaceEvents = async () => {
-    const { data, error } = await supabase
-      .from('race_events')
-      .select('*')
-      .order('event_date', { ascending: true });
-
-    if (!error && data) {
-      setRaceEvents(data);
-      if (data.length > 0) setPlanMode('race');
-    }
-  };
-
   const toggleWorkoutCompleted = async (workoutId: string, currentStatus: boolean, e?: MouseEvent) => {
     if (e) e.stopPropagation();
     const { error } = await supabase
@@ -228,7 +215,6 @@ const [user, setUser] = useState<any>(null);
 
     await supabase.from('workouts').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await supabase.from('race_events').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    setRaceEvents([]);
 
     const today = new Date();
     const generatedWorkouts: any[] = [];
@@ -328,7 +314,6 @@ const [user, setUser] = useState<any>(null);
     const { error } = await supabase.from('workouts').insert(generatedWorkouts);
 
     if (!error) {
-      setPlanMode('maintenance');
       setShowCoachWizard(false);
       setSelectedWeek(1);
       await loadWorkouts();
