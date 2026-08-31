@@ -321,7 +321,7 @@ export default function App() {
               name: 'Bulgarian Split Squats', 
               sets: '3 sæt x 10 reps', 
               note: 'Enkeltbens-stabilitet for hofter og knæ',
-              guide: 'Stå med den ene fod hvilende på en bækah eller stol bag dig. Sænk kroppen langsomt ned indtil dit bagerste knæ næsten rører jorden. Hold brystet højt og pres op igen gennem forreste hæl.'
+              guide: 'Stå med den ene fod hvilende på en bænke eller stol bag dig. Sænk kroppen langsomt ned indtil dit bagerste knæ næsten rører jorden. Hold brystet højt og pres op igen gennem forreste hæl.'
             },
             { 
               name: 'Single-leg Calf Raises', 
@@ -1412,7 +1412,7 @@ export default function App() {
                 <div style={{ width: '1px', backgroundColor: '#27272A' }}></div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '10px', color: '#6B7280', textTransform: 'uppercase', fontWeight: '700' }}>Måltempo</div>
-                  <div style={{ fontSize: '18px', fontWeight: '800', color: '#3B82F6', marginTop: '2px'}>{selectedWorkoutModal.target_pace_min}</div>
+                  <div style={{ fontSize: '18px', fontWeight: '800', color: '#3B82F6', marginTop: '2px' }}>{selectedWorkoutModal.target_pace_min}</div>
                 </div>
               </div>
             )}
