@@ -388,7 +388,6 @@ export default function App() {
     ]);
 
     if (!error) {
-      // Generer 8 ugers løbseriøst program til løbet
       const today = new Date();
       const generatedWorkouts: any[] = [];
       const totalWeeks = 8;
@@ -782,10 +781,11 @@ export default function App() {
     <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#F3F4F6', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '580px', margin: '0 auto', padding: '16px' }}>
         
-        {/* APP HEADER MED LOGO.PNG */}
+        {/* APP HEADER MED LOGO OG RUNNER TEKST VED SIDEN AF */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingTop: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <img src="/logo.png" alt="Runner Logo" style={{ height: '38px', width: 'auto', objectFit: 'contain' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img src="/logo.png" alt="Runner Logo" style={{ height: '32px', width: '32px', objectFit: 'contain' }} />
+            <span style={{ fontSize: '20px', fontWeight: '900', color: '#FFFFFF', letterSpacing: '-0.5px' }}>Runner</span>
           </div>
 
           {user && (
