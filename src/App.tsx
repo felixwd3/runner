@@ -317,9 +317,24 @@ export default function App() {
           completed: false,
           status: 'pending',
           exercises: [
-            { name: 'Bulgarian Split Squats', sets: '3 sæt x 10 reps', note: 'Enkeltbens-stabilitet' },
-            { name: 'Single-leg Calf Raises', sets: '3 sæt x 15 reps', note: 'Akillessene-beskyttelse' },
-            { name: 'Planke & Deadbugs', sets: '3 sæt x 45 sek', note: 'Core' },
+            { 
+              name: 'Bulgarian Split Squats', 
+              sets: '3 sæt x 10 reps', 
+              note: 'Enkeltbens-stabilitet for hofter og knæ',
+              guide: 'Stå med den ene fod hvilende på en bækah eller stol bag dig. Sænk kroppen langsomt ned indtil dit bagerste knæ næsten rører jorden. Hold brystet højt og pres op igen gennem forreste hæl.'
+            },
+            { 
+              name: 'Single-leg Calf Raises', 
+              sets: '3 sæt x 15 reps', 
+              note: 'Akillessene- og lægbeskyttelse',
+              guide: 'Stå på et ben på kanten af et trin eller en skammel. Sænk hælen helt ned for et dybt stræk, og pres dig derefter op på tæer i roligt, kontrolleret tempo.'
+            },
+            { 
+              name: 'Planke & Deadbugs', 
+              sets: '3 sæt x 45 sek', 
+              note: 'Core-stabilitet under løb',
+              guide: 'Hold kroppen helt udstrakt og stiv som et bræt på albuer og tæer (planke). Undgå at lade hoften synke. Ved deadbugs ligger du på ryggen og sænker modsatte arm og ben kontrolleret.'
+            },
           ],
         });
       }
@@ -443,9 +458,24 @@ export default function App() {
           completed: false,
           status: 'pending',
           exercises: [
-            { name: 'Bulgarian Split Squats', sets: '3 sæt x 10 reps', note: 'Stabilitet' },
-            { name: 'Single-leg Calf Raises', sets: '3 sæt x 15 reps', note: 'Akillessene' },
-            { name: 'Planke', sets: '3 sæt x 45 sek', note: 'Core' },
+            { 
+              name: 'Bulgarian Split Squats', 
+              sets: '3 sæt x 10 reps', 
+              note: 'Stabilitet',
+              guide: 'Fod på bænk bag dig, sænk bageste knæ mod jorden med rank ryg.'
+            },
+            { 
+              name: 'Single-leg Calf Raises', 
+              sets: '3 sæt x 15 reps', 
+              note: 'Akillessene',
+              guide: 'Stå på et ben på et trin, sænk hælen helt ned og pres op på tæer.'
+            },
+            { 
+              name: 'Planke', 
+              sets: '3 sæt x 45 sek', 
+              note: 'Core',
+              guide: 'Hold kroppen stiv som et bræt på albuer og tæer uden at svaje i ryggen.'
+            },
           ],
         });
 
@@ -781,7 +811,7 @@ export default function App() {
     <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#F3F4F6', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '580px', margin: '0 auto', padding: '16px' }}>
         
-        {/* APP HEADER MED STØRRE OG MERE SYNLIGT LOGO */}
+        {/* APP HEADER MED DET NYE LOGO */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingTop: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <img src="/logo.png" alt="Runner Logo" style={{ height: '54px', width: 'auto', objectFit: 'contain' }} />
@@ -1174,7 +1204,7 @@ export default function App() {
 
                             {isStrength && w.exercises && (
                               <div style={{ fontSize: '12px', color: '#A855F7', fontWeight: '600' }}>
-                                {w.exercises.length} øvelser (Klik for visning og timer)
+                                {w.exercises.length} øvelser med guide & timer (Klik for at åbne)
                               </div>
                             )}
 
@@ -1357,7 +1387,7 @@ export default function App() {
         )}
       </div>
 
-      {/* DETALJE MODAL MED TIMER TIL STYRKE */}
+      {/* DETALJE MODAL MED GUIDE OG NEDTÆLLINGSTIMER TIL STYRKE */}
       {selectedWorkoutModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: '16px' }}>
           <div style={{ backgroundColor: '#121316', border: '1px solid #27272A', borderRadius: '16px', maxWidth: '480px', width: '100%', padding: '20px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)', maxHeight: '90vh', overflowY: 'auto' }}>
@@ -1382,40 +1412,49 @@ export default function App() {
                 <div style={{ width: '1px', backgroundColor: '#27272A' }}></div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '10px', color: '#6B7280', textTransform: 'uppercase', fontWeight: '700' }}>Måltempo</div>
-                  <div style={{ fontSize: '18px', fontWeight: '800', color: '#3B82F6', marginTop: '2px' }}>{selectedWorkoutModal.target_pace_min}</div>
+                  <div style={{ fontSize: '18px', fontWeight: '800', color: '#3B82F6', marginTop: '2px'}>{selectedWorkoutModal.target_pace_min}</div>
                 </div>
               </div>
             )}
 
-            {/* STYRKE ØVELSER & INTERAKTIV NEDTÆLLINGSTIMER */}
+            {/* STYRKE ØVELSER MED BILLEDBASÈRET BESKRIVELSE OG INTERAKTIV TIMER */}
             {selectedWorkoutModal.exercises && (
               <div style={{ marginBottom: '16px' }}>
-                <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: '800', color: '#A855F7', textTransform: 'uppercase' }}>Øvelser & Sæts</h4>
+                <h4 style={{ margin: '0 0 10px 0', fontSize: '12px', fontWeight: '800', color: '#A855F7', textTransform: 'uppercase' }}>Øvelsesguide & Sæt-timer</h4>
                 
                 {/* TIMER WIDGET */}
-                <div style={{ backgroundColor: '#18191E', border: '1px solid #27272A', borderRadius: '10px', padding: '12px', marginBottom: '12px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>Sæt Timer / Pause</div>
-                  <div style={{ fontSize: '28px', fontWeight: '800', color: '#A855F7', marginBottom: '8px' }}>
+                <div style={{ backgroundColor: '#18191E', border: '1px solid #27272A', borderRadius: '10px', padding: '14px', marginBottom: '14px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>Nedtælling / Pause mellem sæt</div>
+                  <div style={{ fontSize: '32px', fontWeight: '900', color: '#A855F7', marginBottom: '8px', letterSpacing: '1px' }}>
                     {timerSeconds !== null ? `${Math.floor(timerSeconds / 60)}:${timerSeconds % 60 < 10 ? '0' : ''}${timerSeconds % 60}` : '0:45'}
                   </div>
-                  <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                    <button onClick={() => { setTimerSeconds(30); setIsTimerRunning(true); }} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', padding: '6px 10px', borderRadius: '6px', fontWeight: '700', fontSize: '11px', cursor: 'pointer' }}>
+                      30 sek
+                    </button>
                     <button onClick={() => { setTimerSeconds(45); setIsTimerRunning(true); }} style={{ backgroundColor: '#A855F7', color: '#090A0C', border: 'none', padding: '6px 12px', borderRadius: '6px', fontWeight: '800', fontSize: '11px', cursor: 'pointer' }}>
                       Start 45s Pause
                     </button>
-                    <button onClick={() => { setIsTimerRunning(false); setTimerSeconds(null); }} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', padding: '6px 10px', borderRadius: '6px', fontWeight: '700', fontSize: '11px', cursor: 'pointer' }}>
-                      Nulstil
+                    <button onClick={() => { setTimerSeconds(60); setIsTimerRunning(true); }} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', padding: '6px 10px', borderRadius: '6px', fontWeight: '700', fontSize: '11px', cursor: 'pointer' }}>
+                      60 sek
+                    </button>
+                    <button onClick={() => { setIsTimerRunning(false); setTimerSeconds(null); }} style={{ backgroundColor: '#18191E', color: '#EF4444', border: '1px solid #27272A', padding: '6px 10px', borderRadius: '6px', fontWeight: '700', fontSize: '11px', cursor: 'pointer' }}>
+                      Stop
                     </button>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {selectedWorkoutModal.exercises.map((ex: any, idx: number) => (
-                    <div key={idx} style={{ backgroundColor: '#18191E', border: '1px solid #27272A', padding: '10px 12px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div>
-                        <div style={{ fontWeight: '700', fontSize: '13px', color: '#FFF' }}>{ex.name}</div>
-                        <div style={{ fontSize: '11px', color: '#6B7280' }}>{ex.note}</div>
+                    <div key={idx} style={{ backgroundColor: '#18191E', border: '1px solid #27272A', padding: '12px 14px', borderRadius: '10px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                        <div style={{ fontWeight: '800', fontSize: '14px', color: '#FFF' }}>{ex.name}</div>
+                        <span style={{ fontSize: '11px', fontWeight: '800', color: '#A855F7', backgroundColor: '#27272A', padding: '3px 8px', borderRadius: '6px' }}>{ex.sets}</span>
                       </div>
-                      <span style={{ fontSize: '11px', fontWeight: '800', color: '#A855F7', backgroundColor: '#27272A', padding: '4px 8px', borderRadius: '6px' }}>{ex.sets}</span>
+                      <div style={{ fontSize: '12px', color: '#A855F7', fontWeight: '600', marginBottom: '6px' }}>{ex.note}</div>
+                      <div style={{ fontSize: '12px', color: '#9CA3AF', lineHeight: '1.4', backgroundColor: '#121316', padding: '8px 10px', borderRadius: '6px', borderLeft: '3px solid #A855F7' }}>
+                        💡 <strong style={{ color: '#D1D5DB' }}>Udførelse:</strong> {ex.guide}
+                      </div>
                     </div>
                   ))}
                 </div>
