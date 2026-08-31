@@ -781,10 +781,10 @@ export default function App() {
     <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#F3F4F6', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '580px', margin: '0 auto', padding: '16px' }}>
         
-        {/* APP HEADER KUN MED DET NYE LOGO */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingTop: '8px' }}>
+        {/* APP HEADER MED STØRRE OG MERE SYNLIGT LOGO */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingTop: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <img src="/logo.png" alt="Runner Logo" style={{ height: '42px', width: 'auto', objectFit: 'contain' }} />
+            <img src="/logo.png" alt="Runner Logo" style={{ height: '54px', width: 'auto', objectFit: 'contain' }} />
           </div>
 
           {user && (
