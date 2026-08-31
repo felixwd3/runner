@@ -120,15 +120,13 @@ export default function App() {
     setLoading(true);
 
     if (isSignUp) {
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { error } = await supabase.auth.signUp({ email, password });
       if (error) {
         setAuthError(error.message);
-      } else if (data.session) {
-        setUser(data.session.user);
       } else {
         const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
         if (loginError) {
-          setAuthError('Konto oprettet! Log venligst ind herunder.');
+          setAuthError('Konto oprettet! Prøv at trykke Log ind.');
           setIsSignUp(false);
         }
       }
