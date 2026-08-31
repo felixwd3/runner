@@ -781,11 +781,13 @@ export default function App() {
     <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#F3F4F6', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '580px', margin: '0 auto', padding: '16px' }}>
         
-        {/* APP HEADER MED LOGO OG RUNNER TEKST VED SIDEN AF */}
+        {/* APP HEADER MED STYLET RUNNER TEKST */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingTop: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <img src="/logo.png" alt="Runner Logo" style={{ height: '32px', width: '32px', objectFit: 'contain' }} />
-            <span style={{ fontSize: '20px', fontWeight: '900', color: '#FFFFFF', letterSpacing: '-0.5px' }}>Runner</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+              <img src="/logo.png" alt="Runner Logo" style={{ height: '100%', width: '100%', objectFit: 'contain' }} />
+            </div>
+            <span style={{ fontSize: '26px', fontWeight: '900', color: '#FFFFFF', letterSpacing: '-0.5px', textShadow: '0 2px 10px rgba(255,255,255,0.15)' }}>Runner</span>
           </div>
 
           {user && (
