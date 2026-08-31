@@ -69,6 +69,12 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'plan' | 'builder' | 'feed' | 'stats'>('plan');
   const [isClient, setIsClient] = useState(false);
 
+  // Email login state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [authError, setAuthError] = useState('');
+
   const [selectedWorkoutModal, setSelectedWorkoutModal] = useState<any>(null);
   const [selectedWeek, setSelectedWeek] = useState<number>(1);
   const [planFilter, setPlanFilter] = useState<'all' | 'running' | 'strength'>('all');
@@ -85,38 +91,15 @@ export default function App() {
 
   useEffect(() => {
     setIsClient(true);
-
-    if (window.location.hash && window.location.hash.includes('access_token')) {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
-      const refreshToken = hashParams.get('refresh_token');
-
-      if (accessToken && refreshToken) {
-        supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        }).then(({ data }) => {
-          if (data.session) {
-            setUser(data.session.user);
-            loadSavedActivities();
-            loadWorkouts();
-            loadSavedRoutes();
-            loadRaceEvents();
-            window.history.replaceState({}, document.title, window.location.pathname);
-          }
-        });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        loadSavedActivities();
+        loadWorkouts();
+        loadSavedRoutes();
+        loadRaceEvents();
       }
-    } else {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          loadSavedActivities();
-          loadWorkouts();
-          loadSavedRoutes();
-          loadRaceEvents();
-        }
-      });
-    }
+    });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
@@ -130,6 +113,27 @@ export default function App() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const handleEmailAuth = async (e: FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setLoading(true);
+
+    if (isSignUp) {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        setAuthError(error.message);
+      } else {
+        alert('Konto oprettet! Tjek evt. din e-mail eller log ind med det samme.');
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setAuthError('Forkert e-mail eller adgangskode.');
+      }
+    }
+    setLoading(false);
+  };
 
   const loadSavedActivities = async () => {
     const { data, error } = await supabase
@@ -682,15 +686,6 @@ export default function App() {
     reader.readAsText(file);
   };
 
-  const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({ 
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin
-      }
-    });
-  };
-
   const formatPace = (paceInSeconds: number) => {
     if (!paceInSeconds || isNaN(paceInSeconds) || !isFinite(paceInSeconds)) return '-';
     const min = Math.floor(paceInSeconds / 60);
@@ -755,15 +750,61 @@ export default function App() {
         </div>
 
         {!user ? (
-          <div style={{ textAlign: 'center', padding: '60px 20px', backgroundColor: '#121316', borderRadius: '16px', border: '1px solid #27272A', marginTop: '20px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '8px', color: '#FFFFFF' }}>Log ind på din profil</h2>
+          <div style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: '#121316', borderRadius: '16px', border: '1px solid #27272A', marginTop: '20px' }}>
+            <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '8px', color: '#FFFFFF' }}>
+              {isSignUp ? 'Opret ny konto' : 'Log ind på din profil'}
+            </h2>
             <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>Struktureret træningsstyring og rutebygger.</p>
-            <button
-              onClick={handleGoogleLogin}
-              style={{ backgroundColor: '#F3F4F6', color: '#090A0C', border: 'none', outline: 'none', padding: '14px 28px', borderRadius: '8px', fontSize: '15px', fontWeight: '800', cursor: 'pointer' }}
-            >
-              Fortsæt med Google
-            </button>
+            
+            <form onSubmit={handleEmailAuth} style={{ maxWidth: '340px', margin: '0 auto', textAlign: 'left' }}>
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>E-mail</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="din@email.dk"
+                  required
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Adgangskode</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              {authError && (
+                <div style={{ color: '#EF4444', fontSize: '12px', marginBottom: '12px', fontWeight: '600', textAlign: 'center' }}>
+                  {authError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '14px', cursor: 'pointer', marginBottom: '12px' }}
+              >
+                {loading ? 'Arbejder...' : isSignUp ? 'Opret konto' : 'Log ind'}
+              </button>
+
+              <div style={{ textAlign: 'center' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsSignUp(!isSignUp)}
+                  style={{ background: 'none', border: 'none', color: '#3B82F6', fontSize: '13px', cursor: 'pointer', fontWeight: '600' }}
+                >
+                  {isSignUp ? 'Har du allerede en konto? Log ind her' : 'Ingen konto endnu? Opret en her'}
+                </button>
+              </div>
+            </form>
           </div>
         ) : (
           <div>
