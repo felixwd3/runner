@@ -720,7 +720,7 @@ export default function App() {
           </div>
 
           {user && (
-            <button onClick={() => supabase.auth.signOut()} style={{ backgroundColor: '#18191E', color: '#9CA3AF', border: '1px solid #27272A', padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>
+            <button onClick={() => supabase.auth.signOut()} style={{ backgroundColor: '#18191E', color: '#9CA3AF', border: 'none', outline: 'none', padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>
               Log ud
             </button>
           )}
@@ -732,7 +732,7 @@ export default function App() {
             <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>Struktureret træningsstyring og rutebygger.</p>
             <button
               onClick={handleGoogleLogin}
-              style={{ backgroundColor: '#F3F4F6', color: '#090A0C', border: 'none', padding: '14px 28px', borderRadius: '8px', fontSize: '15px', fontWeight: '800', cursor: 'pointer' }}
+              style={{ backgroundColor: '#F3F4F6', color: '#090A0C', border: 'none', outline: 'none', padding: '14px 28px', borderRadius: '8px', fontSize: '15px', fontWeight: '800', cursor: 'pointer' }}
             >
               Fortsæt med Google
             </button>
@@ -746,6 +746,7 @@ export default function App() {
                 style={{
                   flex: 1,
                   border: 'none',
+                  outline: 'none',
                   padding: '10px 0',
                   borderRadius: '8px',
                   fontWeight: '700',
@@ -762,6 +763,7 @@ export default function App() {
                 style={{
                   flex: 1,
                   border: 'none',
+                  outline: 'none',
                   padding: '10px 0',
                   borderRadius: '8px',
                   fontWeight: '700',
@@ -778,6 +780,7 @@ export default function App() {
                 style={{
                   flex: 1,
                   border: 'none',
+                  outline: 'none',
                   padding: '10px 0',
                   borderRadius: '8px',
                   fontWeight: '700',
@@ -794,6 +797,7 @@ export default function App() {
                 style={{
                   flex: 1,
                   border: 'none',
+                  outline: 'none',
                   padding: '10px 0',
                   borderRadius: '8px',
                   fontWeight: '700',
@@ -829,13 +833,13 @@ export default function App() {
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button
                         onClick={generateMaintenancePlan}
-                        style={{ backgroundColor: planMode === 'maintenance' ? '#27272A' : '#18191E', color: planMode === 'maintenance' ? '#FFFFFF' : '#9CA3AF', border: '1px solid #27272A', padding: '8px 12px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}
+                        style={{ backgroundColor: planMode === 'maintenance' ? '#27272A' : '#18191E', color: planMode === 'maintenance' ? '#FFFFFF' : '#9CA3AF', border: 'none', outline: 'none', padding: '8px 12px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}
                       >
                         Hold i Form
                       </button>
                       <button
                         onClick={() => setShowEventForm(!showEventForm)}
-                        style={{ backgroundColor: planMode === 'race' ? '#27272A' : '#18191E', color: planMode === 'race' ? '#FFFFFF' : '#9CA3AF', border: '1px solid #27272A', padding: '8px 12px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}
+                        style={{ backgroundColor: planMode === 'race' ? '#27272A' : '#18191E', color: planMode === 'race' ? '#FFFFFF' : '#9CA3AF', border: 'none', outline: 'none', padding: '8px 12px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}
                       >
                         Målløb
                       </button>
@@ -883,7 +887,7 @@ export default function App() {
                       <button
                         type="submit"
                         disabled={loading}
-                        style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
+                        style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
                       >
                         Generer Program
                       </button>
@@ -896,10 +900,10 @@ export default function App() {
                     <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#FFFFFF' }}>Ingen aktiv træningsplan</h3>
                     <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Vælg en tilstand for at generere dit træningsforløb.</p>
                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                      <button onClick={generateMaintenancePlan} disabled={loading} style={{ backgroundColor: '#27272A', color: '#FFF', border: '1px solid #3F3F46', padding: '10px 18px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>
+                      <button onClick={generateMaintenancePlan} disabled={loading} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', outline: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>
                         Hold i Form
                       </button>
-                      <button onClick={() => setShowEventForm(true)} disabled={loading} style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: '800', cursor: 'pointer' }}>
+                      <button onClick={() => setShowEventForm(true)} disabled={loading} style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: '800', cursor: 'pointer' }}>
                         Sæt Målløb
                       </button>
                     </div>
@@ -912,7 +916,7 @@ export default function App() {
                         <button
                           onClick={() => setSelectedWeek(Math.max(1, selectedWeek - 1))}
                           disabled={selectedWeek === 1}
-                          style={{ backgroundColor: '#18191E', border: '1px solid #27272A', color: '#FFF', width: '32px', height: '32px', borderRadius: '6px', cursor: 'pointer', opacity: selectedWeek === 1 ? 0.3 : 1, fontWeight: 'bold' }}
+                          style={{ backgroundColor: '#18191E', border: 'none', outline: 'none', color: '#FFF', width: '32px', height: '32px', borderRadius: '6px', cursor: 'pointer', opacity: selectedWeek === 1 ? 0.3 : 1, fontWeight: 'bold' }}
                         >
                           ‹
                         </button>
@@ -927,7 +931,7 @@ export default function App() {
                         <button
                           onClick={() => setSelectedWeek(Math.min(maxWeekInPlan, selectedWeek + 1))}
                           disabled={selectedWeek === maxWeekInPlan}
-                          style={{ backgroundColor: '#18191E', border: '1px solid #27272A', color: '#FFF', width: '32px', height: '32px', borderRadius: '6px', cursor: 'pointer', opacity: selectedWeek === maxWeekInPlan ? 0.3 : 1, fontWeight: 'bold' }}
+                          style={{ backgroundColor: '#18191E', border: 'none', outline: 'none', color: '#FFF', width: '32px', height: '32px', borderRadius: '6px', cursor: 'pointer', opacity: selectedWeek === maxWeekInPlan ? 0.3 : 1, fontWeight: 'bold' }}
                         >
                           ›
                         </button>
@@ -942,19 +946,19 @@ export default function App() {
                     <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
                       <button
                         onClick={() => setPlanFilter('all')}
-                        style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', border: '1px solid #27272A', backgroundColor: planFilter === 'all' ? '#27272A' : '#121316', color: planFilter === 'all' ? '#FFFFFF' : '#9CA3AF', cursor: 'pointer' }}
+                        style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', border: 'none', outline: 'none', backgroundColor: planFilter === 'all' ? '#27272A' : '#121316', color: planFilter === 'all' ? '#FFFFFF' : '#9CA3AF', cursor: 'pointer' }}
                       >
                         Alle ({currentWeekWorkouts.length})
                       </button>
                       <button
                         onClick={() => setPlanFilter('running')}
-                        style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', border: '1px solid #27272A', backgroundColor: planFilter === 'running' ? '#27272A' : '#121316', color: planFilter === 'running' ? '#FFFFFF' : '#9CA3AF', cursor: 'pointer' }}
+                        style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', border: 'none', outline: 'none', backgroundColor: planFilter === 'running' ? '#27272A' : '#121316', color: planFilter === 'running' ? '#FFFFFF' : '#9CA3AF', cursor: 'pointer' }}
                       >
                         Løb
                       </button>
                       <button
                         onClick={() => setPlanFilter('strength')}
-                        style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', border: '1px solid #27272A', backgroundColor: planFilter === 'strength' ? '#27272A' : '#121316', color: planFilter === 'strength' ? '#FFFFFF' : '#9CA3AF', cursor: 'pointer' }}
+                        style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', border: 'none', outline: 'none', backgroundColor: planFilter === 'strength' ? '#27272A' : '#121316', color: planFilter === 'strength' ? '#FFFFFF' : '#9CA3AF', cursor: 'pointer' }}
                       >
                         Styrke
                       </button>
@@ -1000,6 +1004,7 @@ export default function App() {
                                   height: '24px',
                                   borderRadius: '50%',
                                   border: isCompleted ? 'none' : '1px solid #3F3F46',
+                                  outline: 'none',
                                   backgroundColor: isCompleted ? '#10B981' : 'transparent',
                                   color: '#090A0C',
                                   fontWeight: '900',
@@ -1038,13 +1043,13 @@ export default function App() {
                             <div style={{ display: 'flex', gap: '8px', marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #18191E' }}>
                               <button
                                 onClick={(e) => postponeWorkout(w.id, w.scheduled_date, e)}
-                                style={{ backgroundColor: '#18191E', border: '1px solid #27272A', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '600', color: '#9CA3AF', cursor: 'pointer' }}
+                                style={{ backgroundColor: '#18191E', border: 'none', outline: 'none', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '600', color: '#9CA3AF', cursor: 'pointer' }}
                               >
                                 Udskyd +1 dag
                               </button>
                               <button
                                 onClick={(e) => deleteWorkout(w.id, e)}
-                                style={{ backgroundColor: '#18191E', border: '1px solid #27272A', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '600', color: '#EF4444', cursor: 'pointer' }}
+                                style={{ backgroundColor: '#18191E', border: 'none', outline: 'none', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '600', color: '#EF4444', cursor: 'pointer' }}
                               >
                                 Drop pas
                               </button>
@@ -1109,21 +1114,21 @@ export default function App() {
                       <button
                         onClick={handleSaveRoute}
                         disabled={builderPath.length < 2 || !routeTitle || loading}
-                        style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', opacity: builderPath.length < 2 || !routeTitle ? 0.4 : 1 }}
+                        style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', opacity: builderPath.length < 2 || !routeTitle ? 0.4 : 1 }}
                       >
                         Gem Rute
                       </button>
                       <button
                         onClick={exportBuilderGPX}
                         disabled={builderPath.length < 2}
-                        style={{ flex: 1, backgroundColor: '#27272A', color: '#FFF', border: '1px solid #3F3F46', padding: '10px', borderRadius: '8px', fontWeight: '700', fontSize: '13px', cursor: 'pointer', opacity: builderPath.length < 2 ? 0.4 : 1 }}
+                        style={{ flex: 1, backgroundColor: '#27272A', color: '#FFF', border: 'none', outline: 'none', padding: '10px', borderRadius: '8px', fontWeight: '700', fontSize: '13px', cursor: 'pointer', opacity: builderPath.length < 2 ? 0.4 : 1 }}
                       >
                         Eksporter GPX
                       </button>
                       <button
                         onClick={handleUndo}
                         disabled={builderWaypoints.length === 0}
-                        style={{ backgroundColor: '#18191E', color: '#9CA3AF', border: '1px solid #27272A', padding: '10px 14px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}
+                        style={{ backgroundColor: '#18191E', color: '#9CA3AF', border: 'none', outline: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}
                       >
                         Angre
                       </button>
@@ -1147,7 +1152,7 @@ export default function App() {
                           setBuilderPath(r.coordinates);
                           setRouteTitle(r.title);
                         }}
-                        style={{ backgroundColor: '#18191E', color: '#3B82F6', border: '1px solid #27272A', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
+                        style={{ backgroundColor: '#18191E', color: '#3B82F6', border: 'none', outline: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
                       >
                         Vis på kort
                       </button>
@@ -1211,7 +1216,7 @@ export default function App() {
                   <h3 style={{ margin: '0 0 4px 0', color: '#FFF', fontSize: '14px', fontWeight: '700' }}>Importer GPX-fil</h3>
                   <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: '#6B7280' }}>Upload løbetur fra uret for automatisk kobling.</p>
                   <input type="file" accept=".gpx" onChange={handleFileUpload} disabled={loading} style={{ display: 'none' }} id="gpx-file-input" />
-                  <label htmlFor="gpx-file-input" style={{ backgroundColor: '#27272A', color: '#FFF', border: '1px solid #3F3F46', padding: '8px 16px', borderRadius: '6px', fontWeight: '700', fontSize: '12px', cursor: 'pointer', display: 'inline-block' }}>
+                  <label htmlFor="gpx-file-input" style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', padding: '8px 16px', borderRadius: '6px', fontWeight: '700', fontSize: '12px', cursor: 'pointer', display: 'inline-block' }}>
                     {loading ? 'Indlæser...' : 'Vælg GPX-fil'}
                   </label>
                 </div>
@@ -1283,7 +1288,7 @@ export default function App() {
                 </span>
                 <h2 style={{ margin: '6px 0 0 0', fontSize: '18px', fontWeight: '800', color: '#FFF' }}>{selectedWorkoutModal.title}</h2>
               </div>
-              <button onClick={() => setSelectedWorkoutModal(null)} style={{ backgroundColor: '#18191E', border: '1px solid #27272A', color: '#9CA3AF', width: '28px', height: '28px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+              <button onClick={() => setSelectedWorkoutModal(null)} style={{ backgroundColor: '#18191E', border: 'none', outline: 'none', color: '#9CA3AF', width: '28px', height: '28px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
             </div>
 
             <p style={{ color: '#9CA3AF', fontSize: '13px', lineHeight: '1.5', marginBottom: '16px' }}>{selectedWorkoutModal.description}</p>
@@ -1305,7 +1310,7 @@ export default function App() {
             {selectedWorkoutModal.exercises && (
               <div style={{ marginBottom: '16px' }}>
                 <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: '800', color: '#A855F7', textTransform: 'uppercase' }}>Øvelser</h4>
-                <div style={{ style: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {selectedWorkoutModal.exercises.map((ex: any, idx: number) => (
                     <div key={idx} style={{ backgroundColor: '#18191E', border: '1px solid #27272A', padding: '8px 12px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
@@ -1321,7 +1326,7 @@ export default function App() {
 
             <button
               onClick={() => toggleWorkoutCompleted(selectedWorkoutModal.id, selectedWorkoutModal.completed)}
-              style={{ width: '100%', backgroundColor: selectedWorkoutModal.completed ? '#27272A' : '#10B981', color: selectedWorkoutModal.completed ? '#FFF' : '#090A0C', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
+              style={{ width: '100%', backgroundColor: selectedWorkoutModal.completed ? '#27272A' : '#10B981', color: selectedWorkoutModal.completed ? '#FFF' : '#090A0C', border: 'none', outline: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
             >
               {selectedWorkoutModal.completed ? 'Nulstil status' : 'Marker som gennemført'}
             </button>
