@@ -1305,7 +1305,7 @@ export default function App() {
             {selectedWorkoutModal.exercises && (
               <div style={{ marginBottom: '16px' }}>
                 <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: '800', color: '#A855F7', textTransform: 'uppercase' }}>Øvelser</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div style={{ style: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {selectedWorkoutModal.exercises.map((ex: any, idx: number) => (
                     <div key={idx} style={{ backgroundColor: '#18191E', border: '1px solid #27272A', padding: '8px 12px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
