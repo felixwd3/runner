@@ -59,11 +59,10 @@ function RouteBuilderClicker({ onPointAdd }: { onPointAdd: (latlng: [number, num
 }
 
 export default function App() {
-  const [user, setUser] = useState<any>(null);
+const [user, setUser] = useState<any>(null);
   const [activities, setActivities] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [savedRoutes, setSavedRoutes] = useState<any[]>([]);
-  const [raceEvents, setRaceEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'plan' | 'builder' | 'feed' | 'stats'>('plan');
@@ -78,8 +77,6 @@ export default function App() {
   const [selectedWorkoutModal, setSelectedWorkoutModal] = useState<any>(null);
   const [selectedWeek, setSelectedWeek] = useState<number>(1);
   const [planFilter, setPlanFilter] = useState<'all' | 'running' | 'strength'>('all');
-  const [planMode, setPlanMode] = useState<'maintenance' | 'race'>('maintenance');
-
   // Coach Onboarding State
   const [showCoachWizard, setShowCoachWizard] = useState(false);
   const [coachLevel, setCoachLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('intermediate');
