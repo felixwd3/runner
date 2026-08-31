@@ -83,7 +83,7 @@ export default function App() {
   // Coach Onboarding State
   const [showCoachWizard, setShowCoachWizard] = useState(false);
   const [coachLevel, setCoachLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('intermediate');
-  const [coachDays, setCoachDays] = useState<number>(3);
+  const [coachDays, setCoachDays] = useState<number>(4);
   const [coachGoal, setCoachGoal] = useState<string>('Grundform & generel udholdenhed');
 
   // Race Event State
@@ -269,7 +269,7 @@ export default function App() {
       const satDate = new Date(today.getTime() + (daysOffset + 6) * 86400000).toISOString().split('T')[0];
       const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
 
-      // Pas 1: Løb
+      // Pas 1: Løb (Tirsdag)
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
@@ -284,7 +284,7 @@ export default function App() {
         status: 'pending',
       });
 
-      // Pas 2: Interval (hvis 3+ dage)
+      // Pas 2: Interval (Torsdag)
       if (coachDays >= 3) {
         const isFartlek = week % 2 !== 0;
         generatedWorkouts.push({
@@ -302,8 +302,8 @@ export default function App() {
         });
       }
 
-      // Pas 3: Styrke (hvis 4+ dage)
-      if (coachDays >= 4) {
+      // Pas 3: Styrke (Fredag - Altid inkluderet i coach, hvis 3+ dage eller særskilt)
+      if (coachDays >= 3) {
         generatedWorkouts.push({
           user_id: user.id,
           week_number: week,
@@ -312,7 +312,7 @@ export default function App() {
           workout_type: 'Styrke',
           target_distance_km: 0,
           target_pace_min: '35 min',
-          description: 'Styrk sener, hofter og core for at undgå overbelastning.',
+          description: 'Styrk sener, hofter og core for at undgå overbelastning som løber.',
           scheduled_date: friDate,
           completed: false,
           status: 'pending',
@@ -339,7 +339,7 @@ export default function App() {
         });
       }
 
-      // Pas 4: Let restitution (hvis 5 dage)
+      // Pas 4: Let restitution (Lørdag, hvis 5 dage)
       if (coachDays === 5) {
         generatedWorkouts.push({
           user_id: user.id,
@@ -356,7 +356,7 @@ export default function App() {
         });
       }
 
-      // Pas 5: Langtur
+      // Pas 5: Langtur (Søndag)
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
@@ -1011,9 +1011,8 @@ export default function App() {
                           onChange={(e) => setCoachDays(parseInt(e.target.value))}
                           style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }}
                         >
-                          <option value="2">2 dage (Rolig opstart)</option>
-                          <option value="3">3 dage (Anbefalet)</option>
-                          <option value="4">4 dage (Inkl. styrke)</option>
+                          <option value="3">3 dage (Inkl. styrke)</option>
+                          <option value="4">4 dage (Anbefalet m. styrke)</option>
                           <option value="5">5 dage (Intensiv m. styrke)</option>
                         </select>
                       </div>
