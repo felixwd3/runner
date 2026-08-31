@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { ChangeEvent, MouseEvent, FormEvent } from 'react';
 import { supabase } from './supabaseClient';
-import gpxParser from 'gpxparser';
+import GPXParser from 'gpxparser';
 import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
@@ -422,7 +422,7 @@ export default function App() {
       } else {
         setBuilderPath(newWaypoints);
       }
-    } catch (err) {
+    } catch {
       setBuilderPath(newWaypoints);
     } finally {
       setLoading(false);
@@ -467,7 +467,7 @@ export default function App() {
       } else {
         setBuilderPath(newWaypoints);
       }
-    } catch (err) {
+    } catch {
       setBuilderPath(newWaypoints);
     } finally {
       setLoading(false);
@@ -535,7 +535,7 @@ export default function App() {
     reader.onload = async (event) => {
       try {
         const gpxText = event.target?.result as string;
-        const gpx = new gpxParser();
+        const gpx = new GPXParser();
         gpx.parse(gpxText);
 
         const track = gpx.tracks[0];
@@ -1302,7 +1302,7 @@ export default function App() {
                   {selectedWorkoutModal.exercises.map((ex: any, idx: number) => (
                     <div key={idx} style={{ backgroundColor: '#18191E', border: '1px solid #27272A', padding: '8px 12px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
-                        <div style={{ fontWeight: '700', fontSize: '13px', color: '#FFF'}>{ex.name}</div>
+                        <div style={{ fontWeight: '700', fontSize: '13px', color: '#FFF' }}>{ex.name}</div>
                         <div style={{ fontSize: '11px', color: '#6B7280' }}>{ex.note}</div>
                       </div>
                       <span style={{ fontSize: '11px', fontWeight: '800', color: '#A855F7' }}>{ex.sets}</span>
