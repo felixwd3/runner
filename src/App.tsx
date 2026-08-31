@@ -15,14 +15,14 @@ L.Icon.Default.mergeOptions({
 });
 
 const startIcon = L.divIcon({
-  html: `<div style="background-color: #10B981; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>`,
+  html: `<div style="background-color: #10B981; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #10B981;"></div>`,
   className: '',
   iconSize: [12, 12],
   iconAnchor: [6, 6],
 });
 
 const endIcon = L.divIcon({
-  html: `<div style="background-color: #EF4444; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>`,
+  html: `<div style="background-color: #EF4444; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #EF4444;"></div>`,
   className: '',
   iconSize: [12, 12],
   iconAnchor: [6, 6],
@@ -35,8 +35,8 @@ const waypointIcon = L.divIcon({
   iconAnchor: [4, 4],
 });
 
-const MAP_TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-const MAP_ATTRIBUTION = '&copy; OpenStreetMap';
+const MAP_TILE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+const MAP_ATTRIBUTION = '&copy; OpenStreetMap contributors & CARTO';
 
 function AutoBounds({ positions }: { positions: [number, number][] }) {
   const map = useMap();
@@ -85,15 +85,38 @@ export default function App() {
 
   useEffect(() => {
     setIsClient(true);
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        loadSavedActivities();
-        loadWorkouts();
-        loadSavedRoutes();
-        loadRaceEvents();
+
+    if (window.location.hash && window.location.hash.includes('access_token')) {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
+
+      if (accessToken && refreshToken) {
+        supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        }).then(({ data }) => {
+          if (data.session) {
+            setUser(data.session.user);
+            loadSavedActivities();
+            loadWorkouts();
+            loadSavedRoutes();
+            loadRaceEvents();
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        });
       }
-    });
+    } else {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          loadSavedActivities();
+          loadWorkouts();
+          loadSavedRoutes();
+          loadRaceEvents();
+        }
+      });
+    }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
@@ -660,7 +683,12 @@ export default function App() {
   };
 
   const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'google' });
+    await supabase.auth.signInWithOAuth({ 
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
   };
 
   const formatPace = (paceInSeconds: number) => {
@@ -1087,7 +1115,7 @@ export default function App() {
                       style={{ height: '100%', width: '100%' }}
                     >
                       <TileLayer url={MAP_TILE_URL} attribution={MAP_ATTRIBUTION} />
-                      <Polyline positions={builderPath} pathOptions={{ color: '#3B82F6', weight: 4, opacity: 0.9 }} />
+                      <Polyline positions={builderPath} pathOptions={{ color: '#3B82F6', weight: 5, opacity: 0.9 }} />
 
                       {builderWaypoints.map((pt, idx) => (
                         <Marker
@@ -1187,7 +1215,7 @@ export default function App() {
                     <div style={{ height: '280px', width: '100%', position: 'relative' }}>
                       <MapContainer center={currentPositions[0]} zoom={13} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
                         <TileLayer url={MAP_TILE_URL} attribution={MAP_ATTRIBUTION} />
-                        <Polyline positions={currentPositions} pathOptions={{ color: '#10B981', weight: 4, opacity: 0.9 }} />
+                        <Polyline positions={currentPositions} pathOptions={{ color: '#10B981', weight: 5, opacity: 0.9 }} />
                         <Marker position={currentPositions[0]} icon={startIcon}><Popup>Start</Popup></Marker>
                         <Marker position={currentPositions[currentPositions.length - 1]} icon={endIcon}><Popup>Slut</Popup></Marker>
                         <AutoBounds positions={currentPositions} />
