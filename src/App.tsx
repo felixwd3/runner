@@ -235,21 +235,16 @@ export default function App() {
 
     const today = new Date();
     const generatedWorkouts: any[] = [];
-
-    // Tilpas distancer og intensitet baseret på niveau
     const baseMult = coachLevel === 'beginner' ? 0.8 : coachLevel === 'advanced' ? 1.3 : 1.0;
 
     for (let week = 1; week <= 4; week++) {
       const daysOffset = (week - 1) * 7;
-      
-      // Ugentlige dage tilpasses efter brugerens valg (coachDays: 2, 3, 4 eller 5)
       const tuesDate = new Date(today.getTime() + (daysOffset + 2) * 86400000).toISOString().split('T')[0];
       const thursDate = new Date(today.getTime() + (daysOffset + 4) * 86400000).toISOString().split('T')[0];
       const friDate = new Date(today.getTime() + (daysOffset + 5) * 86400000).toISOString().split('T')[0];
       const satDate = new Date(today.getTime() + (daysOffset + 6) * 86400000).toISOString().split('T')[0];
       const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
 
-      // Pas 1: Roligt løb / Aerob base
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
@@ -258,13 +253,12 @@ export default function App() {
         workout_type: 'Easy',
         target_distance_km: Math.round((5 + week) * baseMult),
         target_pace_min: coachLevel === 'beginner' ? '6:00 - 6:30' : coachLevel === 'advanced' ? '4:45 - 5:05' : '5:30 - 5:50',
-        description: `Tilpasset dit ${coachLevel}-niveau. Fokus på lav puls og god restitution.`,
+        description: `Tilpasset dit niveau. Fokus på lav puls og god restitution.`,
         scheduled_date: tuesDate,
         completed: false,
         status: 'pending',
       });
 
-      // Pas 2: Interval (hvis coachDays >= 3)
       if (coachDays >= 3) {
         const isFartlek = week % 2 !== 0;
         generatedWorkouts.push({
@@ -273,16 +267,15 @@ export default function App() {
           title: isFartlek ? `Dynamisk Fartleg` : `Tærskel-intervaller`,
           category: 'running',
           workout_type: 'Interval',
-          target_distance_km: Math.round((6 * baseMult)),
+          target_distance_km: Math.round(6 * baseMult),
           target_pace_min: coachLevel === 'beginner' ? '5:30' : coachLevel === 'advanced' ? '4:10' : '4:45',
-          description: isFartlek ? 'Skift mellem tempo og jog. Træner kroppens iltoptagelse.' : '1.5 km opvarmning + intervaller i race-pace + afjog.',
+          description: isFartlek ? 'Skift mellem tempo og jog. Træner iltoptagelse.' : '1.5 km opvarmning + intervaller + afjog.',
           scheduled_date: thursDate,
           completed: false,
           status: 'pending',
         });
       }
 
-      // Pas 3: Styrke & Core (hvis coachDays >= 4)
       if (coachDays >= 4) {
         generatedWorkouts.push({
           user_id: user.id,
@@ -304,7 +297,6 @@ export default function App() {
         });
       }
 
-      // Pas 4: Ekstra restitution / Let jog (hvis coachDays == 5)
       if (coachDays === 5) {
         generatedWorkouts.push({
           user_id: user.id,
@@ -321,7 +313,6 @@ export default function App() {
         });
       }
 
-      // Pas 5 (eller fast søndag): Ugens Langtur
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
@@ -330,7 +321,7 @@ export default function App() {
         workout_type: 'Long Run',
         target_distance_km: Math.round((8 + (week * 2)) * baseMult),
         target_pace_min: coachLevel === 'beginner' ? '6:10 - 6:40' : coachLevel === 'advanced' ? '5:10 - 5:35' : '5:45 - 6:10',
-        description: `Ugens vigtigste pas med fokus på ${coachGoal}.`,
+        description: `Ugens vigtigste pas med fokus på målet.`,
         scheduled_date: sunDate,
         completed: false,
         status: 'pending',
