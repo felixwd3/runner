@@ -80,10 +80,11 @@ export default function App() {
   const [planFilter, setPlanFilter] = useState<'all' | 'running' | 'strength'>('all');
   const [planMode, setPlanMode] = useState<'maintenance' | 'race'>('maintenance');
 
-  const [showEventForm, setShowEventForm] = useState(false);
-  const [eventTitle, setEventTitle] = useState('');
-  const [eventDate, setEventDate] = useState('');
-  const [eventDistance, setEventDistance] = useState('10');
+  // Coach Onboarding State
+  const [showCoachWizard, setShowCoachWizard] = useState(false);
+  const [coachLevel, setCoachLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('intermediate');
+  const [coachDays, setCoachDays] = useState<number>(3);
+  const [coachGoal, setCoachGoal] = useState<string>('Grundform & overordnet formkurve');
 
   const [builderWaypoints, setBuilderWaypoints] = useState<[number, number][]>([]);
   const [builderPath, setBuilderPath] = useState<[number, number][]>([]);
@@ -223,7 +224,8 @@ export default function App() {
     }
   };
 
-  const generateMaintenancePlan = async () => {
+  const generatePersonalizedCoachPlan = async (e: FormEvent) => {
+    e.preventDefault();
     if (!user) return;
     setLoading(true);
 
@@ -234,70 +236,101 @@ export default function App() {
     const today = new Date();
     const generatedWorkouts: any[] = [];
 
+    // Tilpas distancer og intensitet baseret på niveau
+    const baseMult = coachLevel === 'beginner' ? 0.8 : coachLevel === 'advanced' ? 1.3 : 1.0;
+
     for (let week = 1; week <= 4; week++) {
       const daysOffset = (week - 1) * 7;
+      
+      // Ugentlige dage tilpasses efter brugerens valg (coachDays: 2, 3, 4 eller 5)
       const tuesDate = new Date(today.getTime() + (daysOffset + 2) * 86400000).toISOString().split('T')[0];
       const thursDate = new Date(today.getTime() + (daysOffset + 4) * 86400000).toISOString().split('T')[0];
       const friDate = new Date(today.getTime() + (daysOffset + 5) * 86400000).toISOString().split('T')[0];
+      const satDate = new Date(today.getTime() + (daysOffset + 6) * 86400000).toISOString().split('T')[0];
       const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
 
+      // Pas 1: Roligt løb / Aerob base
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
-        title: `Grundform: Roligt Løb`,
+        title: `Aerob Base & Udholdenhed`,
         category: 'running',
         workout_type: 'Easy',
-        target_distance_km: 6,
-        target_pace_min: '5:45 - 6:00',
-        description: 'Roligt snakketempo i Zone 2. Bygger udholdenhed uden træningstræthed.',
+        target_distance_km: Math.round((5 + week) * baseMult),
+        target_pace_min: coachLevel === 'beginner' ? '6:00 - 6:30' : coachLevel === 'advanced' ? '4:45 - 5:05' : '5:30 - 5:50',
+        description: `Tilpasset dit ${coachLevel}-niveau. Fokus på lav puls og god restitution.`,
         scheduled_date: tuesDate,
         completed: false,
         status: 'pending',
       });
 
-      const isFartlek = week % 2 !== 0;
-      generatedWorkouts.push({
-        user_id: user.id,
-        week_number: week,
-        title: isFartlek ? `Fartleg & Tempo` : `Temporyk (5x3 min)`,
-        category: 'running',
-        workout_type: 'Interval',
-        target_distance_km: 6,
-        target_pace_min: '5:00 - 5:15',
-        description: isFartlek ? 'Leg med tempoet. Øg farten op ad bakker eller mellem markører.' : '1.5 km opvarmning + 5x3 min i højt tempo m. 90s jog + 1.5 km afjog.',
-        scheduled_date: thursDate,
-        completed: false,
-        status: 'pending',
-      });
+      // Pas 2: Interval (hvis coachDays >= 3)
+      if (coachDays >= 3) {
+        const isFartlek = week % 2 !== 0;
+        generatedWorkouts.push({
+          user_id: user.id,
+          week_number: week,
+          title: isFartlek ? `Dynamisk Fartleg` : `Tærskel-intervaller`,
+          category: 'running',
+          workout_type: 'Interval',
+          target_distance_km: Math.round((6 * baseMult)),
+          target_pace_min: coachLevel === 'beginner' ? '5:30' : coachLevel === 'advanced' ? '4:10' : '4:45',
+          description: isFartlek ? 'Skift mellem tempo og jog. Træner kroppens iltoptagelse.' : '1.5 km opvarmning + intervaller i race-pace + afjog.',
+          scheduled_date: thursDate,
+          completed: false,
+          status: 'pending',
+        });
+      }
 
-      generatedWorkouts.push({
-        user_id: user.id,
-        week_number: week,
-        title: `Skadesforebyggelse & Core`,
-        category: 'strength',
-        workout_type: 'Styrke',
-        target_distance_km: 0,
-        target_pace_min: '35 min',
-        description: 'Styrker sener, akillessener og core for optimal løbeøkonomi.',
-        scheduled_date: friDate,
-        completed: false,
-        status: 'pending',
-        exercises: [
-          { name: 'Bulgarian Split Squats', sets: '3 sæt x 10 reps', note: 'Enkeltbens-stabilitet' },
-          { name: 'Single-leg Calf Raises', sets: '3 sæt x 15 reps', note: 'Akillessene-forebyggelse' },
-          { name: 'Sideplanke & Deadbugs', sets: '3 sæt x 45 sek', note: 'Core og lænd' },
-        ],
-      });
+      // Pas 3: Styrke & Core (hvis coachDays >= 4)
+      if (coachDays >= 4) {
+        generatedWorkouts.push({
+          user_id: user.id,
+          week_number: week,
+          title: `Skadesforebyggende Styrke`,
+          category: 'strength',
+          workout_type: 'Styrke',
+          target_distance_km: 0,
+          target_pace_min: '35 min',
+          description: 'Styrk sener, hofter og core for at undgå overbelastning.',
+          scheduled_date: friDate,
+          completed: false,
+          status: 'pending',
+          exercises: [
+            { name: 'Bulgarian Split Squats', sets: '3 sæt x 10 reps', note: 'Enkeltbens-stabilitet' },
+            { name: 'Single-leg Calf Raises', sets: '3 sæt x 15 reps', note: 'Akillessene-beskyttelse' },
+            { name: 'Planke & Deadbugs', sets: '3 sæt x 45 sek', note: 'Core' },
+          ],
+        });
+      }
 
+      // Pas 4: Ekstra restitution / Let jog (hvis coachDays == 5)
+      if (coachDays === 5) {
+        generatedWorkouts.push({
+          user_id: user.id,
+          week_number: week,
+          title: `Let Restituctions-tur`,
+          category: 'running',
+          workout_type: 'Easy',
+          target_distance_km: 4,
+          target_pace_min: '6:15 - 6:45',
+          description: 'Meget roligt opsamlingspas for at øge blodcirkulationen.',
+          scheduled_date: satDate,
+          completed: false,
+          status: 'pending',
+        });
+      }
+
+      // Pas 5 (eller fast søndag): Ugens Langtur
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
-        title: `Weekend-Langtur (${week % 2 === 0 ? 10 : 8} km)`,
+        title: `Ugens Langtur (${coachGoal})`,
         category: 'running',
         workout_type: 'Long Run',
-        target_distance_km: week % 2 === 0 ? 10 : 8,
-        target_pace_min: '5:50 - 6:10',
-        description: 'Ugens hyggelige langtur i afslappet tempo.',
+        target_distance_km: Math.round((8 + (week * 2)) * baseMult),
+        target_pace_min: coachLevel === 'beginner' ? '6:10 - 6:40' : coachLevel === 'advanced' ? '5:10 - 5:35' : '5:45 - 6:10',
+        description: `Ugens vigtigste pas med fokus på ${coachGoal}.`,
         scheduled_date: sunDate,
         completed: false,
         status: 'pending',
@@ -308,129 +341,9 @@ export default function App() {
 
     if (!error) {
       setPlanMode('maintenance');
+      setShowCoachWizard(false);
       setSelectedWeek(1);
       await loadWorkouts();
-    }
-    setLoading(false);
-  };
-
-  const generateMultiWeekPlan = async (goalKm: number, totalWeeks: number = 8) => {
-    if (!user) return;
-    setLoading(true);
-
-    await supabase.from('workouts').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-
-    const today = new Date();
-    const generatedWorkouts: any[] = [];
-
-    for (let week = 1; week <= totalWeeks; week++) {
-      const daysOffset = (week - 1) * 7;
-      const tuesDate = new Date(today.getTime() + (daysOffset + 2) * 86400000).toISOString().split('T')[0];
-      const thursDate = new Date(today.getTime() + (daysOffset + 4) * 86400000).toISOString().split('T')[0];
-      const friDate = new Date(today.getTime() + (daysOffset + 5) * 86400000).toISOString().split('T')[0];
-      const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
-
-      const isTaperWeek = week === totalWeeks;
-      const longRunKm = isTaperWeek ? Math.round(goalKm * 0.5) : Math.min(goalKm, Math.round(4 + (week * (goalKm - 4)) / (totalWeeks - 1)));
-      const easyRunKm = isTaperWeek ? 3 : Math.min(8, 3 + Math.floor(week / 2));
-
-      generatedWorkouts.push({
-        user_id: user.id,
-        week_number: week,
-        title: isTaperWeek ? 'Taper: Roligt afjog' : `Roligt Løb (Uge ${week})`,
-        category: 'running',
-        workout_type: 'Easy',
-        target_distance_km: easyRunKm,
-        target_pace_min: '5:45 - 6:00',
-        description: 'Snakketempo. Hold pulsen sikkert i Zone 2.',
-        scheduled_date: tuesDate,
-        completed: false,
-        status: 'pending',
-      });
-
-      generatedWorkouts.push({
-        user_id: user.id,
-        week_number: week,
-        title: isTaperWeek ? 'Taper: Korte vækninger' : `Intervaller (${3 + week}x400m)`,
-        category: 'running',
-        workout_type: 'Interval',
-        target_distance_km: Math.round(easyRunKm + 1.5),
-        target_pace_min: '4:40 - 4:55',
-        description: isTaperWeek ? '1 km opvarmning + 3x200m i måltempo.' : `1.5 km opvarmning + ${3 + week}x400m i Zone 4/5 m. 90s pause + afjog.`,
-        scheduled_date: thursDate,
-        completed: false,
-        status: 'pending',
-      });
-
-      generatedWorkouts.push({
-        user_id: user.id,
-        week_number: week,
-        title: `Løbe-stabilitet & Core`,
-        category: 'strength',
-        workout_type: 'Styrke',
-        target_distance_km: 0,
-        target_pace_min: '40 min',
-        description: 'Knæstabilitet, lægløft og baldeaktivering for bedre løbedynamik.',
-        scheduled_date: friDate,
-        completed: false,
-        status: 'pending',
-        exercises: [
-          { name: 'Bulgarian Split Squats', sets: '3 sæt x 10 reps', note: 'Enkeltbens-styrke' },
-          { name: 'Single-leg Calf Raises', sets: '3 sæt x 15 reps', note: 'Styrker akillessene og læg' },
-          { name: 'Planke m. skulder-taps', sets: '3 sæt x 45 sek', note: 'Core-stabilitet' },
-        ],
-      });
-
-      generatedWorkouts.push({
-        user_id: user.id,
-        week_number: week,
-        title: isTaperWeek ? `MÅLLØB: ${goalKm} KM RACE DAY` : `Ugens Langtur (${longRunKm} km)`,
-        category: 'running',
-        workout_type: isTaperWeek ? 'Race' : 'Long Run',
-        target_distance_km: isTaperWeek ? goalKm : longRunKm,
-        target_pace_min: '5:50 - 6:10',
-        description: isTaperWeek ? `I dag gælder det! Hold din planlagte pacing.` : `Ugens vigtigste udholdenhedspas. Bygger benenes styrke op.`,
-        scheduled_date: sunDate,
-        completed: false,
-        status: 'pending',
-      });
-    }
-
-    const { error } = await supabase.from('workouts').insert(generatedWorkouts);
-
-    if (!error) {
-      setPlanMode('race');
-      setSelectedWeek(1);
-      await loadWorkouts();
-    }
-    setLoading(false);
-  };
-
-  const handleCreateRaceEvent = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!user || !eventTitle || !eventDate) return;
-
-    setLoading(true);
-    const dist = parseFloat(eventDistance);
-
-    await supabase.from('race_events').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    await supabase.from('workouts').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-
-    const { error } = await supabase.from('race_events').insert([
-      {
-        user_id: user.id,
-        title: eventTitle,
-        event_date: eventDate,
-        target_distance_km: dist,
-      },
-    ]);
-
-    if (!error) {
-      await generateMultiWeekPlan(dist, 8);
-      setEventTitle('');
-      setEventDate('');
-      setShowEventForm(false);
-      await loadRaceEvents();
     }
     setLoading(false);
   };
@@ -891,95 +804,93 @@ export default function App() {
                 <div style={{ backgroundColor: '#121316', border: '1px solid #27272A', borderRadius: '16px', padding: '20px', marginBottom: '20px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                      <span style={{ fontSize: '11px', textTransform: 'uppercase', fontWeight: '800', color: planMode === 'maintenance' ? '#3B82F6' : '#10B981', letterSpacing: '1px' }}>
-                        {planMode === 'maintenance' ? 'Grundtræning' : 'Målløb'}
+                      <span style={{ fontSize: '11px', textTransform: 'uppercase', fontWeight: '800', color: '#10B981', letterSpacing: '1px' }}>
+                        Din Personlige Coach
                       </span>
                       <h2 style={{ margin: '4px 0 0 0', fontSize: '20px', fontWeight: '800', color: '#FFFFFF' }}>
-                        {planMode === 'maintenance'
-                          ? 'Hold i Form'
-                          : raceEvents.length > 0
-                          ? `${raceEvents[0].title}`
-                          : 'Målløb Forløb'}
+                        Skræddersyet Forløb
                       </h2>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button
-                        onClick={generateMaintenancePlan}
-                        style={{ backgroundColor: planMode === 'maintenance' ? '#27272A' : '#18191E', color: planMode === 'maintenance' ? '#FFFFFF' : '#9CA3AF', border: 'none', outline: 'none', padding: '8px 12px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}
-                      >
-                        Hold i Form
-                      </button>
-                      <button
-                        onClick={() => setShowEventForm(!showEventForm)}
-                        style={{ backgroundColor: planMode === 'race' ? '#27272A' : '#18191E', color: planMode === 'race' ? '#FFFFFF' : '#9CA3AF', border: 'none', outline: 'none', padding: '8px 12px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}
-                      >
-                        Målløb
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => setShowCoachWizard(!showCoachWizard)}
+                      style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '8px 14px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}
+                    >
+                      {workouts.length === 0 ? 'Start Coach' : 'Nyt Program'}
+                    </button>
                   </div>
 
-                  {showEventForm && (
-                    <form onSubmit={handleCreateRaceEvent} style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #27272A' }}>
+                  {/* COACH WIZARD MODAL / FORM */}
+                  {showCoachWizard && (
+                    <form onSubmit={generatePersonalizedCoachPlan} style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #27272A' }}>
+                      <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#FFF', marginBottom: '12px' }}>Få et program tilpasset dit unikke niveau</h3>
+                      
                       <div style={{ marginBottom: '12px' }}>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Navn på løb</label>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Dit Løbeniveau</label>
+                        <select
+                          value={coachLevel}
+                          onChange={(e: any) => setCoachLevel(e.target.value)}
+                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }}
+                        >
+                          <option value="beginner">Nybegynder / Let motionist</option>
+                          <option value="intermediate">Erfaren motionist (God grundform)</option>
+                          <option value="advanced">Avanceret løber (Høj intensitet)</option>
+                        </select>
+                      </div>
+
+                      <div style={{ marginBottom: '12px' }}>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Træningsdage pr. uge</label>
+                        <select
+                          value={coachDays}
+                          onChange={(e) => setCoachDays(parseInt(e.target.value))}
+                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }}
+                        >
+                          <option value="2">2 dage om ugen (Rolig opstart)</option>
+                          <option value="3">3 dage om ugen (Anbefalet)</option>
+                          <option value="4">4 dage om ugen (Ambitiøs)</option>
+                          <option value="5">5 dage om ugen (Intensiv)</option>
+                        </select>
+                      </div>
+
+                      <div style={{ marginBottom: '16px' }}>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Primært Fokus / Mål</label>
                         <input
                           type="text"
-                          placeholder="f.eks. Copenhagen Half Marathon"
-                          value={eventTitle}
-                          onChange={(e) => setEventTitle(e.target.value)}
+                          value={coachGoal}
+                          onChange={(e) => setCoachGoal(e.target.value)}
+                          placeholder="f.eks. Forbedre 10km tid / Blive skadesfri"
                           style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }}
                           required
                         />
                       </div>
-                      <div style={{ display: 'flex', gap: '10px', marginBottom: '14px' }}>
-                        <div style={{ flex: 1 }}>
-                          <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Dato</label>
-                          <input
-                            type="date"
-                            value={eventDate}
-                            onChange={(e) => setEventDate(e.target.value)}
-                            style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }}
-                            required
-                          />
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Distance</label>
-                          <select
-                            value={eventDistance}
-                            onChange={(e) => setEventDistance(e.target.value)}
-                            style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }}
-                          >
-                            <option value="5">5 km</option>
-                            <option value="10">10 km</option>
-                            <option value="21.1">Halvmaraton (21.1 km)</option>
-                            <option value="42.2">Maraton (42.2 km)</option>
-                          </select>
-                        </div>
+
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          type="submit"
+                          disabled={loading}
+                          style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
+                        >
+                          {loading ? 'Genererer program...' : 'Generer Personligt Program'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowCoachWizard(false)}
+                          style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', outline: 'none', padding: '12px 16px', borderRadius: '8px', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}
+                        >
+                          Annuller
+                        </button>
                       </div>
-                      <button
-                        type="submit"
-                        disabled={loading}
-                        style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
-                      >
-                        Generer Program
-                      </button>
                     </form>
                   )}
                 </div>
 
                 {workouts.length === 0 ? (
                   <div style={{ backgroundColor: '#121316', border: '1px solid #27272A', borderRadius: '16px', padding: '30px 20px', textAlign: 'center' }}>
-                    <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#FFFFFF' }}>Ingen aktiv træningsplan</h3>
-                    <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Vælg en tilstand for at generere dit træningsforløb.</p>
-                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                      <button onClick={generateMaintenancePlan} disabled={loading} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', outline: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>
-                        Hold i Form
-                      </button>
-                      <button onClick={() => setShowEventForm(true)} disabled={loading} style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: '800', cursor: 'pointer' }}>
-                        Sæt Målløb
-                      </button>
-                    </div>
+                    <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#FFFFFF' }}>Ingen aktiv træningsplan endnu</h3>
+                    <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Tryk ovenfor for at starte din personlige træner-samtale.</p>
+                    <button onClick={() => setShowCoachWizard(true)} style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '12px 20px', borderRadius: '8px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>
+                      Start Coach Oplevelse
+                    </button>
                   </div>
                 ) : (
                   <div>
