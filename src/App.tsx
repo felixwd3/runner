@@ -85,7 +85,6 @@ export default function App() {
   const [coachLevel, setCoachLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('intermediate');
   const [coachDays, setCoachDays] = useState<number>(4);
   const [coachGoal, setCoachGoal] = useState<string>('Grundform & generel udholdenhed');
-  const [isInfinitePlan, setIsInfinitePlan] = useState<boolean>(true);
   const [aiMessage, setAiMessage] = useState<string>('');
 
   // Race Event State
@@ -250,7 +249,7 @@ export default function App() {
     }
   };
 
-  // GENERATE INFINITE 4-WEEK ROTATING & VARYING CYCLE
+  // GENERATE INFINITE 4-WEEK ROTATING CYCLE (12 uger frem i tiden som udgangspunkt)
   const generatePersonalizedCoachPlan = async (e: FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -263,7 +262,7 @@ export default function App() {
     const today = new Date();
     const generatedWorkouts: any[] = [];
     const baseMult = coachLevel === 'beginner' ? 0.8 : coachLevel === 'advanced' ? 1.3 : 1.0;
-    const totalWeeksToGenerate = isInfinitePlan ? 12 : 4; // Generer 12 uger for rullende forløb, eller 4 faste
+    const totalWeeksToGenerate = 12; // 12 ugers rullende horisont
 
     for (let week = 1; week <= totalWeeksToGenerate; week++) {
       const daysOffset = (week - 1) * 7;
@@ -273,9 +272,9 @@ export default function App() {
       const satDate = new Date(today.getTime() + (daysOffset + 6) * 86400000).toISOString().split('T')[0];
       const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
 
-      // Cirkulær cyklus-fase (1 til 4, gentager sig i det uendelige)
+      // Cirkulær cyklus-fase (1 til 4, gentager sig uendeligt)
       const cyclePhase = ((week - 1) % 4) + 1;
-      const cycleMultiplier = 1 + Math.floor((week - 1) / 4) * 0.1; // Lille progressivt ryk hver 4. uge
+      const cycleMultiplier = 1 + Math.floor((week - 1) / 4) * 0.1;
 
       let weekTitle = 'Aerob Base & Udholdenhed';
       let runType = 'Easy';
@@ -286,7 +285,7 @@ export default function App() {
         weekTitle = 'Dynamisk Fartleg & Tempo';
         runType = 'Interval';
         dist = Math.round(6 * baseMult * cycleMultiplier);
-        desc = 'Skift mellemfriske tempozoner og jog.';
+        desc = 'Skift mellem friske tempozoner og jog.';
       } else if (cyclePhase === 3) {
         weekTitle = 'Udvidet Volumen & Styrke';
         runType = 'Long Run';
@@ -341,7 +340,7 @@ export default function App() {
           workout_type: 'Styrke',
           target_distance_km: 0,
           target_pace_min: '35 min',
-          description: 'Styrk hofter, akillessener og core for skadesfri løb.',
+          description: 'Styrk hofter, akillessener og core for skadesfrit løb.',
           scheduled_date: friDate,
           completed: false,
           status: 'pending',
@@ -407,31 +406,13 @@ export default function App() {
       setPlanMode('coach');
       setShowCoachWizard(false);
       setSelectedWeek(1);
-      setAiMessage('🤖 AI Coach: Dit rullende forløb er oprettet! Programmet varierer automatisk uge for uge.');
+      setAiMessage('🤖 AI Coach: Dit rullende forløb er aktivt! Ugerne tilpasser sig automatisk i en uendelig cyklus.');
       await loadWorkouts();
     }
     setLoading(false);
   };
 
-  // AI OPTIMIZE / ANALYZE CURRENT PROGRESS
-  const handleAiOptimize = () => {
-    setLoading(true);
-    setTimeout(() => {
-      const completedCount = workouts.filter(w => w.completed).length;
-      const totalCount = workouts.length;
-      const ratio = totalCount > 0 ? completedCount / totalCount : 0;
-
-      if (ratio > 0.8) {
-        setAiMessage('🤖 AI Coach: Flot gennemførelse! Du holder dine zoner perfekt. Næste uges intensitet er holdt i stabil fremgang.');
-      } else if (ratio < 0.4 && completedCount > 0) {
-        setAiMessage('🤖 AI Coach: Jeg kan se, der har været travlt. Jeg har automatisk dæmpet tempoet på dine kommende restitutionsture, så du kan komme med på vognen uden overbelastning.');
-      } else {
-        setAiMessage('🤖 AI Coach: Godt flow i din træning! Din 4-ugers cyklus roterer som planlagt med skiftende variation.');
-      }
-      setLoading(false);
-    }, 800);
-  };
-
+  // RACE EVENT DYNAMIC BACKWARD CALCULATION FROM TODAY TO TARGET DATE
   const handleCreateRaceEvent = async (e: FormEvent) => {
     e.preventDefault();
     if (!user || !eventTitle || !eventDate) return;
@@ -453,18 +434,24 @@ export default function App() {
 
     if (!error) {
       const today = new Date();
-      const generatedWorkouts: any[] = [];
-      const totalWeeks = 8;
+      const targetDate = new Date(eventDate);
+      const diffTime = targetDate.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      // Beregn præcist antal uger frem til datoen (minimum 4 uger, maksimum 26 uger)
+      const calculatedWeeks = Math.max(4, Math.min(26, Math.floor(diffDays / 7)));
 
-      for (let week = 1; week <= totalWeeks; week++) {
+      const generatedWorkouts: any[] = [];
+
+      for (let week = 1; week <= calculatedWeeks; week++) {
         const daysOffset = (week - 1) * 7;
         const tuesDate = new Date(today.getTime() + (daysOffset + 2) * 86400000).toISOString().split('T')[0];
         const thursDate = new Date(today.getTime() + (daysOffset + 4) * 86400000).toISOString().split('T')[0];
         const friDate = new Date(today.getTime() + (daysOffset + 5) * 86400000).toISOString().split('T')[0];
         const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
 
-        const isTaperWeek = week === totalWeeks;
-        const longRunKm = isTaperWeek ? Math.round(dist * 0.5) : Math.min(dist, Math.round(4 + (week * (dist - 4)) / (totalWeeks - 1)));
+        const isTaperWeek = week === calculatedWeeks;
+        const longRunKm = isTaperWeek ? Math.round(dist * 0.5) : Math.min(dist, Math.round(4 + (week * (dist - 4)) / (calculatedWeeks - 1)));
 
         generatedWorkouts.push({
           user_id: user.id,
@@ -553,6 +540,24 @@ export default function App() {
       await loadRaceEvents();
     }
     setLoading(false);
+  };
+
+  const handleAiOptimize = () => {
+    setLoading(true);
+    setTimeout(() => {
+      const completedCount = workouts.filter(w => w.completed).length;
+      const totalCount = workouts.length;
+      const ratio = totalCount > 0 ? completedCount / totalCount : 0;
+
+      if (ratio > 0.8) {
+        setAiMessage('🤖 AI Coach: Flot gennemførelse! Du holder dine zoner perfekt. Næste uges intensitet er holdt i stabil fremgang.');
+      } else if (ratio < 0.4 && completedCount > 0) {
+        setAiMessage('🤖 AI Coach: Jeg kan se, der har været travlt. Jeg har automatisk dæmpet tempoet på dine kommende restitutionsture.');
+      } else {
+        setAiMessage('🤖 AI Coach: Godt flow i din træning! Din 4-ugers cyklus roterer som planlagt.');
+      }
+      setLoading(false);
+    }, 800);
   };
 
   const handleAddWaypoint = async (newPt: [number, number]) => {
@@ -860,7 +865,7 @@ export default function App() {
     <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#F3F4F6', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '580px', margin: '0 auto', padding: '16px' }}>
         
-        {/* APP HEADER MED DET NYE LOGO */}
+        {/* APP HEADER MED LOGO */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingTop: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <img src="/logo.png" alt="Runner Logo" style={{ height: '54px', width: 'auto', objectFit: 'contain' }} />
@@ -1051,7 +1056,7 @@ export default function App() {
                     </button>
                   )}
 
-                  {/* COACH WIZARD FORM MED UENDELIG CYKLUS */}
+                  {/* COACH WIZARD FORM (UDEN UGESKIFT-FELT) */}
                   {showCoachWizard && (
                     <form onSubmit={generatePersonalizedCoachPlan} style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #27272A' }}>
                       <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '10px' }}>Opsæt AI Træner (Rullende Forløb)</h3>
@@ -1082,18 +1087,6 @@ export default function App() {
                         </select>
                       </div>
 
-                      <div style={{ marginBottom: '10px' }}>
-                        <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Forløb Type</label>
-                        <select
-                          value={isInfinitePlan ? 'infinite' : 'fixed'}
-                          onChange={(e) => setIsInfinitePlan(e.target.value === 'infinite')}
-                          style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }}
-                        >
-                          <option value="infinite">Rullende forløb (Uendelig 4-ugers cyklus)</option>
-                          <option value="fixed">Fast 4-ugers plan</option>
-                        </select>
-                      </div>
-
                       <div style={{ marginBottom: '14px' }}>
                         <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Primært Fokus</label>
                         <select
@@ -1119,16 +1112,16 @@ export default function App() {
                     </form>
                   )}
 
-                  {/* RACE EVENT FORM */}
+                  {/* RACE EVENT FORM (MED AUTOMATISK UGEDATOFRAKOBLING FRA DAGS DATO) */}
                   {showEventForm && (
                     <form onSubmit={handleCreateRaceEvent} style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #27272A' }}>
-                      <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '10px' }}>Træn til et specifikt løb</h3>
+                      <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '10px' }}>Træn mod målløb (Fra i dag til dato)</h3>
                       
                       <div style={{ marginBottom: '10px' }}>
                         <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Navn på løb</label>
                         <input
                           type="text"
-                          placeholder="f.eks. CPH Half"
+                          placeholder="f.eks. Juleløb / Forårsmaraton"
                           value={eventTitle}
                           onChange={(e) => setEventTitle(e.target.value)}
                           style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }}
@@ -1138,7 +1131,7 @@ export default function App() {
 
                       <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
                         <div style={{ flex: 1 }}>
-                          <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Dato</label>
+                          <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Måldato</label>
                           <input
                             type="date"
                             value={eventDate}
@@ -1164,7 +1157,7 @@ export default function App() {
 
                       <div style={{ display: 'flex', gap: '8px' }}>
                         <button type="submit" disabled={loading} style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '10px', borderRadius: '6px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>
-                          {loading ? 'Genererer...' : 'Start Løbsprogram'}
+                          {loading ? 'Beregner uger...' : 'Start Målløbsprogram'}
                         </button>
                         <button type="button" onClick={() => setShowEventForm(false)} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', padding: '10px 14px', borderRadius: '6px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>
                           Luk
@@ -1181,7 +1174,7 @@ export default function App() {
                   </div>
                 ) : (
                   <div>
-                    {/* WEEK NAVIGATION & PROGRESS */}
+                    {/* WEEK NAVIGATION & OVERSIGT OVER KOMMENDE UGER */}
                     <div style={{ backgroundColor: '#121316', border: '1px solid #27272A', borderRadius: '16px', padding: '16px', marginBottom: '16px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                         <button
@@ -1206,6 +1199,29 @@ export default function App() {
                         >
                           ›
                         </button>
+                      </div>
+
+                      {/* HURTIG UGE-OVERSIKT (Viser de kommende uger som klikbare knapper) */}
+                      <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '4px', marginBottom: '12px' }}>
+                        {Array.from({ length: Math.min(maxWeekInPlan, 6) }, (_, i) => i + 1).map((wNum) => (
+                          <button
+                            key={wNum}
+                            onClick={() => setSelectedWeek(wNum)}
+                            style={{
+                              backgroundColor: selectedWeek === wNum ? '#10B981' : '#18191E',
+                              color: selectedWeek === wNum ? '#090A0C' : '#9CA3AF',
+                              border: 'none',
+                              padding: '6px 10px',
+                              borderRadius: '6px',
+                              fontSize: '11px',
+                              fontWeight: '800',
+                              cursor: 'pointer',
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            Uge {wNum}
+                          </button>
+                        ))}
                       </div>
 
                       <div style={{ backgroundColor: '#18191E', height: '6px', borderRadius: '3px', overflow: 'hidden' }}>
@@ -1538,7 +1554,7 @@ export default function App() {
             )}
 
             <button
-              onClick={() => toggleWorkoutCompleted(selectedWorkoutModal.selectedWorkoutModalId || selectedWorkoutModal.id, selectedWorkoutModal.completed)}
+              onClick={() => toggleWorkoutCompleted(selectedWorkoutModal.id, selectedWorkoutModal.completed)}
               style={{ width: '100%', backgroundColor: selectedWorkoutModal.completed ? '#27272A' : '#10B981', color: selectedWorkoutModal.completed ? '#FFF' : '#090A0C', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
             >
               {selectedWorkoutModal.completed ? 'Nulstil status' : 'Marker som gennemført'}
