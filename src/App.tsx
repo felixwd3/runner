@@ -76,10 +76,9 @@ export default function App() {
   const [authError, setAuthError] = useState('');
 
   const [selectedWorkoutModal, setSelectedWorkoutModal] = useState<any>(null);
-  const [planFilter, setPlanFilter] = useState<'all' | 'running' | 'strength'>('all');
   const [planMode, setPlanMode] = useState<'coach' | 'race'>('coach');
 
-  // Multi-step Onboarding Wizard State (Ligesom på dine billeder)
+  // Multi-step Onboarding Wizard State
   const [showCoachWizard, setShowCoachWizard] = useState(false);
   const [wizardStep, setWizardStep] = useState<number>(1);
   const [coachLevel, setCoachLevel] = useState<'Beginner' | 'Intermediate' | 'Advanced' | 'Elite'>('Intermediate');
@@ -128,7 +127,6 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Timer effect for workouts modal
   useEffect(() => {
     let interval: any = null;
     if (isTimerRunning && timerSeconds !== null && timerSeconds > 0) {
@@ -167,11 +165,7 @@ export default function App() {
   };
 
   const loadSavedActivities = async () => {
-    const { data, error } = await supabase
-      .from('activities')
-      .select('*')
-      .order('start_time', { ascending: false });
-
+    const { data, error } = await supabase.from('activities').select('*').order('start_time', { ascending: false });
     if (!error && data) {
       setActivities(data);
       const firstWithRoute = data.find((a) => a.route_coordinates && a.route_coordinates.length > 0);
@@ -180,29 +174,17 @@ export default function App() {
   };
 
   const loadWorkouts = async () => {
-    const { data, error } = await supabase
-      .from('workouts')
-      .select('*')
-      .order('scheduled_date', { ascending: true });
-
+    const { data, error } = await supabase.from('workouts').select('*').order('scheduled_date', { ascending: true });
     if (!error && data) setWorkouts(data);
   };
 
   const loadSavedRoutes = async () => {
-    const { data, error } = await supabase
-      .from('routes')
-      .select('*')
-      .order('created_at', { ascending: false });
-
+    const { data, error } = await supabase.from('routes').select('*').order('created_at', { ascending: false });
     if (!error && data) setSavedRoutes(data);
   };
 
   const loadRaceEvents = async () => {
-    const { data, error } = await supabase
-      .from('race_events')
-      .select('*')
-      .order('event_date', { ascending: true });
-
+    const { data, error } = await supabase.from('race_events').select('*').order('event_date', { ascending: true });
     if (!error && data) {
       setRaceEvents(data);
       if (data.length > 0) setPlanMode('race');
@@ -211,11 +193,7 @@ export default function App() {
 
   const toggleWorkoutCompleted = async (workoutId: string, currentStatus: boolean, e?: MouseEvent) => {
     if (e) e.stopPropagation();
-    const { error } = await supabase
-      .from('workouts')
-      .update({ completed: !currentStatus, status: !currentStatus ? 'completed' : 'pending' })
-      .eq('id', workoutId);
-
+    const { error } = await supabase.from('workouts').update({ completed: !currentStatus, status: !currentStatus ? 'completed' : 'pending' }).eq('id', workoutId);
     if (!error) {
       loadWorkouts();
       if (selectedWorkoutModal && selectedWorkoutModal.id === workoutId) {
@@ -228,29 +206,19 @@ export default function App() {
     if (e) e.stopPropagation();
     const curr = new Date(currentDateStr);
     const nextDay = new Date(curr.getTime() + 86400000).toISOString().split('T')[0];
-
-    const { error } = await supabase
-      .from('workouts')
-      .update({ scheduled_date: nextDay })
-      .eq('id', workoutId);
-
+    const { error } = await supabase.from('workouts').update({ scheduled_date: nextDay }).eq('id', workoutId);
     if (!error) loadWorkouts();
   };
 
   const deleteWorkout = async (workoutId: string, e?: MouseEvent) => {
     if (e) e.stopPropagation();
-    const { error } = await supabase
-      .from('workouts')
-      .delete()
-      .eq('id', workoutId);
-
+    const { error } = await supabase.from('workouts').delete().eq('id', workoutId);
     if (!error) {
       loadWorkouts();
       if (selectedWorkoutModal?.id === workoutId) setSelectedWorkoutModal(null);
     }
   };
 
-  // GENERATE ONBOARDING COACH PLAN
   const generatePersonalizedCoachPlan = async () => {
     if (!user) return;
     setLoading(true);
@@ -283,7 +251,7 @@ export default function App() {
         weekTitle = 'Fast Interval & Tempo';
         runType = 'Interval';
         dist = Math.round(6 * baseMult * cycleMultiplier * 10) / 10;
-        desc = 'Skift mellem raske tempozoner og jog.';
+        desc = 'Skift mellem friske tempozoner og jog.';
       } else if (cyclePhase === 3) {
         weekTitle = 'Long Run';
         runType = 'Long Run';
@@ -296,7 +264,6 @@ export default function App() {
         desc = 'Rolig restitutionstur.';
       }
 
-      // Pas 1: Løb (Tirsdag)
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
@@ -311,7 +278,6 @@ export default function App() {
         status: 'pending',
       });
 
-      // Pas 2: Interval (Torsdag)
       if (coachDays >= 3) {
         generatedWorkouts.push({
           user_id: user.id,
@@ -328,7 +294,6 @@ export default function App() {
         });
       }
 
-      // Pas 3: Styrke (Fredag)
       if (coachDays >= 3) {
         generatedWorkouts.push({
           user_id: user.id,
@@ -350,7 +315,6 @@ export default function App() {
         });
       }
 
-      // Pas 4: Let løb (Lørdag, hvis 5+ dage)
       if (coachDays >= 5) {
         generatedWorkouts.push({
           user_id: user.id,
@@ -367,14 +331,13 @@ export default function App() {
         });
       }
 
-      // Pas 5: Langtur (Søndag)
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
-        title: '7.5Km Long Run',
+        title: `${7.5 + (week * 0.5)}Km Long Run`,
         category: 'running',
         workout_type: 'Long Run',
-        target_distance_km: 7.5,
+        target_distance_km: Math.round((7.5 + (week * 0.5)) * 10) / 10,
         target_pace_min: '5:30 - 6:00',
         description: `Træning mod ${coachDistance} mål.`,
         scheduled_date: sunDate,
@@ -389,26 +352,19 @@ export default function App() {
       setPlanMode('coach');
       setShowCoachWizard(false);
       setWizardStep(1);
-      setAiMessage('🤖 AI Coach: Dit personlige forløb er oprettet! Se din kalendervisning nedenfor.');
+      setAiMessage('🤖 AI Coach: Dit personlige forløb er oprettet med progressiv stigning!');
       await loadWorkouts();
     }
     setLoading(false);
   };
 
-  const handleAiOptimize = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setAiMessage('🤖 AI Coach: Din træningskalender er analyseret. Pulszonerne er optimeret til dit niveau!');
-      setLoading(false);
-    }, 800);
-  };
-
+  // PROGRESSIV MÅLLØB-GENERERING MED TAPERING (NY OG FORBEDRET)
   const handleCreateRaceEvent = async (e: FormEvent) => {
     e.preventDefault();
     if (!user || !eventTitle || !eventDate) return;
 
     setLoading(true);
-    const dist = parseFloat(eventDistance);
+    const targetGoalDistance = parseFloat(eventDistance);
 
     await supabase.from('race_events').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await supabase.from('workouts').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -418,7 +374,7 @@ export default function App() {
         user_id: user.id,
         title: eventTitle,
         event_date: eventDate,
-        target_distance_km: dist,
+        target_distance_km: targetGoalDistance,
       },
     ]);
 
@@ -430,21 +386,97 @@ export default function App() {
       const calculatedWeeks = Math.max(4, Math.min(26, Math.floor(diffDays / 7)));
 
       const generatedWorkouts: any[] = [];
+
       for (let week = 1; week <= calculatedWeeks; week++) {
         const daysOffset = (week - 1) * 7;
         const tuesDate = new Date(today.getTime() + (daysOffset + 2) * 86400000).toISOString().split('T')[0];
         const thursDate = new Date(today.getTime() + (daysOffset + 4) * 86400000).toISOString().split('T')[0];
+        const friDate = new Date(today.getTime() + (daysOffset + 5) * 86400000).toISOString().split('T')[0];
         const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
 
+        const isLastWeek = week === calculatedWeeks;
+        const isSecondLastWeek = week === calculatedWeeks - 1;
+
+        // Progressiv opbygning af langtur, der topper før de sidste ugers tapering
+        let longRunKm = Math.min(targetGoalDistance * 1.1, 5 + (week * 1.2));
+        let weekTitle = `Ugens Langtur (${week})`
+        let workoutType = 'Long Run';
+        let desc = 'Stabil opbygning af udholdenhed mod målet.';
+
+        if (isSecondLastWeek) {
+          // Nedtrapping start (tapering uge 1)
+          longRunKm = Math.round(targetGoalDistance * 0.6);
+          weekTitle = 'Tapering: Reduceret langtur';
+          desc = 'Kroppen begynder at restituere og absorbere formen.';
+        } else if (isLastWeek) {
+          // RACE WEEK
+          longRunKm = targetGoalDistance;
+          weekTitle = `RACE DAY: ${eventTitle}`;
+          workoutType = 'Race';
+          desc = 'I dag gælder det! God tur ud på ruten.';
+        }
+
+        // Tirsdag: Roligt løb med progressiv længde
         generatedWorkouts.push({
           user_id: user.id,
           week_number: week,
-          title: `Race Prep (${eventTitle})`,
+          title: isLastWeek ? 'Let opvarmning før løb' : `Base Løb (Uge ${week})`,
           category: 'running',
-          workout_type: 'Easy',
-          target_distance_km: dist,
+          workout_type: isLastWeek ? 'Easy' : 'Easy',
+          target_distance_km: isLastWeek ? 4 : Math.min(10, 5 + Math.floor(week * 0.3)),
           target_pace_min: '5:30 - 6:00',
-          description: 'Målrettet træning frem mod løbet.',
+          description: 'Roligt opsamlingstempo.',
+          scheduled_date: tuesDate,
+          completed: false,
+          status: 'pending',
+        });
+
+        // Torsdag: Intervaller / Tærskel
+        generatedWorkouts.push({
+          user_id: user.id,
+          week_number: week,
+          title: isLastWeek ? 'Sidste korte aktivering' : `Tærskel & Intervaller (${week})`,
+          category: 'running',
+          workout_type: 'Interval',
+          target_distance_km: isLastWeek ? 3 : Math.min(12, 6 + Math.floor(week * 0.4)),
+          target_pace_min: '4:45 - 5:00',
+          description: isLastWeek ? 'Korte strides for at holde gang i benene.' : 'Intervaller med fokus på race-pace.',
+          scheduled_date: thursDate,
+          completed: false,
+          status: 'pending',
+        });
+
+        // Fredag: Styrke
+        if (!isLastWeek) {
+          generatedWorkouts.push({
+            user_id: user.id,
+            week_number: week,
+            title: 'Skadesforebyggende Styrke',
+            category: 'strength',
+            workout_type: 'Styrke',
+            target_distance_km: 0,
+            target_pace_min: '35m',
+            description: 'Styrk hofter og core.',
+            scheduled_date: friDate,
+            completed: false,
+            status: 'pending',
+            exercises: [
+              { name: 'Bulgarian Split Squats', sets: '3 sæt x 10 reps', note: 'Stabilitet', guide: 'Fod på bænk bag dig.' },
+              { name: 'Single-leg Calf Raises', sets: '3 sæt x 15 reps', note: 'Akillessene', guide: 'Sænk hælen helt ned.' },
+            ],
+          });
+        }
+
+        // Søndag: Langtur eller Race Day
+        generatedWorkouts.push({
+          user_id: user.id,
+          week_number: week,
+          title: weekTitle,
+          category: 'running',
+          workout_type: workoutType,
+          target_distance_km: Math.round(longRunKm * 10) / 10,
+          target_pace_min: isLastWeek ? 'Efter evne' : '5:15 - 5:45',
+          description: desc,
           scheduled_date: sunDate,
           completed: false,
           status: 'pending',
@@ -462,21 +494,26 @@ export default function App() {
     setLoading(false);
   };
 
+  const handleAiOptimize = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setAiMessage('🤖 AI Coach: Målløbsprogrammet er opdateret med progressiv kurve og nedtrapping!');
+      setLoading(false);
+    }, 800);
+  };
+
   const handleAddWaypoint = async (newPt: [number, number]) => {
     const newWaypoints = [...builderWaypoints, newPt];
     setBuilderWaypoints(newWaypoints);
-
     if (newWaypoints.length === 1) {
       setBuilderPath([newPt]);
       return;
     }
-
     setLoading(true);
     try {
       const waypointsString = newWaypoints.map((pt) => `${pt[1]},${pt[0]}`).join(';');
       const response = await fetch(`https://router.project-osrm.org/route/v1/foot/${waypointsString}?overview=full&geometries=geojson`);
       const data = await response.json();
-
       if (data.routes && data.routes[0]) {
         const routedCoordinates: [number, number][] = data.routes[0].geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]]);
         setBuilderPath(routedCoordinates);
@@ -507,7 +544,6 @@ export default function App() {
     setBuilderWaypoints(newWaypoints);
     if (newWaypoints.length <= 1) {
       setBuilderPath(newWaypoints);
-      return;
     }
   };
 
@@ -515,14 +551,12 @@ export default function App() {
     if (!user || builderPath.length < 2 || !routeTitle) return;
     setLoading(true);
     const distMeters = calculateBuilderDistance();
-
     const { error } = await supabase.from('routes').insert([{
       user_id: user.id,
       title: routeTitle,
       distance_meters: distMeters,
       coordinates: builderPath,
     }]);
-
     if (!error) {
       setRouteTitle('');
       setBuilderWaypoints([]);
@@ -537,7 +571,6 @@ export default function App() {
     let gpxString = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Runner App">\n  <trk>\n    <name>${routeTitle || 'Egen Løberute'}</name>\n    <trkseg>\n`;
     builderPath.forEach(([lat, lng]) => { gpxString += `      <trkpt lat="${lat}" lon="${lng}"></trkpt>\n`; });
     gpxString += `    </trkseg>\n  </trk>\n</gpx>`;
-
     const blob = new Blob([gpxString], { type: 'application/gpx+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -550,7 +583,6 @@ export default function App() {
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
-
     setLoading(true);
     const reader = new FileReader();
     reader.onload = async (event) => {
@@ -558,26 +590,22 @@ export default function App() {
         const gpxText = event.target?.result as string;
         const gpx = new GPXParser();
         gpx.parse(gpxText);
-
         const track = gpx.tracks[0];
         if (!track) {
           alert('Ingen gyldige spor fundet.');
           setLoading(false);
           return;
         }
-
         const distanceMeters = Math.round(track.distance.total);
         const distanceInKm = distanceMeters / 1000;
         let durationSeconds = 0;
         let startTime = new Date().toISOString();
-
         if (track.points.length > 1) {
           const startPointTime = new Date((track.points[0] as any).time).getTime();
           const endPointTime = new Date((track.points[track.points.length - 1] as any).time).getTime();
           durationSeconds = Math.round((endPointTime - startPointTime) / 1000);
           startTime = new Date(startPointTime).toISOString();
         }
-
         const avgPaceSec = distanceInKm > 0 ? Math.round(durationSeconds / distanceInKm) : 0;
         const routeCoords = track.points.map((p: any) => ({ lat: p.lat, lng: p.lon, ele: p.ele, time: p.time }));
         const runTitle = track.name || file.name.replace('.gpx', '') || 'Løbetur (GPX)';
@@ -628,6 +656,7 @@ export default function App() {
       case 'Interval': return { bg: '#27272A', color: '#EF4444', border: '#EF4444', label: 'INTERVAL' };
       case 'Easy': return { bg: '#27272A', color: '#10B981', border: '#10B981', label: 'EASY RUN' };
       case 'Long Run': return { bg: '#27272A', color: '#3B82F6', border: '#3B82F6', label: 'LONG RUN' };
+      case 'Race': return { bg: '#27272A', color: '#F59E0B', border: '#F59E0B', label: 'RACE DAY' };
       case 'Styrke': return { bg: '#27272A', color: '#A855F7', border: '#A855F7', label: 'STYRKE' };
       default: return { bg: '#27272A', color: '#9CA3AF', border: '#9CA3AF', label: 'TRÆNING' };
     }
@@ -694,7 +723,7 @@ export default function App() {
             {/* TAB 1: KALENDER & PLAN */}
             {activeTab === 'plan' && (
               <div>
-                {/* HERO CARD & ONBOARDING TRIGGER */}
+                {/* HERO CARD & ONBOARDING / RACE TRIGGERS */}
                 <div style={{ backgroundColor: '#121316', border: '1px solid #27272A', borderRadius: '16px', padding: '20px', marginBottom: '20px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                     <div>
@@ -702,13 +731,16 @@ export default function App() {
                         Træningskalender
                       </span>
                       <h2 style={{ margin: '4px 0 0 0', fontSize: '18px', fontWeight: '800', color: '#FFFFFF' }}>
-                        {workouts.length === 0 ? 'Ingen aktiv plan' : `Mål: ${coachDistance} (${coachWeeks} uger)`}
+                        {workouts.length === 0 ? 'Ingen aktiv plan' : planMode === 'race' && raceEvents.length > 0 ? `Mål: ${raceEvents[0].title}` : `Coach: ${coachDistance}`}
                       </h2>
                     </div>
 
                     <div style={{ display: 'flex', gap: '6px' }}>
-                      <button onClick={() => { setShowCoachWizard(true); setShowEventForm(false); setWizardStep(1); }} style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '6px 12px', borderRadius: '6px', fontWeight: '800', fontSize: '11px', cursor: 'pointer' }}>
+                      <button onClick={() => { setShowCoachWizard(true); setShowEventForm(false); setWizardStep(1); }} style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', outline: 'none', padding: '6px 10px', borderRadius: '6px', fontWeight: '800', fontSize: '11px', cursor: 'pointer' }}>
                         Byg Forløb
+                      </button>
+                      <button onClick={() => { setShowEventForm(true); setShowCoachWizard(false); }} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', outline: 'none', padding: '6px 10px', borderRadius: '6px', fontWeight: '700', fontSize: '11px', cursor: 'pointer' }}>
+                        Målløb
                       </button>
                     </div>
                   </div>
@@ -720,13 +752,42 @@ export default function App() {
                       {loading ? 'Optimerer...' : '🧠 AI Kalender Optimering'}
                     </button>
                   )}
+
+                  {/* MÅLLØB FORM (MED PROGRESSIV OPBYGNING OG TAPERING) */}
+                  {showEventForm && (
+                    <form onSubmit={handleCreateRaceEvent} style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #27272A' }}>
+                      <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '10px' }}>Træn mod målløb (Progressivt med Tapering)</h3>
+                      <div style={{ marginBottom: '10px' }}>
+                        <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Navn på løb</label>
+                        <input type="text" placeholder="f.eks. Forårsmaraton" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                        <div style={{ flex: 1 }}>
+                          <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Måldato</label>
+                          <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Distance</label>
+                          <select value={eventDistance} onChange={(e) => setEventDistance(e.target.value)} style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #27272A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }}>
+                            <option value="5">5 km</option>
+                            <option value="10">10 km</option>
+                            <option value="21.1">Halvmaraton</option>
+                            <option value="42.2">Maraton</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button type="submit" disabled={loading} style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '10px', borderRadius: '6px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>{loading ? 'Genererer...' : 'Start Målløbsprogram'}</button>
+                        <button type="button" onClick={() => setShowEventForm(false)} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', padding: '10px 14px', borderRadius: '6px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>Luk</button>
+                      </div>
+                    </form>
+                  )}
                 </div>
 
-                {/* MULTI-STEP WIZARD MODAL (LIGESOM PÅ BILLEDE 1 & 2) */}
+                {/* MULTI-STEP WIZARD MODAL */}
                 {showCoachWizard && (
                   <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.85)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
                     <div style={{ backgroundColor: '#121316', border: '1px solid #27272A', borderRadius: '20px', maxWidth: '420px', width: '100%', padding: '24px' }}>
-                      
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                         <span style={{ fontSize: '12px', color: '#10B981', fontWeight: '800', textTransform: 'uppercase' }}>Trin {wizardStep} af 3</span>
                         <button onClick={() => setShowCoachWizard(false)} style={{ background: 'none', border: 'none', color: '#9CA3AF', fontSize: '16px', cursor: 'pointer' }}>✕</button>
@@ -736,27 +797,18 @@ export default function App() {
                         <div>
                           <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '8px' }}>Unlock Your Potential</h3>
                           <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>What's your running level?</p>
-                          
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '20px' }}>
                             {['Beginner', 'Intermediate', 'Advanced', 'Elite'].map((lvl) => (
-                              <button key={lvl} onClick={() => setCoachLevel(lvl as any)} style={{ padding: '14px', borderRadius: '10px', border: coachLevel === lvl ? '2px solid #10B981' : '1px solid #27272A', backgroundColor: coachLevel === lvl ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>
-                                {lvl}
-                              </button>
+                              <button key={lvl} onClick={() => setCoachLevel(lvl as any)} style={{ padding: '14px', borderRadius: '10px', border: coachLevel === lvl ? '2px solid #10B981' : '1px solid #27272A', backgroundColor: coachLevel === lvl ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{lvl}</button>
                             ))}
                           </div>
-
                           <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '8px' }}>What distance are you training for?</h4>
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '24px' }}>
                             {['5k', '10k', 'Half Marathon', 'Marathon'].map((dist) => (
-                              <button key={dist} onClick={() => setCoachDistance(dist)} style={{ padding: '12px', borderRadius: '10px', border: coachDistance === dist ? '2px solid #10B981' : '1px solid #27272A', backgroundColor: coachDistance === dist ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>
-                                {dist}
-                              </button>
+                              <button key={dist} onClick={() => setCoachDistance(dist)} style={{ padding: '12px', borderRadius: '10px', border: coachDistance === dist ? '2px solid #10B981' : '1px solid #27272A', backgroundColor: coachDistance === dist ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{dist}</button>
                             ))}
                           </div>
-
-                          <button onClick={() => setWizardStep(2)} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>
-                            Næste trin →
-                          </button>
+                          <button onClick={() => setWizardStep(2)} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
                         </div>
                       )}
 
@@ -764,24 +816,17 @@ export default function App() {
                         <div>
                           <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '8px' }}>Træningsmængde</h3>
                           <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Days per week can you train?</p>
-
                           <div style={{ display: 'flex', gap: '6px', marginBottom: '20px' }}>
                             {[2, 3, 4, 5, 6, 7].map((d) => (
-                              <button key={d} onClick={() => setCoachDays(d)} style={{ flex: 1, padding: '12px 0', borderRadius: '8px', border: coachDays === d ? '2px solid #10B981' : '1px solid #27272A', backgroundColor: coachDays === d ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>
-                                {d}
-                              </button>
+                              <button key={d} onClick={() => setCoachDays(d)} style={{ flex: 1, padding: '12px 0', borderRadius: '8px', border: coachDays === d ? '2px solid #10B981' : '1px solid #27272A', backgroundColor: coachDays === d ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{d}</button>
                             ))}
                           </div>
-
                           <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '8px' }}>How long do you want to train for?</h4>
                           <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
                             {[8, 10, 12].map((w) => (
-                              <button key={w} onClick={() => setCoachWeeks(w)} style={{ flex: 1, padding: '12px', borderRadius: '8px', border: coachWeeks === w ? '2px solid #10B981' : '1px solid #27272A', backgroundColor: coachWeeks === w ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>
-                                {w} uger
-                              </button>
+                              <button key={w} onClick={() => setCoachWeeks(w)} style={{ flex: 1, padding: '12px', borderRadius: '8px', border: coachWeeks === w ? '2px solid #10B981' : '1px solid #27272A', backgroundColor: coachWeeks === w ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{w} uger</button>
                             ))}
                           </div>
-
                           <div style={{ display: 'flex', gap: '8px' }}>
                             <button onClick={() => setWizardStep(1)} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', padding: '12px 16px', borderRadius: '10px', fontWeight: '700', cursor: 'pointer' }}>← Tilbage</button>
                             <button onClick={() => setWizardStep(3)} style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
@@ -793,22 +838,16 @@ export default function App() {
                         <div style={{ textAlign: 'center' }}>
                           <span style={{ fontSize: '12px', textTransform: 'uppercase', color: '#10B981', fontWeight: '800' }}>Klar til generering</span>
                           <h3 style={{ fontSize: '22px', fontWeight: '800', color: '#FFF', margin: '8px 0' }}>Estimated {coachDistance} time in {coachWeeks} weeks:</h3>
-                          
                           <div style={{ fontSize: '32px', fontWeight: '900', color: '#FFF', margin: '16px 0', backgroundColor: '#18191E', padding: '16px', borderRadius: '12px', border: '1px solid #27272A' }}>
                             {coachDistance === 'Marathon' ? '3:40 - 3:45' : coachDistance === 'Half Marathon' ? '1:42 - 1:48' : '44:30 - 46:00'}
                           </div>
-                          
-                          <p style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '24px' }}>Based on your current level and training availability. Let's build your personalized calendar!</p>
-
+                          <p style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '24px' }}>Based on your current level and training availability.</p>
                           <div style={{ display: 'flex', gap: '8px' }}>
                             <button onClick={() => setWizardStep(2)} style={{ backgroundColor: '#27272A', color: '#FFF', border: 'none', padding: '12px 16px', borderRadius: '10px', fontWeight: '700', cursor: 'pointer' }}>Tilbage</button>
-                            <button onClick={generatePersonalizedCoachPlan} disabled={loading} style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>
-                              {loading ? 'Genererer kalender...' : 'Build My Plan'}
-                            </button>
+                            <button onClick={generatePersonalizedCoachPlan} disabled={loading} style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>{loading ? 'Genererer...' : 'Build My Plan'}</button>
                           </div>
                         </div>
                       )}
-
                     </div>
                   </div>
                 )}
@@ -816,11 +855,11 @@ export default function App() {
                 {workouts.length === 0 ? (
                   <div style={{ backgroundColor: '#121316', border: '1px solid #27272A', borderRadius: '16px', padding: '30px 20px', textAlign: 'center' }}>
                     <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#FFFFFF' }}>Ingen aktiv kalender</h3>
-                    <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Tryk på "Byg Forløb" ovenfor for at oprette din skræddersyede kalender.</p>
+                    <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Tryk på "Byg Forløb" eller "Målløb" ovenfor for at oprette din kalender.</p>
                   </div>
                 ) : (
                   <div>
-                    {/* FULL-SCALE KALENDERVISNING (LIGESOM PÅ BILLEDE 2) */}
+                    {/* FULL-SCALE KALENDERVISNING */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                       {Array.from({ length: maxWeekInPlan }, (_, i) => i + 1).map((weekNum) => {
                         const weekWorkouts = workouts.filter(w => (w.week_number || 1) === weekNum);
@@ -828,21 +867,14 @@ export default function App() {
 
                         return (
                           <div key={weekNum} style={{ backgroundColor: '#121316', border: '1px solid #27272A', borderRadius: '16px', padding: '16px' }}>
-                            
-                            {/* UGEOVERSKRIFT MED TOTAL DISTANCE */}
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid #27272A', paddingBottom: '10px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <span style={{ backgroundColor: '#27272A', color: '#FFF', fontSize: '11px', fontWeight: '800', padding: '4px 8px', borderRadius: '6px' }}>
-                                  WEEK {weekNum}
-                               </span>
+                                <span style={{ backgroundColor: '#27272A', color: '#FFF', fontSize: '11px', fontWeight: '800', padding: '4px 8px', borderRadius: '6px' }}>WEEK {weekNum}</span>
                                 <span style={{ fontSize: '13px', color: '#9CA3AF', fontWeight: '600' }}>Uge {weekNum} af {maxWeekInPlan}</span>
                               </div>
-                              <div style={{ fontSize: '12px', color: '#10B981', fontWeight: '700' }}>
-                                Total: {weekTotalKm.toFixed(1)} km
-                              </div>
+                              <div style={{ fontSize: '12px', color: '#10B981', fontWeight: '700' }}>Total: {weekTotalKm.toFixed(1)} km</div>
                             </div>
 
-                            {/* UGEDAGE LISTE */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                               {weekWorkouts.map((w) => {
                                 const isCompleted = w.completed;
@@ -857,32 +889,19 @@ export default function App() {
                                     style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#18191E', border: `1px solid ${isCompleted ? '#10B981' : '#27272A'}`, borderRadius: '10px', padding: '12px 14px', cursor: 'pointer' }}
                                   >
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                      <div style={{ fontSize: '11px', fontWeight: '800', color: '#6B7280', width: '35px', textTransform: 'uppercase' }}>
-                                        {formattedDate.split(' ')[0]}
-                                      </div>
+                                      <div style={{ fontSize: '11px', fontWeight: '800', color: '#6B7280', width: '35px', textTransform: 'uppercase' }}>{formattedDate.split(' ')[0]}</div>
                                       <div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-                                          <span style={{ fontSize: '14px', fontWeight: '700', color: isCompleted ? '#6B7280' : '#FFF', textDecoration: isCompleted ? 'line-through' : 'none' }}>
-                                            {w.title}
-                                          </span>
+                                          <span style={{ fontSize: '14px', fontWeight: '700', color: isCompleted ? '#6B7280' : '#FFF', textDecoration: isCompleted ? 'line-through' : 'none' }}>{w.title}</span>
                                         </div>
-                                        <div style={{ fontSize: '11px', color: '#9CA3AF' }}>
-                                          {!isStrength ? `${w.target_distance_km}km • ${w.target_pace_min}` : `${w.target_pace_min} • Styrke`}
-                                        </div>
+                                        <div style={{ fontSize: '11px', color: '#9CA3AF' }}>{!isStrength ? `${w.target_distance_km}km • ${w.target_pace_min}` : `${w.target_pace_min} • Styrke`}</div>
                                       </div>
                                     </div>
-
-                                    <button
-                                      onClick={(e) => toggleWorkoutCompleted(w.id, isCompleted, e)}
-                                      style={{ width: '22px', height: '22px', borderRadius: '50%', border: isCompleted ? 'none' : '1px solid #3F3F46', backgroundColor: isCompleted ? '#10B981' : 'transparent', color: '#090A0C', fontWeight: '900', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                    >
-                                      {isCompleted ? '✓' : ''}
-                                    </button>
+                                    <button onClick={(e) => toggleWorkoutCompleted(w.id, isCompleted, e)} style={{ width: '22px', height: '22px', borderRadius: '50%', border: isCompleted ? 'none' : '1px solid #3F3F46', backgroundColor: isCompleted ? '#10B981' : 'transparent', color: '#090A0C', fontWeight: '900', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{isCompleted ? '✓' : ''}</button>
                                   </div>
                                 );
                               })}
                             </div>
-
                           </div>
                         );
                       })}
