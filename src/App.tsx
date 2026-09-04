@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import type { ChangeEvent, MouseEvent, FormEvent } from 'react';
+import type { MouseEvent, FormEvent } from 'react';
 import { supabase } from './supabaseClient';
-import GPXParser from 'gpxparser';
-import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -37,17 +36,6 @@ const waypointIcon = L.divIcon({
 const MAP_TILE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
 const MAP_ATTRIBUTION = '&copy; OpenStreetMap contributors & CARTO';
 
-function AutoBounds({ positions }: { positions: [number, number][] }) {
-  const map = useMap();
-  useEffect(() => {
-    if (positions.length > 0) {
-      const bounds = L.latLngBounds(positions);
-      map.fitBounds(bounds, { padding: [30, 30] });
-    }
-  }, [positions, map]);
-  return null;
-}
-
 function RouteBuilderClicker({ onPointAdd }: { onPointAdd: (latlng: [number, number]) => void }) {
   useMapEvents({
     click(e) {
@@ -59,13 +47,11 @@ function RouteBuilderClicker({ onPointAdd }: { onPointAdd: (latlng: [number, num
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
-  const [activities, setActivities] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [savedRoutes, setSavedRoutes] = useState<any[]>([]);
   const [shoes, setShoes] = useState<any[]>([]);
   const [bodyMetrics, setBodyMetrics] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'today' | 'plan' | 'activities' | 'friends' | 'body'>('today');
   const [isClient, setIsClient] = useState(false);
 
@@ -127,7 +113,6 @@ export default function App() {
 
   const loadData = async () => {
     await Promise.all([
-      loadSavedActivities(),
       loadWorkouts(),
       loadSavedRoutes(),
       loadShoes(),
@@ -170,15 +155,6 @@ export default function App() {
       }
     }
     setLoading(false);
-  };
-
-  const loadSavedActivities = async () => {
-    const { data, error } = await supabase.from('activities').select('*').order('start_time', { ascending: false });
-    if (!error && data) {
-      setActivities(data);
-      const firstWithRoute = data.find((a) => a.route_coordinates && a.route_coordinates.length > 0);
-      if (firstWithRoute) setSelectedActivity(firstWithRoute);
-    }
   };
 
   const loadWorkouts = async () => {
@@ -235,13 +211,11 @@ export default function App() {
     if (!bodyIssue) return;
     const lower = bodyIssue.toLowerCase();
     if (lower.includes('læg') || lower.includes('calf')) {
-      setAiBodyAdvice('💡 AI Coach Råd: Det lyder som overbelastning af lægmusklen. \n• Øvelse: Enkeltbens tå-hævninger (3x15 gentagelser langsomt).\n• Udstrækning: Klassisk læg-stræk mod væg i 30 sekunder.\n• Tip: Tag 2 dages let restitution eller skift til rolig cykling.');
+      setAiBodyAdvice('💡 AI Coach Råd: Det lyder som overbelastning af lægmusklen. \n• Øvelse: Enkeltbens tå-hævninger (3x15 gentagelser langsomt).\n• Udstrækning: Klassisk læg-stræk mod væg i 30 sekunder.');
     } else if (lower.includes('knæ') || lower.includes('knee')) {
-      setAiBodyAdvice('💡 AI Coach Råd: Knæsmerter kræver opmærksomhed.\n• Øvelse: Step-downs på et lavt trin (3x10 per ben).\n• Tip: Undgå stejle nedløb de næste par dage og tjek om dine løbesko er slidte.');
-    } else if (lower.includes('akilles') || lower.includes('achilles')) {
-      setAiBodyAdvice('💡 AI Coach Råd: Pas på akillessenen!\n• Øvelse: Eksentriske tå-sænken på trappetrin.\n• Tip: Ingen intervaltrænig før smerten er helt væk.');
+      setAiBodyAdvice('💡 AI Coach Råd: Knæsmerter kræver opmærksomhed.\n• Øvelse: Step-downs på et lavt trin (3x10 per ben).');
     } else {
-      setAiBodyAdvice('💡 AI Coach Råd: Sørg for at lytte til kroppen. Læg 1-2 ekstra hviledage ind, og lav let mobilitetstræning, indtil ubehaget lægger sig.');
+      setAiBodyAdvice('💡 AI Coach Råd: Sørg for at lytte til kroppen. Læg 1-2 ekstra hviledage ind.');
     }
   };
 
@@ -580,7 +554,7 @@ export default function App() {
               </div>
             )}
 
-            {/* TAB 4: FRIENDS (Venner & Feed) */}
+            {/* TAB 4: FRIENDS */}
             {activeTab === 'friends' && (
               <div>
                 <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '16px' }}>Venner & Feed</h2>
@@ -590,7 +564,7 @@ export default function App() {
               </div>
             )}
 
-            {/* TAB 5: BODY & GEAR (Vægt, Sko & Krop) */}
+            {/* TAB 5: BODY & GEAR */}
             {activeTab === 'body' && (
               <div>
                 <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '16px' }}>Krop, Vægt & Løbesko</h2>
@@ -599,7 +573,7 @@ export default function App() {
                 <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px' }}>
                   <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>👟 Løbesko Kilometræller</h3>
                   <form onSubmit={handleAddShoe} style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
-                    <input type="text" placeholder="Skomodel (f.eks. Nike Vaporfly)" value={shoeName} onChange={(e) => setShoeName(e.target.value)} style={{ flex: 2, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} required />
+                    <input type="text" placeholder="Skomodel" value={shoeName} onChange={(e) => setShoeName(e.target.value)} style={{ flex: 2, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} required />
                     <input type="number" placeholder="Max km" value={shoeMaxKm} onChange={(e) => setShoeMaxKm(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} required />
                     <button type="submit" style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>Tilføj</button>
                   </form>
@@ -621,9 +595,9 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* VÆGT & MÅL */}
+                {/* VÆGT & MÅL[cite: 1] */}
                 <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px' }}>
-                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>⚖️ Vægt & Mål</h3>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>⚖️ Vægt & Mål[cite: 1]</h3>
                   <form onSubmit={handleAddWeight} style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
                     <input type="number" step="0.1" placeholder="Vægt i kg (f.eks. 75.5)" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} style={{ flex: 2, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} required />
                     <button type="submit" style={{ flex: 1, backgroundColor: '#3B82F6', color: '#FFF', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>Log Vægt</button>
@@ -642,7 +616,7 @@ export default function App() {
                 <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px' }}>
                   <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>🩺 Coach Note & Krop</h3>
                   <p style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px' }}>Mærker du ømhed eller irritation? Skriv det her og få specifikke øvelser.</p>
-                  <textarea placeholder="f.eks. Ømhed i højre læg efter tærskeltur..." value={bodyIssue} onChange={(e) => setBodyIssue(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', minHeight: '80px', boxSizing: 'border-box', marginBottom: '10px' }} />
+                  <textarea placeholder="f.eks. Ømhed i højre læg..." value={bodyIssue} onChange={(e) => setBodyIssue(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', minHeight: '80px', boxSizing: 'border-box', marginBottom: '10px' }} />
                   <button onClick={analyzeBodyIssue} style={{ width: '100%', backgroundColor: '#A855F7', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', marginBottom: '12px' }}>Analyser & Få Øvelser</button>
                   {aiBodyAdvice && (
                     <div style={{ backgroundColor: '#18191E', border: '1px solid #A855F7', padding: '12px', borderRadius: '10px', fontSize: '12px', color: '#E9D5FF', whiteSpace: 'pre-line', lineHeight: '1.4' }}>
