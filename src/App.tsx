@@ -3,6 +3,7 @@ import type { MouseEvent, FormEvent } from 'react';
 import { supabase } from './supabaseClient';
 import { MapContainer, TileLayer, Polyline, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import 'leaflet/dist/leaflet.css';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -85,6 +86,7 @@ export default function App() {
   const [waistVal, setWaistVal] = useState('');
   const [chestVal, setChestVal] = useState('');
   const [thighVal, setThighVal] = useState('');
+  const [editingMetricId, setEditingMetricId] = useState<string | null>(null);
 
   // Countdown timer state in modal
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
@@ -176,7 +178,7 @@ export default function App() {
   };
 
   const loadBodyMetrics = async () => {
-    const { data, error } = await supabase.from('body_metrics').select('*').order('recorded_date', { ascending: false });
+    const { data, error } = await supabase.from('body_metrics').select('*').order('recorded_date', { ascending: true });
     if (!error && data) setBodyMetrics(data);
   };
 
@@ -195,7 +197,12 @@ export default function App() {
     }
   };
 
-  const handleAddWeightAndMetrics = async (e: FormEvent) => {
+  const handleDeleteShoe = async (id: string) => {
+    const { error } = await supabase.from('shoes').delete().eq('id', id);
+    if (!error) loadShoes();
+  };
+
+  const handleSaveWeightAndMetrics = async (e: FormEvent) => {
     e.preventDefault();
     if (!user || !weightVal) return;
     const todayStr = new Date().toISOString().split('T')[0];
@@ -210,16 +217,45 @@ export default function App() {
     if (chestVal) payload.chest_cm = parseFloat(chestVal);
     if (thighVal) payload.thigh_cm = parseFloat(thighVal);
 
-    const { error } = await supabase.from('body_metrics').insert([payload]);
-    if (!error) {
-      setWeightVal('');
-      setWaistVal('');
-      setChestVal('');
-      setThighVal('');
-      loadBodyMetrics();
+    if (editingMetricId) {
+      const { error } = await supabase.from('body_metrics').update(payload).eq('id', editingMetricId);
+      if (!error) {
+        setEditingMetricId(null);
+        resetWeightForm();
+        loadBodyMetrics();
+      } else {
+        alert('Fejl ved opdatering: ' + error.message);
+      }
     } else {
-      alert('Fejl ved gemning af vægt/mål: ' + error.message);
+      const { error } = await supabase.from('body_metrics').insert([payload]);
+      if (!error) {
+        resetWeightForm();
+        loadBodyMetrics();
+      } else {
+        alert('Fejl ved gemning: ' + error.message);
+      }
     }
+  };
+
+  const resetWeightForm = () => {
+    setWeightVal('');
+    setWaistVal('');
+    setChestVal('');
+    setThighVal('');
+    setEditingMetricId(null);
+  };
+
+  const handleEditMetric = (m: any) => {
+    setEditingMetricId(m.id);
+    setWeightVal(m.weight_kg?.toString() || '');
+    setWaistVal(m.waist_cm?.toString() || '');
+    setChestVal(m.chest_cm?.toString() || '');
+    setThighVal(m.thigh_cm?.toString() || '');
+  };
+
+  const handleDeleteMetric = async (id: string) => {
+    const { error } = await supabase.from('body_metrics').delete().eq('id', id);
+    if (!error) loadBodyMetrics();
   };
 
   const analyzeBodyIssue = () => {
@@ -403,7 +439,7 @@ export default function App() {
 
   return (
     <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#F3F4F6', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '90px' }}>
-      <div style={{ maxWidth: '480px', margin: '0 auto', padding: '16px' }}>
+      <div style={{ maxWidth: '480px', margin: '0 auto', padding: '16px', boxSizing: 'border-box' }}>
         
         {/* TOP HEADER */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingTop: '8px' }}>
@@ -585,11 +621,11 @@ export default function App() {
                 <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '16px' }}>Krop, Vægt & Løbesko</h2>
 
                 {/* SKO TÆLLER */}
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px' }}>
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px', boxSizing: 'border-box' }}>
                   <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>👟 Løbesko Kilometræller</h3>
-                  <form onSubmit={handleAddShoe} style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
-                    <input type="text" placeholder="Skomodel" value={shoeName} onChange={(e) => setShoeName(e.target.value)} style={{ flex: 2, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} required />
-                    <input type="number" placeholder="Max km" value={shoeMaxKm} onChange={(e) => setShoeMaxKm(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} required />
+                  <form onSubmit={handleAddShoe} style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
+                    <input type="text" placeholder="Skomodel" value={shoeName} onChange={(e) => setShoeName(e.target.value)} style={{ flex: '2 1 140px', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
+                    <input type="number" placeholder="Max km" value={shoeMaxKm} onChange={(e) => setShoeMaxKm(e.target.value)} style={{ flex: '1 1 80px', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
                     <button type="submit" style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>Tilføj</button>
                   </form>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -597,9 +633,12 @@ export default function App() {
                       const pct = Math.min(100, Math.round((shoe.current_km / shoe.max_km) * 100));
                       return (
                         <div key={shoe.id} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '12px', borderRadius: '10px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', alignItems: 'center' }}>
                             <span style={{ fontWeight: '700', fontSize: '13px', color: '#FFF' }}>{shoe.name}</span>
-                            <span style={{ fontSize: '12px', color: '#10B981', fontWeight: '700' }}>{shoe.current_km} / {shoe.max_km} km</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ fontSize: '12px', color: '#10B981', fontWeight: '700' }}>{shoe.current_km} / {shoe.max_km} km</span>
+                              <button onClick={() => handleDeleteShoe(shoe.id)} style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+                            </div>
                           </div>
                           <div style={{ width: '100%', height: '6px', backgroundColor: '#2A2D3A', borderRadius: '3px', overflow: 'hidden' }}>
                             <div style={{ width: `${pct}%`, height: '100%', backgroundColor: pct > 85 ? '#EF4444' : '#10B981' }}></div>
@@ -610,31 +649,61 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* VÆGT & KROPSMÅL */}
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px' }}>
+                {/* VÆGT & KROPSMÅL M/ GRAF */}
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px', boxSizing: 'border-box' }}>
                   <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>⚖️ Vægt & Kropsmål</h3>
-                  <form onSubmit={handleAddWeightAndMetrics} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <input type="number" step="0.1" placeholder="Vægt (kg)*" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} required />
-                      <input type="number" step="0.1" placeholder="Talje (cm)" value={waistVal} onChange={(e) => setWaistVal(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} />
+                  
+                  {/* GRAF FOR UDVIKLING */}
+                  {bodyMetrics.length > 1 && (
+                    <div style={{ marginBottom: '16px', backgroundColor: '#18191E', padding: '12px', borderRadius: '12px', border: '1px solid #2A2D3A' }}>
+                      <div style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: '700', marginBottom: '8px', textTransform: 'uppercase' }}>Vægtudvikling</div>
+                      <div style={{ height: '140px', width: '100%' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={bodyMetrics}>
+                            <XAxis dataKey="recorded_date" stroke="#6B7280" fontSize={10} tickLine={false} />
+                            <YAxis stroke="#6B7280" fontSize={10} domain={['dataMin - 1', 'dataMax + 1']} tickLine={false} />
+                            <Tooltip contentStyle={{ backgroundColor: '#13151C', borderColor: '#2A2D3A', borderRadius: '8px', color: '#FFF', fontSize: '12px' }} />
+                            <Area type="monotone" dataKey="weight_kg" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.2} strokeWidth={2} />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <input type="number" step="0.1" placeholder="Bryst (cm)" value={chestVal} onChange={(e) => setChestVal(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} />
-                      <input type="number" step="0.1" placeholder="Lår (cm)" value={thighVal} onChange={(e) => setThighVal(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} />
+                  )}
+
+                  <form onSubmit={handleSaveWeightAndMetrics} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                      <input type="number" step="0.1" placeholder="Vægt (kg)*" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
+                      <input type="number" step="0.1" placeholder="Talje (cm)" value={waistVal} onChange={(e) => setWaistVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} />
                     </div>
-                    <button type="submit" style={{ backgroundColor: '#3B82F6', color: '#FFF', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer', marginTop: '4px' }}>Gem Mål</button>
+                    <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                      <input type="number" step="0.1" placeholder="Bryst (cm)" value={chestVal} onChange={(e) => setChestVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} />
+                      <input type="number" step="0.1" placeholder="Lår (cm)" value={thighVal} onChange={(e) => setThighVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} />
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                      <button type="submit" style={{ flex: 1, backgroundColor: '#3B82F6', color: '#FFF', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>
+                        {editingMetricId ? 'Opdater Mål' : 'Gem Mål'}
+                      </button>
+                      {editingMetricId && (
+                        <button type="button" onClick={resetWeightForm} style={{ backgroundColor: '#2A2D3A', color: '#FFF', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>Annuller</button>
+                      )}
+                    </div>
                   </form>
+
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {bodyMetrics.map((m) => (
                       <div key={m.id} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
                           <span style={{ fontSize: '11px', color: '#9CA3AF', display: 'block' }}>{m.recorded_date}</span>
                           <span style={{ fontWeight: '800', fontSize: '13px', color: '#FFF' }}>{m.weight_kg} kg</span>
+                          <div style={{ fontSize: '11px', color: '#10B981', marginTop: '2px' }}>
+                            {m.waist_cm ? `Talje: ${m.waist_cm}cm ` : ''}
+                            {m.chest_cm ? `Bryst: ${m.chest_cm}cm ` : ''}
+                            {m.thigh_cm ? `Lår: ${m.thigh_cm}cm` : ''}
+                          </div>
                         </div>
-                        <div style={{ fontSize: '11px', color: '#10B981', textAlign: 'right' }}>
-                          {m.waist_cm && <span>Talje: {m.waist_cm}cm </span>}
-                          {m.chest_cm && <span>Bryst: {m.chest_cm}cm </span>}
-                          {m.thigh_cm && <span>Lår: {m.thigh_cm}cm</span>}
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button onClick={() => handleEditMetric(m)} style={{ background: 'none', border: 'none', color: '#3B82F6', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>Ret</button>
+                          <button onClick={() => handleDeleteMetric(m.id)} style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>Slet</button>
                         </div>
                       </div>
                     ))}
@@ -642,13 +711,13 @@ export default function App() {
                 </div>
 
                 {/* COACH NOTE & KROP */}
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px' }}>
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', boxSizing: 'border-box' }}>
                   <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>🩺 Coach Note & Krop</h3>
                   <p style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px' }}>Mærker du ømhed eller irritation? Skriv det her og få specifikke øvelser.</p>
                   <textarea placeholder="f.eks. Ømhed i højre læg..." value={bodyIssue} onChange={(e) => setBodyIssue(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', minHeight: '80px', boxSizing: 'border-box', marginBottom: '10px' }} />
                   <button onClick={analyzeBodyIssue} style={{ width: '100%', backgroundColor: '#A855F7', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', marginBottom: '12px' }}>Analyser & Få Øvelser</button>
                   {aiBodyAdvice && (
-                    <div style={{ backgroundColor: '#18191E', border: '1px solid #A855F7', padding: '12px', borderRadius: '10px', fontSize: '12px', color: '#E9D5FF', whiteSpace: 'pre-line', lineHeight: '1.4' }}>
+                    <div style={{ backgroundColor: '#18191E', border: '1px solid #A855F7', padding: '12px', borderRadius: '10px', fontSize: '12px', color: '#E9D5FF', whiteSpace: 'pre-line', lineHeight: '1.4', boxSizing: 'border-box' }}>
                       {aiBodyAdvice}
                     </div>
                   )}
@@ -661,8 +730,8 @@ export default function App() {
 
       {/* MULTI-STEP ONBOARDING WIZARD MODAL */}
       {showCoachWizard && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.85)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '24px', maxWidth: '420px', width: '100%', padding: '24px' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.85)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', boxSizing: 'border-box' }}>
+          <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '24px', maxWidth: '420px', width: '100%', padding: '24px', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <span style={{ fontSize: '12px', color: '#10B981', fontWeight: '800', textTransform: 'uppercase' }}>Trin {wizardStep} af 3</span>
               <button onClick={() => setShowCoachWizard(false)} style={{ background: 'none', border: 'none', color: '#9CA3AF', fontSize: '16px', cursor: 'pointer' }}>✕</button>
@@ -729,8 +798,8 @@ export default function App() {
 
       {/* FIXED BOTTOM NAVIGATION BAR */}
       {user && (
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#13151C', borderTop: '1px solid #222530', padding: '8px 0 16px 0', display: 'flex', justifyContent: 'around', zIndex: 900 }}>
-          <div style={{ display: 'flex', width: '100%', maxWidth: '480px', margin: '0 auto', justifyContent: 'space-around' }}>
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#13151C', borderTop: '1px solid #222530', padding: '8px 0 16px 0', display: 'flex', justifyContent: 'around', zIndex: 900, boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', width: '100%', maxWidth: '480px', margin: '0 auto', justifyContent: 'space-around', boxSizing: 'border-box' }}>
             <button onClick={() => setActiveTab('today')} style={{ background: 'none', border: 'none', color: activeTab === 'today' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
               <span style={{ fontSize: '18px', marginBottom: '2px' }}>☀️</span> Today
             </button>
@@ -752,8 +821,8 @@ export default function App() {
 
       {/* DETALJE MODAL */}
       {selectedWorkoutModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: '16px' }}>
-          <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', maxWidth: '440px', width: '100%', padding: '20px', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: '16px', boxSizing: 'border-box' }}>
+          <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', maxWidth: '440px', width: '100%', padding: '20px', maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
               <div>
                 <span style={{ backgroundColor: '#18191E', color: '#10B981', border: '1px solid #2A2D3A', fontSize: '10px', fontWeight: '800', padding: '2px 6px', borderRadius: '4px' }}>{selectedWorkoutModal.workout_type}</span>
