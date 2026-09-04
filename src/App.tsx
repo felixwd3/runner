@@ -281,6 +281,7 @@ export default function App() {
     }
   };
 
+  // AVANCERET AI TRÆNINGSGENERATOR MED RIGTIG VARIATION
   const generatePersonalizedCoachPlan = async () => {
     if (!user) return;
     setLoading(true);
@@ -291,6 +292,36 @@ export default function App() {
     const generatedWorkouts: any[] = [];
     const baseMult = coachLevel === 'Beginner' ? 0.75 : coachLevel === 'Advanced' ? 1.25 : coachLevel === 'Elite' ? 1.5 : 1.0;
 
+    const strengthBanks = [
+      {
+        title: 'Core, Balance & Stabilitet',
+        desc: 'Fokus på mave, ryg og hoftestabilitet for at undgå træthedsskader.',
+        exercises: [
+          { name: 'Planke med benløft', sets: '3 sæt x 45 sek', guide: 'Spænd maven hårdt, løft ét ben ad gangen uden at vride i hoften.' },
+          { name: 'Sideplanke med rotation', sets: '3 sæt x 10 reps pr. side', guide: 'Styrker de skrå mavemuskler og laterale kæder.' },
+          { name: 'Bird-Dog', sets: '3 sæt x 12 reps', guide: 'Kina-ryg og core-stabilitet på alle fire.' }
+        ]
+      },
+      {
+        title: 'Eksplosiv Benstyrke & Sener',
+        desc: 'Bygger styrke op i baglår, balder og akillessener.',
+        exercises: [
+          { name: 'Bulgarian Split Squats', sets: '3 sæt x 10 reps pr. ben', guide: 'Fod på bænk bag dig, sænk knæet langsomt mod jorden.' },
+          { name: 'Single-leg Calf Raises (Langsom)', sets: '4 sæt x 12 reps', guide: 'Stå på et trin, sænk hælen helt ned, pres op på tæerne.' },
+          { name: 'Glute Bridges', sets: '3 sæt x 15 reps', guide: 'Aktiverer ballemuskulaturen for bedre afsæt.' }
+        ]
+      },
+      {
+        title: 'Mobilitet & Hoftetræning',
+        desc: 'Åbner hofterne op og smidiggør lænden efter hårde løbepas.',
+        exercises: [
+          { name: 'Cossack Squats', sets: '3 sæt x 8 reps pr. side', guide: 'Dyb sidelæns udfald for mobilitet i lyske og hofter.' },
+          { name: 'World’s Greatest Stretch', sets: '3 sæt x 5 reps pr. side', guide: 'Dynamisk helkropsstræk for hoftebøjer og brystryg.' },
+          { name: 'Kvalitets Hip Thrusts', sets: '3 sæt x 12 reps', guide: 'Styrker hofteekstensorerne.' }
+        ]
+      }
+    ];
+
     for (let week = 1; week <= coachWeeks; week++) {
       const daysOffset = (week - 1) * 7;
       const tuesDate = new Date(today.getTime() + (daysOffset + 2) * 86400000).toISOString().split('T')[0];
@@ -298,65 +329,75 @@ export default function App() {
       const friDate = new Date(today.getTime() + (daysOffset + 5) * 86400000).toISOString().split('T')[0];
       const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
 
+      // Varierede løbepas baseret på ugenummer
+      const isRecoveryWeek = week % 4 === 0;
+      const runMult = isRecoveryWeek ? baseMult * 0.7 : baseMult;
+
+      // Tirsdag: Easy eller Fartlek
+      const tuesType = week % 2 === 0 ? 'Fartlek / Leg med tempo' : 'Easy Aerobic Run';
+      const tuesDist = Math.round((4 + (week * 0.3)) * runMult * 10) / 10;
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
-        title: `${Math.round(5 * baseMult * 10) / 10}km Easy Run`,
+        title: `${tuesDist}km ${tuesType}`,
         category: 'running',
-        workout_type: 'Easy',
-        target_distance_km: Math.round(5 * baseMult * 10) / 10,
-        target_pace_min: '5:30 - 6:00',
-        description: 'Rolig aerobisk zone 2 tur.',
+        workout_type: week % 2 === 0 ? 'Fartlek' : 'Easy',
+        target_distance_km: tuesDist,
+        target_pace_min: week % 2 === 0 ? 'Varieret (4:40 - 5:45)' : '5:30 - 6:15',
+        description: week % 2 === 0 ? 'Skift mellem 1 min hurtig løb og 2 min rolig jog i 20 minutter.' : 'Rolig Zone 2 restitutionstur.',
         scheduled_date: tuesDate,
         completed: false,
         status: 'pending',
       });
 
+      // Torsdag: Intervaller eller Tærskel
       if (coachDays >= 3) {
+        const thursType = week % 3 === 0 ? 'VO2 Max Intervaller (1km gentagelser)' : 'Tærskel / Tröskel Intervaller';
         generatedWorkouts.push({
           user_id: user.id,
           week_number: week,
-          title: 'Fast Interval Session',
+          title: thursType,
           category: 'running',
           workout_type: 'Interval',
-          target_distance_km: 6.0,
-          target_pace_min: '4:45 - 5:00',
-          description: 'Opvarmning + tærskelintervaller.',
+          target_distance_km: Math.round((5 + (week * 0.2)) * 10) / 10,
+          target_pace_min: '4:30 - 4:55',
+          description: '1.5km opvarmning -> 4 x 800m i hurtigt tempo (2 min pause) -> Nedvarmning.',
           scheduled_date: thursDate,
           completed: false,
           status: 'pending',
         });
       }
 
+      // Fredag: Styrke (Rullende gennem styrkebankerne)
       if (coachDays >= 3) {
+        const selectedBank = strengthBanks[(week - 1) % strengthBanks.length];
         generatedWorkouts.push({
           user_id: user.id,
           week_number: week,
-          title: 'Full Body Strength Workout',
+          title: `Uge ${week}: ${selectedBank.title}`,
           category: 'strength',
           workout_type: 'Styrke',
           target_distance_km: 0,
-          target_pace_min: '40m - 50m',
-          description: 'Skadesforebyggende styrketræning.',
+          target_pace_min: '40m - 45m',
+          description: selectedBank.desc,
           scheduled_date: friDate,
           completed: false,
           status: 'pending',
-          exercises: [
-            { name: 'Bulgarian Split Squats', sets: '3 sæt x 10 reps', note: 'Stabilitet', guide: 'Fod på bænk bag dig, sænk knæet mod jorden.' },
-            { name: 'Single-leg Calf Raises', sets: '3 sæt x 15 reps', note: 'Akillessene', guide: 'Stå på et ben, sænk hælen helt ned.' },
-          ],
+          exercises: selectedBank.exercises,
         });
       }
 
+      // Søndag: Progressiv Langtur
+      const longRunDist = Math.round((7 + (week * 0.6)) * runMult * 10) / 10;
       generatedWorkouts.push({
         user_id: user.id,
         week_number: week,
-        title: `${Math.round((7 + (week * 0.5)) * baseMult * 10) / 10}km Long Run`,
+        title: `${longRunDist}km Progressiv Langtur`,
         category: 'running',
         workout_type: 'Long Run',
-        target_distance_km: Math.round((7 + (week * 0.5)) * baseMult * 10) / 10,
-        target_pace_min: '5:45 - 6:15',
-        description: `Ugentlig langtur mod ${coachDistance}.`,
+        target_distance_km: longRunDist,
+        target_pace_min: '5:45 - 6:30',
+        description: `Ugentlig langtur med fokus på udholdenhed mod ${coachDistance}. Start roligt ud!`,
         scheduled_date: sunDate,
         completed: false,
         status: 'pending',
@@ -368,7 +409,7 @@ export default function App() {
     if (!error) {
       setShowCoachWizard(false);
       setWizardStep(1);
-      setAiMessage('🤖 AI Coach: Dit Runna-forløb er oprettet!');
+      setAiMessage('🤖 AI Coach: Din nye, avancerede træningsplan med fuld variation er klar!');
       setActiveTab('plan');
       await loadWorkouts();
     }
@@ -460,7 +501,7 @@ export default function App() {
         {!user ? (
           <div style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: '#13151C', borderRadius: '20px', border: '1px solid #222530', marginTop: '20px' }}>
             <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '8px', color: '#FFFFFF' }}>{isSignUp ? 'Opret ny konto' : 'Log ind på din profil'}</h2>
-            <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>Din personlige løbscoach med sko- og kropsmål-tracker.</p>
+            <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>Din personlige løbscoach med avanceret træningsvariation.</p>
             <form onSubmit={handleEmailAuth} style={{ maxWidth: '320px', margin: '0 auto', textAlign: 'left' }}>
               <div style={{ marginBottom: '12px' }}>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>E-mail</label>
@@ -529,7 +570,7 @@ export default function App() {
                 {workouts.length === 0 ? (
                   <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '40px 20px', textAlign: 'center' }}>
                     <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#FFFFFF' }}>Ingen kalender oprettet</h3>
-                    <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Tryk ovenfor for at starte dit personlige forløb.</p>
+                    <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Tryk ovenfor for at starte dit personlige forløb med fuld variation.</p>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -653,7 +694,6 @@ export default function App() {
                 <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px', boxSizing: 'border-box' }}>
                   <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>⚖️ Vægt & Kropsmål</h3>
                   
-                  {/* GRAF FOR UDVIKLING */}
                   {bodyMetrics.length > 1 && (
                     <div style={{ marginBottom: '16px', backgroundColor: '#18191E', padding: '12px', borderRadius: '12px', border: '1px solid #2A2D3A' }}>
                       <div style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: '700', marginBottom: '8px', textTransform: 'uppercase' }}>Vægtudvikling</div>
