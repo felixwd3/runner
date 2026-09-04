@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { MouseEvent, FormEvent } from 'react';
 import { supabase } from './supabaseClient';
-import { MapContainer, TileLayer, Polyline, Marker, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -595,7 +595,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* VÆGT & MÅL[cite: 1] */}
+                {/* VÆGT & MÅL */}
                 <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px' }}>
                   <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>⚖️ Vægt & Mål[cite: 1]</h3>
                   <form onSubmit={handleAddWeight} style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
