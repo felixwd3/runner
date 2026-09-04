@@ -80,8 +80,11 @@ export default function App() {
   const [shoeName, setShoeName] = useState('');
   const [shoeMaxKm, setShoeMaxKm] = useState('700');
 
-  // New Weight Form State
+  // Weight & Measurements Form State
   const [weightVal, setWeightVal] = useState('');
+  const [waistVal, setWaistVal] = useState('');
+  const [chestVal, setChestVal] = useState('');
+  const [thighVal, setThighVal] = useState('');
 
   // Countdown timer state in modal
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
@@ -192,18 +195,30 @@ export default function App() {
     }
   };
 
-  const handleAddWeight = async (e: FormEvent) => {
+  const handleAddWeightAndMetrics = async (e: FormEvent) => {
     e.preventDefault();
     if (!user || !weightVal) return;
     const todayStr = new Date().toISOString().split('T')[0];
-    const { error } = await supabase.from('body_metrics').insert([{
+    
+    const payload: any = {
       user_id: user.id,
       weight_kg: parseFloat(weightVal),
       recorded_date: todayStr,
-    }]);
+    };
+
+    if (waistVal) payload.waist_cm = parseFloat(waistVal);
+    if (chestVal) payload.chest_cm = parseFloat(chestVal);
+    if (thighVal) payload.thigh_cm = parseFloat(thighVal);
+
+    const { error } = await supabase.from('body_metrics').insert([payload]);
     if (!error) {
       setWeightVal('');
+      setWaistVal('');
+      setChestVal('');
+      setThighVal('');
       loadBodyMetrics();
+    } else {
+      alert('Fejl ved gemning af vægt/mål: ' + error.message);
     }
   };
 
@@ -409,7 +424,7 @@ export default function App() {
         {!user ? (
           <div style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: '#13151C', borderRadius: '20px', border: '1px solid #222530', marginTop: '20px' }}>
             <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '8px', color: '#FFFFFF' }}>{isSignUp ? 'Opret ny konto' : 'Log ind på din profil'}</h2>
-            <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>Din personlige løbscoach med sko- og vægt-tracker.</p>
+            <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>Din personlige løbscoach med sko- og kropsmål-tracker.</p>
             <form onSubmit={handleEmailAuth} style={{ maxWidth: '320px', margin: '0 auto', textAlign: 'left' }}>
               <div style={{ marginBottom: '12px' }}>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>E-mail</label>
@@ -595,18 +610,32 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* VÆGT & MÅL */}
+                {/* VÆGT & KROPSMÅL */}
                 <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px' }}>
-                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>⚖️ Vægt & Mål[cite: 1]</h3>
-                  <form onSubmit={handleAddWeight} style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
-                    <input type="number" step="0.1" placeholder="Vægt i kg (f.eks. 75.5)" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} style={{ flex: 2, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} required />
-                    <button type="submit" style={{ flex: 1, backgroundColor: '#3B82F6', color: '#FFF', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>Log Vægt</button>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>⚖️ Vægt & Kropsmål</h3>
+                  <form onSubmit={handleAddWeightAndMetrics} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <input type="number" step="0.1" placeholder="Vægt (kg)*" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} required />
+                      <input type="number" step="0.1" placeholder="Talje (cm)" value={waistVal} onChange={(e) => setWaistVal(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} />
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <input type="number" step="0.1" placeholder="Bryst (cm)" value={chestVal} onChange={(e) => setChestVal(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} />
+                      <input type="number" step="0.1" placeholder="Lår (cm)" value={thighVal} onChange={(e) => setThighVal(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px' }} />
+                    </div>
+                    <button type="submit" style={{ backgroundColor: '#3B82F6', color: '#FFF', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer', marginTop: '4px' }}>Gem Mål</button>
                   </form>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {bodyMetrics.map((m) => (
-                      <div key={m.id} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: '12px', color: '#9CA3AF' }}>{m.recorded_date}</span>
-                        <span style={{ fontWeight: '800', fontSize: '13px', color: '#FFF' }}>{m.weight_kg} kg</span>
+                      <div key={m.id} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <span style={{ fontSize: '11px', color: '#9CA3AF', display: 'block' }}>{m.recorded_date}</span>
+                          <span style={{ fontWeight: '800', fontSize: '13px', color: '#FFF' }}>{m.weight_kg} kg</span>
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#10B981', textAlign: 'right' }}>
+                          {m.waist_cm && <span>Talje: {m.waist_cm}cm </span>}
+                          {m.chest_cm && <span>Bryst: {m.chest_cm}cm </span>}
+                          {m.thigh_cm && <span>Lår: {m.thigh_cm}cm</span>}
+                        </div>
                       </div>
                     ))}
                   </div>
