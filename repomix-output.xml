@@ -1,0 +1,1268 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/**, package.json, README.md
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/
+  assets/
+    hero.png
+    react.svg
+    vite.svg
+  App.css
+  App.tsx
+  index.css
+  main.tsx
+  supabaseClient.ts
+package.json
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/assets/react.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+</file>
+
+<file path="src/assets/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="src/App.css">
+.counter {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+  margin-bottom: 24px;
+
+  &:hover {
+    border-color: var(--accent-border);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.hero {
+  position: relative;
+
+  .base,
+  .framework,
+  .vite {
+    inset-inline: 0;
+    margin: 0 auto;
+  }
+
+  .base {
+    width: 170px;
+    position: relative;
+    z-index: 0;
+  }
+
+  .framework,
+  .vite {
+    position: absolute;
+  }
+
+  .framework {
+    z-index: 1;
+    top: 34px;
+    height: 28px;
+    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
+      scale(1.4);
+  }
+
+  .vite {
+    z-index: 0;
+    top: 107px;
+    height: 26px;
+    width: auto;
+    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
+      scale(0.8);
+  }
+}
+
+#center {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  place-content: center;
+  place-items: center;
+  flex-grow: 1;
+
+  @media (max-width: 1024px) {
+    padding: 32px 20px 24px;
+    gap: 18px;
+  }
+}
+
+#next-steps {
+  display: flex;
+  border-top: 1px solid var(--border);
+  text-align: left;
+
+  & > div {
+    flex: 1 1 0;
+    padding: 32px;
+    @media (max-width: 1024px) {
+      padding: 24px 20px;
+    }
+  }
+
+  .icon {
+    margin-bottom: 16px;
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+#docs {
+  border-right: 1px solid var(--border);
+
+  @media (max-width: 1024px) {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+#next-steps ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+  margin: 32px 0 0;
+
+  .logo {
+    height: 18px;
+  }
+
+  a {
+    color: var(--text-h);
+    font-size: 16px;
+    border-radius: 6px;
+    background: var(--social-bg);
+    display: flex;
+    padding: 6px 12px;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: box-shadow 0.3s;
+
+    &:hover {
+      box-shadow: var(--shadow);
+    }
+    .button-icon {
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    li {
+      flex: 1 1 calc(50% - 8px);
+    }
+
+    a {
+      width: 100%;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+  }
+}
+
+#spacer {
+  height: 88px;
+  border-top: 1px solid var(--border);
+  @media (max-width: 1024px) {
+    height: 48px;
+  }
+}
+
+.ticks {
+  position: relative;
+  width: 100%;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -4.5px;
+    border: 5px solid transparent;
+  }
+
+  &::before {
+    left: 0;
+    border-left-color: var(--border);
+  }
+  &::after {
+    right: 0;
+    border-right-color: var(--border);
+  }
+}
+</file>
+
+<file path="src/main.tsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.tsx'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+</file>
+
+<file path="package.json">
+{
+  "name": "runner",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.4",
+    "@types/leaflet": "^1.9.22",
+    "chart.js": "^4.5.1",
+    "gpxparser": "^3.0.8",
+    "leaflet": "^1.9.4",
+    "react": "^19.2.8",
+    "react-chartjs-2": "^5.3.1",
+    "react-dom": "^19.2.8",
+    "react-leaflet": "^5.0.0",
+    "recharts": "^3.10.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.1.0",
+    "oxlint": "^1.79.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.2"
+  }
+}
+</file>
+
+<file path="README.md">
+# React + TypeScript + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the Oxlint configuration
+
+If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "options": {
+    "typeAware": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+```
+
+See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+</file>
+
+<file path="src/index.css">
+html, body {
+  background-color: #090A0C !important;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+button:focus, button:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+</file>
+
+<file path="src/supabaseClient.ts">
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://czpvihbjnbpjueoowjnp.supabase.co';
+const supabaseAnonKey = 'sb_publishable_LYP2WntkDtQ3ahSAHNzhhQ_WyOA_0I9';
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
+</file>
+
+<file path="src/App.tsx">
+import { useState, useEffect } from 'react';
+import type { MouseEvent, FormEvent } from 'react';
+import { supabase } from './supabaseClient';
+import { MapContainer, TileLayer, Polyline, Marker, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import 'leaflet/dist/leaflet.css';
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+const startIcon = L.divIcon({
+  html: `<div style="background-color: #10B981; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #10B981;"></div>`,
+  className: '',
+  iconSize: [12, 12],
+  iconAnchor: [6, 6],
+});
+
+const endIcon = L.divIcon({
+  html: `<div style="background-color: #EF4444; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #EF4444;"></div>`,
+  className: '',
+  iconSize: [12, 12],
+  iconAnchor: [6, 6],
+});
+
+const waypointIcon = L.divIcon({
+  html: `<div style="background-color: #3B82F6; width: 8px; height: 8px; border-radius: 50%; border: 2px solid white;"></div>`,
+  className: '',
+  iconSize: [8, 8],
+  iconAnchor: [4, 4],
+});
+
+const MAP_TILE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+const MAP_ATTRIBUTION = '&copy; OpenStreetMap contributors & CARTO';
+
+function RouteBuilderClicker({ onPointAdd }: { onPointAdd: (latlng: [number, number]) => void }) {
+  useMapEvents({
+    click(e) {
+      onPointAdd([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+  return null;
+}
+
+export default function App() {
+  const [user, setUser] = useState<any>(null);
+  const [workouts, setWorkouts] = useState<any[]>([]);
+  const [savedRoutes, setSavedRoutes] = useState<any[]>([]);
+  const [shoes, setShoes] = useState<any[]>([]);
+  const [bodyMetrics, setBodyMetrics] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'today' | 'plan' | 'activities' | 'friends' | 'body'>('today');
+  const [isClient, setIsClient] = useState(false);
+
+  // Email login state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [authError, setAuthError] = useState('');
+
+  const [selectedWorkoutModal, setSelectedWorkoutModal] = useState<any>(null);
+
+  // Multi-step Onboarding Wizard State
+  const [showCoachWizard, setShowCoachWizard] = useState(false);
+  const [wizardStep, setWizardStep] = useState<number>(1);
+  const [coachLevel, setCoachLevel] = useState<'Beginner' | 'Intermediate' | 'Advanced' | 'Elite'>('Intermediate');
+  const [coachDistance, setCoachDistance] = useState<string>('10k');
+  const [coachDays, setCoachDays] = useState<number>(4);
+  const [coachWeeks, setCoachWeeks] = useState<number>(10);
+  const [aiMessage, setAiMessage] = useState<string>('');
+
+  // Body & Injury Note State
+  const [bodyIssue, setBodyIssue] = useState('');
+  const [aiBodyAdvice, setAiBodyAdvice] = useState('');
+
+  // New Shoe Form State
+  const [shoeName, setShoeName] = useState('');
+  const [shoeMaxKm, setShoeMaxKm] = useState('700');
+
+  // Weight & Measurements Form State
+  const [weightVal, setWeightVal] = useState('');
+  const [waistVal, setWaistVal] = useState('');
+  const [chestVal, setChestVal] = useState('');
+  const [thighVal, setThighVal] = useState('');
+  const [editingMetricId, setEditingMetricId] = useState<string | null>(null);
+
+  // Countdown timer state in modal
+  const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+
+  // Builder State
+  const [builderWaypoints, setBuilderWaypoints] = useState<[number, number][]>([]);
+  const [builderPath, setBuilderPath] = useState<[number, number][]>([]);
+  const [routeTitle, setRouteTitle] = useState('');
+
+  useEffect(() => {
+    setIsClient(true);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        loadData();
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        loadData();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const loadData = async () => {
+    await Promise.all([
+      loadWorkouts(),
+      loadSavedRoutes(),
+      loadShoes(),
+      loadBodyMetrics(),
+    ]);
+  };
+
+  useEffect(() => {
+    let interval: any = null;
+    if (isTimerRunning && timerSeconds !== null && timerSeconds > 0) {
+      interval = setInterval(() => {
+        setTimerSeconds((prev) => (prev !== null && prev > 0 ? prev - 1 : 0));
+      }, 1000);
+    } else if (timerSeconds === 0) {
+      setIsTimerRunning(false);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, timerSeconds]);
+
+  const handleEmailAuth = async (e: FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setLoading(true);
+
+    if (isSignUp) {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        setAuthError(error.message);
+      } else {
+        const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+        if (loginError) {
+          setAuthError('Konto oprettet! Prøv at trykke Log ind.');
+          setIsSignUp(false);
+        }
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setAuthError('Forkert e-mail eller adgangskode.');
+      }
+    }
+    setLoading(false);
+  };
+
+  const loadWorkouts = async () => {
+    const { data, error } = await supabase.from('workouts').select('*').order('scheduled_date', { ascending: true });
+    if (!error && data) setWorkouts(data);
+  };
+
+  const loadSavedRoutes = async () => {
+    const { data, error } = await supabase.from('routes').select('*').order('created_at', { ascending: false });
+    if (!error && data) setSavedRoutes(data);
+  };
+
+  const loadShoes = async () => {
+    const { data, error } = await supabase.from('shoes').select('*').order('created_at', { ascending: false });
+    if (!error && data) setShoes(data);
+  };
+
+  const loadBodyMetrics = async () => {
+    const { data, error } = await supabase.from('body_metrics').select('*').order('recorded_date', { ascending: true });
+    if (!error && data) setBodyMetrics(data);
+  };
+
+  const handleAddShoe = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!user || !shoeName) return;
+    const { error } = await supabase.from('shoes').insert([{
+      user_id: user.id,
+      name: shoeName,
+      max_km: parseFloat(shoeMaxKm) || 700,
+      current_km: 0,
+    }]);
+    if (!error) {
+      setShoeName('');
+      loadShoes();
+    }
+  };
+
+  const handleDeleteShoe = async (id: string) => {
+    const { error } = await supabase.from('shoes').delete().eq('id', id);
+    if (!error) loadShoes();
+  };
+
+  const handleSaveWeightAndMetrics = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!user || !weightVal) return;
+    const todayStr = new Date().toISOString().split('T')[0];
+    
+    const payload: any = {
+      user_id: user.id,
+      weight_kg: parseFloat(weightVal),
+      recorded_date: todayStr,
+    };
+
+    if (waistVal) payload.waist_cm = parseFloat(waistVal);
+    if (chestVal) payload.chest_cm = parseFloat(chestVal);
+    if (thighVal) payload.thigh_cm = parseFloat(thighVal);
+
+    if (editingMetricId) {
+      const { error } = await supabase.from('body_metrics').update(payload).eq('id', editingMetricId);
+      if (!error) {
+        setEditingMetricId(null);
+        resetWeightForm();
+        loadBodyMetrics();
+      } else {
+        alert('Fejl ved opdatering: ' + error.message);
+      }
+    } else {
+      const { error } = await supabase.from('body_metrics').insert([payload]);
+      if (!error) {
+        resetWeightForm();
+        loadBodyMetrics();
+      } else {
+        alert('Fejl ved gemning: ' + error.message);
+      }
+    }
+  };
+
+  const resetWeightForm = () => {
+    setWeightVal('');
+    setWaistVal('');
+    setChestVal('');
+    setThighVal('');
+    setEditingMetricId(null);
+  };
+
+  const handleEditMetric = (m: any) => {
+    setEditingMetricId(m.id);
+    setWeightVal(m.weight_kg?.toString() || '');
+    setWaistVal(m.waist_cm?.toString() || '');
+    setChestVal(m.chest_cm?.toString() || '');
+    setThighVal(m.thigh_cm?.toString() || '');
+  };
+
+  const handleDeleteMetric = async (id: string) => {
+    const { error } = await supabase.from('body_metrics').delete().eq('id', id);
+    if (!error) loadBodyMetrics();
+  };
+
+  const analyzeBodyIssue = () => {
+    if (!bodyIssue) return;
+    const lower = bodyIssue.toLowerCase();
+    if (lower.includes('læg') || lower.includes('calf')) {
+      setAiBodyAdvice('💡 AI Coach Råd: Det lyder som overbelastning af lægmusklen. \n• Øvelse: Enkeltbens tå-hævninger (3x15 gentagelser langsomt).\n• Udstrækning: Klassisk læg-stræk mod væg i 30 sekunder.');
+    } else if (lower.includes('knæ') || lower.includes('knee')) {
+      setAiBodyAdvice('💡 AI Coach Råd: Knæsmerter kræver opmærksomhed.\n• Øvelse: Step-downs på et lavt trin (3x10 per ben).');
+    } else {
+      setAiBodyAdvice('💡 AI Coach Råd: Sørg for at lytte til kroppen. Læg 1-2 ekstra hviledage ind.');
+    }
+  };
+
+  const toggleWorkoutCompleted = async (workoutId: string, currentStatus: boolean, e?: MouseEvent) => {
+    if (e) e.stopPropagation();
+    const { error } = await supabase.from('workouts').update({ completed: !currentStatus, status: !currentStatus ? 'completed' : 'pending' }).eq('id', workoutId);
+    if (!error) {
+      loadWorkouts();
+      if (selectedWorkoutModal && selectedWorkoutModal.id === workoutId) {
+        setSelectedWorkoutModal({ ...selectedWorkoutModal, completed: !currentStatus });
+      }
+    }
+  };
+
+  // AVANCERET AI TRÆNINGSGENERATOR MED RIGTIG VARIATION
+  const generatePersonalizedCoachPlan = async () => {
+    if (!user) return;
+    setLoading(true);
+
+    await supabase.from('workouts').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+
+    const today = new Date();
+    const generatedWorkouts: any[] = [];
+    const baseMult = coachLevel === 'Beginner' ? 0.75 : coachLevel === 'Advanced' ? 1.25 : coachLevel === 'Elite' ? 1.5 : 1.0;
+
+    const strengthBanks = [
+      {
+        title: 'Core, Balance & Stabilitet',
+        desc: 'Fokus på mave, ryg og hoftestabilitet for at undgå træthedsskader.',
+        exercises: [
+          { name: 'Planke med benløft', sets: '3 sæt x 45 sek', guide: 'Spænd maven hårdt, løft ét ben ad gangen uden at vride i hoften.' },
+          { name: 'Sideplanke med rotation', sets: '3 sæt x 10 reps pr. side', guide: 'Styrker de skrå mavemuskler og laterale kæder.' },
+          { name: 'Bird-Dog', sets: '3 sæt x 12 reps', guide: 'Kina-ryg og core-stabilitet på alle fire.' }
+        ]
+      },
+      {
+        title: 'Eksplosiv Benstyrke & Sener',
+        desc: 'Bygger styrke op i baglår, balder og akillessener.',
+        exercises: [
+          { name: 'Bulgarian Split Squats', sets: '3 sæt x 10 reps pr. ben', guide: 'Fod på bænk bag dig, sænk knæet langsomt mod jorden.' },
+          { name: 'Single-leg Calf Raises (Langsom)', sets: '4 sæt x 12 reps', guide: 'Stå på et trin, sænk hælen helt ned, pres op på tæerne.' },
+          { name: 'Glute Bridges', sets: '3 sæt x 15 reps', guide: 'Aktiverer ballemuskulaturen for bedre afsæt.' }
+        ]
+      },
+      {
+        title: 'Mobilitet & Hoftetræning',
+        desc: 'Åbner hofterne op og smidiggør lænden efter hårde løbepas.',
+        exercises: [
+          { name: 'Cossack Squats', sets: '3 sæt x 8 reps pr. side', guide: 'Dyb sidelæns udfald for mobilitet i lyske og hofter.' },
+          { name: 'World’s Greatest Stretch', sets: '3 sæt x 5 reps pr. side', guide: 'Dynamisk helkropsstræk for hoftebøjer og brystryg.' },
+          { name: 'Kvalitets Hip Thrusts', sets: '3 sæt x 12 reps', guide: 'Styrker hofteekstensorerne.' }
+        ]
+      }
+    ];
+
+    for (let week = 1; week <= coachWeeks; week++) {
+      const daysOffset = (week - 1) * 7;
+      const tuesDate = new Date(today.getTime() + (daysOffset + 2) * 86400000).toISOString().split('T')[0];
+      const thursDate = new Date(today.getTime() + (daysOffset + 4) * 86400000).toISOString().split('T')[0];
+      const friDate = new Date(today.getTime() + (daysOffset + 5) * 86400000).toISOString().split('T')[0];
+      const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
+
+      // Varierede løbepas baseret på ugenummer
+      const isRecoveryWeek = week % 4 === 0;
+      const runMult = isRecoveryWeek ? baseMult * 0.7 : baseMult;
+
+      // Tirsdag: Easy eller Fartlek
+      const tuesType = week % 2 === 0 ? 'Fartlek / Leg med tempo' : 'Easy Aerobic Run';
+      const tuesDist = Math.round((4 + (week * 0.3)) * runMult * 10) / 10;
+      generatedWorkouts.push({
+        user_id: user.id,
+        week_number: week,
+        title: `${tuesDist}km ${tuesType}`,
+        category: 'running',
+        workout_type: week % 2 === 0 ? 'Fartlek' : 'Easy',
+        target_distance_km: tuesDist,
+        target_pace_min: week % 2 === 0 ? 'Varieret (4:40 - 5:45)' : '5:30 - 6:15',
+        description: week % 2 === 0 ? 'Skift mellem 1 min hurtig løb og 2 min rolig jog i 20 minutter.' : 'Rolig Zone 2 restitutionstur.',
+        scheduled_date: tuesDate,
+        completed: false,
+        status: 'pending',
+      });
+
+      // Torsdag: Intervaller eller Tærskel
+      if (coachDays >= 3) {
+        const thursType = week % 3 === 0 ? 'VO2 Max Intervaller (1km gentagelser)' : 'Tærskel / Tröskel Intervaller';
+        generatedWorkouts.push({
+          user_id: user.id,
+          week_number: week,
+          title: thursType,
+          category: 'running',
+          workout_type: 'Interval',
+          target_distance_km: Math.round((5 + (week * 0.2)) * 10) / 10,
+          target_pace_min: '4:30 - 4:55',
+          description: '1.5km opvarmning -> 4 x 800m i hurtigt tempo (2 min pause) -> Nedvarmning.',
+          scheduled_date: thursDate,
+          completed: false,
+          status: 'pending',
+        });
+      }
+
+      // Fredag: Styrke (Rullende gennem styrkebankerne)
+      if (coachDays >= 3) {
+        const selectedBank = strengthBanks[(week - 1) % strengthBanks.length];
+        generatedWorkouts.push({
+          user_id: user.id,
+          week_number: week,
+          title: `Uge ${week}: ${selectedBank.title}`,
+          category: 'strength',
+          workout_type: 'Styrke',
+          target_distance_km: 0,
+          target_pace_min: '40m - 45m',
+          description: selectedBank.desc,
+          scheduled_date: friDate,
+          completed: false,
+          status: 'pending',
+          exercises: selectedBank.exercises,
+        });
+      }
+
+      // Søndag: Progressiv Langtur
+      const longRunDist = Math.round((7 + (week * 0.6)) * runMult * 10) / 10;
+      generatedWorkouts.push({
+        user_id: user.id,
+        week_number: week,
+        title: `${longRunDist}km Progressiv Langtur`,
+        category: 'running',
+        workout_type: 'Long Run',
+        target_distance_km: longRunDist,
+        target_pace_min: '5:45 - 6:30',
+        description: `Ugentlig langtur med fokus på udholdenhed mod ${coachDistance}. Start roligt ud!`,
+        scheduled_date: sunDate,
+        completed: false,
+        status: 'pending',
+      });
+    }
+
+    const { error } = await supabase.from('workouts').insert(generatedWorkouts);
+
+    if (!error) {
+      setShowCoachWizard(false);
+      setWizardStep(1);
+      setAiMessage('🤖 AI Coach: Din nye, avancerede træningsplan med fuld variation er klar!');
+      setActiveTab('plan');
+      await loadWorkouts();
+    }
+    setLoading(false);
+  };
+
+  const handleAddWaypoint = async (newPt: [number, number]) => {
+    const newWaypoints = [...builderWaypoints, newPt];
+    setBuilderWaypoints(newWaypoints);
+    if (newWaypoints.length === 1) {
+      setBuilderPath([newPt]);
+      return;
+    }
+    setLoading(true);
+    try {
+      const waypointsString = newWaypoints.map((pt) => `${pt[1]},${pt[0]}`).join(';');
+      const response = await fetch(`https://router.project-osrm.org/route/v1/foot/${waypointsString}?overview=full&geometries=geojson`);
+      const data = await response.json();
+      if (data.routes && data.routes[0]) {
+        const routedCoordinates: [number, number][] = data.routes[0].geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]]);
+        setBuilderPath(routedCoordinates);
+      } else {
+        setBuilderPath(newWaypoints);
+      }
+    } catch {
+      setBuilderPath(newWaypoints);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculateBuilderDistance = () => {
+    if (builderPath.length < 2) return 0;
+    let totalMeters = 0;
+    for (let i = 0; i < builderPath.length - 1; i++) {
+      const p1 = L.latLng(builderPath[i][0], builderPath[i][1]);
+      const p2 = L.latLng(builderPath[i + 1][0], builderPath[i + 1][1]);
+      totalMeters += p1.distanceTo(p2);
+    }
+    return Math.round(totalMeters);
+  };
+
+  const handleSaveRoute = async () => {
+    if (!user || builderPath.length < 2 || !routeTitle) return;
+    setLoading(true);
+    const distMeters = calculateBuilderDistance();
+    const { error } = await supabase.from('routes').insert([{
+      user_id: user.id,
+      title: routeTitle,
+      distance_meters: distMeters,
+      coordinates: builderPath,
+    }]);
+    if (!error) {
+      setRouteTitle('');
+      setBuilderWaypoints([]);
+      setBuilderPath([]);
+      await loadSavedRoutes();
+    }
+    setLoading(false);
+  };
+
+  const maxWeekInPlan = workouts.length > 0 ? Math.max(...workouts.map(w => w.week_number || 1)) : 10;
+  const totalPlanDistance = workouts.reduce((acc, curr) => acc + (curr.target_distance_km || 0), 0);
+
+  if (!isClient) {
+    return <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#FFFFFF', padding: '40px', textAlign: 'center' }}>Indlæser app...</div>;
+  }
+
+  return (
+    <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#F3F4F6', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '90px' }}>
+      <div style={{ maxWidth: '480px', margin: '0 auto', padding: '16px', boxSizing: 'border-box' }}>
+        
+        {/* TOP HEADER */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingTop: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', color: '#FFF' }}>
+              {user ? user.email.substring(0, 1).toUpperCase() : 'F'}
+            </div>
+            <div>
+              <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Velkommen tilbage</div>
+              <div style={{ fontSize: '14px', fontWeight: '800', color: '#FFF' }}>{user ? user.email.split('@')[0] : 'Løber'}</div>
+            </div>
+          </div>
+          <button onClick={() => setShowCoachWizard(true)} style={{ backgroundColor: '#1E2028', border: '1px solid #2A2D3A', color: '#FFF', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>
+            ⚙️ Plan
+          </button>
+        </div>
+
+        {!user ? (
+          <div style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: '#13151C', borderRadius: '20px', border: '1px solid #222530', marginTop: '20px' }}>
+            <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '8px', color: '#FFFFFF' }}>{isSignUp ? 'Opret ny konto' : 'Log ind på din profil'}</h2>
+            <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>Din personlige løbscoach med avanceret træningsvariation.</p>
+            <form onSubmit={handleEmailAuth} style={{ maxWidth: '320px', margin: '0 auto', textAlign: 'left' }}>
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>E-mail</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="din@email.dk" required style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }} />
+              </div>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Adgangskode</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }} />
+              </div>
+              {authError && <div style={{ color: '#EF4444', fontSize: '12px', marginBottom: '12px', fontWeight: '600', textAlign: 'center' }}>{authError}</div>}
+              <button type="submit" disabled={loading} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: '800', fontSize: '14px', cursor: 'pointer', marginBottom: '12px' }}>
+                {loading ? 'Arbejder...' : isSignUp ? 'Opret konto' : 'Log ind'}
+              </button>
+              <div style={{ textAlign: 'center' }}>
+                <button type="button" onClick={() => setIsSignUp(!isSignUp)} style={{ background: 'none', border: 'none', color: '#3B82F6', fontSize: '13px', cursor: 'pointer', fontWeight: '600' }}>
+                  {isSignUp ? 'Har du allerede en konto? Log ind' : 'Opret ny konto'}
+                </button>
+              </div>
+            </form>
+          </div>
+        ) : (
+          <div>
+            {/* TAB 1: TODAY */}
+            {activeTab === 'today' && (
+              <div>
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '20px', marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                    <div>
+                      <div style={{ fontSize: '11px', textTransform: 'uppercase', fontWeight: '800', color: '#10B981', letterSpacing: '1px' }}>Aktivt Forløb</div>
+                      <h2 style={{ margin: '2px 0 0 0', fontSize: '18px', fontWeight: '800', color: '#FFFFFF' }}>Run Further Plan</h2>
+                    </div>
+                    <div style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '6px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: '800', color: '#10B981' }}>RF</div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px', backgroundColor: '#18191E', padding: '12px', borderRadius: '12px' }}>
+                    <div>
+                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Total uger</div>
+                      <div style={{ fontSize: '16px', fontWeight: '800', color: '#FFF' }}>0 / {maxWeekInPlan}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Total Distance</div>
+                      <div style={{ fontSize: '16px', fontWeight: '800', color: '#10B981' }}>{totalPlanDistance.toFixed(1)} km</div>
+                    </div>
+                  </div>
+                  <button onClick={() => setShowCoachWizard(true)} style={{ width: '100%', backgroundColor: '#1E2028', color: '#FFF', border: '1px solid #2A2D3A', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>Manage Plan</button>
+                </div>
+
+                {aiMessage && <div style={{ backgroundColor: '#18191E', border: '1px solid #A855F7', padding: '12px', borderRadius: '12px', fontSize: '12px', color: '#E9D5FF', marginBottom: '20px' }}>{aiMessage}</div>}
+
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '20px', marginBottom: '20px', textAlign: 'center' }}>
+                  <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#18191E', border: '2px solid #10B981', margin: '0 auto 16px auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>🏃‍♂️</div>
+                  <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '800', color: '#FFF' }}>Dagens Træning</h3>
+                  <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '16px' }}>Klar til at erobre ruten? Tjek din kalender eller plan.</p>
+                  <button onClick={() => setActiveTab('plan')} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Se Træningskalender →</button>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: PLAN */}
+            {activeTab === 'plan' && (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '800', color: '#FFF' }}>Training Calendar</h2>
+                  <button onClick={() => setShowCoachWizard(true)} style={{ backgroundColor: '#1E2028', border: '1px solid #2A2D3A', color: '#10B981', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>+ Nyt Forløb</button>
+                </div>
+
+                {workouts.length === 0 ? (
+                  <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '40px 20px', textAlign: 'center' }}>
+                    <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#FFFFFF' }}>Ingen kalender oprettet</h3>
+                    <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Tryk ovenfor for at starte dit personlige forløb med fuld variation.</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {Array.from({ length: maxWeekInPlan }, (_, i) => i + 1).map((weekNum) => {
+                      const weekWorkouts = workouts.filter(w => (w.week_number || 1) === weekNum);
+                      const weekTotalKm = weekWorkouts.reduce((acc, curr) => acc + (curr.target_distance_km || 0), 0);
+
+                      return (
+                        <div key={weekNum} style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', borderBottom: '1px solid #222530', paddingBottom: '10px' }}>
+                            <span style={{ backgroundColor: '#1E2028', color: '#FFF', fontSize: '11px', fontWeight: '800', padding: '4px 8px', borderRadius: '6px', border: '1px solid #2A2D3A' }}>WEEK {weekNum}</span>
+                            <div style={{ fontSize: '12px', color: '#10B981', fontWeight: '800' }}>Total: {weekTotalKm.toFixed(1)} km</div>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            {weekWorkouts.map((w) => {
+                              const isCompleted = w.completed;
+                              const formattedDate = w.scheduled_date ? new Date(w.scheduled_date).toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric' }) : '';
+                              return (
+                                <div key={w.id} onClick={() => { setSelectedWorkoutModal(w); setTimerSeconds(null); setIsTimerRunning(false); }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#18191E', border: `1px solid ${isCompleted ? '#10B981' : '#2A2D3A'}`, borderRadius: '12px', padding: '12px 14px', cursor: 'pointer' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ fontSize: '11px', fontWeight: '800', color: '#6B7280', width: '35px', textTransform: 'uppercase' }}>{formattedDate.split(' ')[0]}</div>
+                                    <div>
+                                      <div style={{ fontSize: '14px', fontWeight: '700', color: isCompleted ? '#6B7280' : '#FFF', textDecoration: isCompleted ? 'line-through' : 'none' }}>{w.title}</div>
+                                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>{w.category !== 'strength' ? `${w.target_distance_km}km • ${w.target_pace_min}` : `${w.target_pace_min} • Styrke`}</div>
+                                    </div>
+                                  </div>
+                                  <button onClick={(e) => toggleWorkoutCompleted(w.id, isCompleted, e)} style={{ width: '24px', height: '24px', borderRadius: '50%', border: isCompleted ? 'none' : '1px solid #3F3F46', backgroundColor: isCompleted ? '#10B981' : 'transparent', color: '#090A0C', fontWeight: '900', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{isCompleted ? '✓' : ''}</button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 3: ACTIVITIES & MAP BUILDER */}
+            {activeTab === 'activities' && (
+              <div>
+                <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '16px' }}>Rutebygger</h2>
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', overflow: 'hidden', marginBottom: '20px' }}>
+                  <div style={{ height: '280px', width: '100%', position: 'relative' }}>
+                    <MapContainer center={builderWaypoints.length > 0 ? builderWaypoints[0] : [55.6761, 12.5683]} zoom={13} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
+                      <TileLayer url={MAP_TILE_URL} attribution={MAP_ATTRIBUTION} />
+                      <Polyline positions={builderPath} pathOptions={{ color: '#3B82F6', weight: 5, opacity: 0.9 }} />
+                      {builderWaypoints.map((pt, idx) => (
+                        <Marker key={idx} position={pt} icon={idx === 0 ? startIcon : idx === builderWaypoints.length - 1 ? endIcon : waypointIcon} />
+                      ))}
+                      <RouteBuilderClicker onPointAdd={handleAddWaypoint} />
+                    </MapContainer>
+                  </div>
+                  <div style={{ padding: '16px' }}>
+                    <input type="text" placeholder="Rutenavn (f.eks. Fælledparken 5k)" value={routeTitle} onChange={(e) => setRouteTitle(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', marginBottom: '12px', boxSizing: 'border-box' }} />
+                    <button onClick={handleSaveRoute} disabled={builderPath.length < 2 || !routeTitle || loading} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>Gem Rute</button>
+                  </div>
+                </div>
+
+                <h3 style={{ fontSize: '16px', fontWeight: '800', marginBottom: '12px', color: '#FFF' }}>Gemte Ruter</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {savedRoutes.map((r) => (
+                    <div key={r.id} style={{ backgroundColor: '#13151C', border: '1px solid #222530', padding: '14px 16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <div style={{ fontWeight: '700', color: '#FFF' }}>{r.title}</div>
+                        <div style={{ fontSize: '12px', color: '#10B981' }}>{(r.distance_meters / 1000).toFixed(2)} km</div>
+                      </div>
+                      <button onClick={() => { setBuilderWaypoints(r.coordinates); setBuilderPath(r.coordinates); setRouteTitle(r.title); }} style={{ backgroundColor: '#1E2028', color: '#3B82F6', border: '1px solid #2A2D3A', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Vis på kort</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 4: FRIENDS */}
+            {activeTab === 'friends' && (
+              <div>
+                <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '16px' }}>Venner & Feed</h2>
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '20px', textAlign: 'center' }}>
+                  <p style={{ color: '#9CA3AF', fontSize: '13px', margin: 0 }}>Her kan du og dine venner dele jeres løbeture og heppe på hinanden i lukkede rammer.</p>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 5: BODY & GEAR */}
+            {activeTab === 'body' && (
+              <div>
+                <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '16px' }}>Krop, Vægt & Løbesko</h2>
+
+                {/* SKO TÆLLER */}
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px', boxSizing: 'border-box' }}>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>👟 Løbesko Kilometræller</h3>
+                  <form onSubmit={handleAddShoe} style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
+                    <input type="text" placeholder="Skomodel" value={shoeName} onChange={(e) => setShoeName(e.target.value)} style={{ flex: '2 1 140px', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
+                    <input type="number" placeholder="Max km" value={shoeMaxKm} onChange={(e) => setShoeMaxKm(e.target.value)} style={{ flex: '1 1 80px', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
+                    <button type="submit" style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>Tilføj</button>
+                  </form>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {shoes.map((shoe) => {
+                      const pct = Math.min(100, Math.round((shoe.current_km / shoe.max_km) * 100));
+                      return (
+                        <div key={shoe.id} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '12px', borderRadius: '10px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '700', fontSize: '13px', color: '#FFF' }}>{shoe.name}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ fontSize: '12px', color: '#10B981', fontWeight: '700' }}>{shoe.current_km} / {shoe.max_km} km</span>
+                              <button onClick={() => handleDeleteShoe(shoe.id)} style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+                            </div>
+                          </div>
+                          <div style={{ width: '100%', height: '6px', backgroundColor: '#2A2D3A', borderRadius: '3px', overflow: 'hidden' }}>
+                            <div style={{ width: `${pct}%`, height: '100%', backgroundColor: pct > 85 ? '#EF4444' : '#10B981' }}></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* VÆGT & KROPSMÅL M/ GRAF */}
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px', boxSizing: 'border-box' }}>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>⚖️ Vægt & Kropsmål</h3>
+                  
+                  {bodyMetrics.length > 1 && (
+                    <div style={{ marginBottom: '16px', backgroundColor: '#18191E', padding: '12px', borderRadius: '12px', border: '1px solid #2A2D3A' }}>
+                      <div style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: '700', marginBottom: '8px', textTransform: 'uppercase' }}>Vægtudvikling</div>
+                      <div style={{ height: '140px', width: '100%' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={bodyMetrics}>
+                            <XAxis dataKey="recorded_date" stroke="#6B7280" fontSize={10} tickLine={false} />
+                            <YAxis stroke="#6B7280" fontSize={10} domain={['dataMin - 1', 'dataMax + 1']} tickLine={false} />
+                            <Tooltip contentStyle={{ backgroundColor: '#13151C', borderColor: '#2A2D3A', borderRadius: '8px', color: '#FFF', fontSize: '12px' }} />
+                            <Area type="monotone" dataKey="weight_kg" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.2} strokeWidth={2} />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSaveWeightAndMetrics} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                      <input type="number" step="0.1" placeholder="Vægt (kg)*" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
+                      <input type="number" step="0.1" placeholder="Talje (cm)" value={waistVal} onChange={(e) => setWaistVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} />
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                      <input type="number" step="0.1" placeholder="Bryst (cm)" value={chestVal} onChange={(e) => setChestVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} />
+                      <input type="number" step="0.1" placeholder="Lår (cm)" value={thighVal} onChange={(e) => setThighVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} />
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                      <button type="submit" style={{ flex: 1, backgroundColor: '#3B82F6', color: '#FFF', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>
+                        {editingMetricId ? 'Opdater Mål' : 'Gem Mål'}
+                      </button>
+                      {editingMetricId && (
+                        <button type="button" onClick={resetWeightForm} style={{ backgroundColor: '#2A2D3A', color: '#FFF', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>Annuller</button>
+                      )}
+                    </div>
+                  </form>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {bodyMetrics.map((m) => (
+                      <div key={m.id} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <span style={{ fontSize: '11px', color: '#9CA3AF', display: 'block' }}>{m.recorded_date}</span>
+                          <span style={{ fontWeight: '800', fontSize: '13px', color: '#FFF' }}>{m.weight_kg} kg</span>
+                          <div style={{ fontSize: '11px', color: '#10B981', marginTop: '2px' }}>
+                            {m.waist_cm ? `Talje: ${m.waist_cm}cm ` : ''}
+                            {m.chest_cm ? `Bryst: ${m.chest_cm}cm ` : ''}
+                            {m.thigh_cm ? `Lår: ${m.thigh_cm}cm` : ''}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button onClick={() => handleEditMetric(m)} style={{ background: 'none', border: 'none', color: '#3B82F6', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>Ret</button>
+                          <button onClick={() => handleDeleteMetric(m.id)} style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>Slet</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* COACH NOTE & KROP */}
+                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', boxSizing: 'border-box' }}>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>🩺 Coach Note & Krop</h3>
+                  <p style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px' }}>Mærker du ømhed eller irritation? Skriv det her og få specifikke øvelser.</p>
+                  <textarea placeholder="f.eks. Ømhed i højre læg..." value={bodyIssue} onChange={(e) => setBodyIssue(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', minHeight: '80px', boxSizing: 'border-box', marginBottom: '10px' }} />
+                  <button onClick={analyzeBodyIssue} style={{ width: '100%', backgroundColor: '#A855F7', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', marginBottom: '12px' }}>Analyser & Få Øvelser</button>
+                  {aiBodyAdvice && (
+                    <div style={{ backgroundColor: '#18191E', border: '1px solid #A855F7', padding: '12px', borderRadius: '10px', fontSize: '12px', color: '#E9D5FF', whiteSpace: 'pre-line', lineHeight: '1.4', boxSizing: 'border-box' }}>
+                      {aiBodyAdvice}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* MULTI-STEP ONBOARDING WIZARD MODAL */}
+      {showCoachWizard && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.85)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', boxSizing: 'border-box' }}>
+          <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '24px', maxWidth: '420px', width: '100%', padding: '24px', boxSizing: 'border-box' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <span style={{ fontSize: '12px', color: '#10B981', fontWeight: '800', textTransform: 'uppercase' }}>Trin {wizardStep} af 3</span>
+              <button onClick={() => setShowCoachWizard(false)} style={{ background: 'none', border: 'none', color: '#9CA3AF', fontSize: '16px', cursor: 'pointer' }}>✕</button>
+            </div>
+
+            {wizardStep === 1 && (
+              <div>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '8px' }}>Unlock Your Potential</h3>
+                <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>What's your running level?</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '20px' }}>
+                  {['Beginner', 'Intermediate', 'Advanced', 'Elite'].map((lvl) => (
+                    <button key={lvl} onClick={() => setCoachLevel(lvl as any)} style={{ padding: '14px', borderRadius: '12px', border: coachLevel === lvl ? '2px solid #10B981' : '1px solid #2A2D3A', backgroundColor: coachLevel === lvl ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{lvl}</button>
+                  ))}
+                </div>
+                <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '8px' }}>What distance are you training for?</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '24px' }}>
+                  {['5k', '10k', 'Half Marathon', 'Marathon'].map((dist) => (
+                    <button key={dist} onClick={() => setCoachDistance(dist)} style={{ padding: '12px', borderRadius: '12px', border: coachDistance === dist ? '2px solid #10B981' : '1px solid #2A2D3A', backgroundColor: coachDistance === dist ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{dist}</button>
+                  ))}
+                </div>
+                <button onClick={() => setWizardStep(2)} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
+              </div>
+            )}
+
+            {wizardStep === 2 && (
+              <div>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '8px' }}>Træningsmængde</h3>
+                <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Days per week can you train?</p>
+                <div style={{ display: 'flex', gap: '6px', marginBottom: '20px' }}>
+                  {[2, 3, 4, 5, 6, 7].map((d) => (
+                    <button key={d} onClick={() => setCoachDays(d)} style={{ flex: 1, padding: '12px 0', borderRadius: '10px', border: coachDays === d ? '2px solid #10B981' : '1px solid #2A2D3A', backgroundColor: coachDays === d ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{d}</button>
+                  ))}
+                </div>
+                <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '8px' }}>How long do you want to train for?</h4>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+                  {[8, 10, 12].map((w) => (
+                    <button key={w} onClick={() => setCoachWeeks(w)} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: coachWeeks === w ? '2px solid #10B981' : '1px solid #2A2D3A', backgroundColor: coachWeeks === w ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{w} uger</button>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => setWizardStep(1)} style={{ backgroundColor: '#1E2028', color: '#FFF', border: '1px solid #2A2D3A', padding: '14px 16px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>← Tilbage</button>
+                  <button onClick={() => setWizardStep(3)} style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
+                </div>
+              </div>
+            )}
+
+            {wizardStep === 3 && (
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ fontSize: '12px', textTransform: 'uppercase', color: '#10B981', fontWeight: '800' }}>Klar til generering</span>
+                <h3 style={{ fontSize: '22px', fontWeight: '800', color: '#FFF', margin: '8px 0' }}>Estimated {coachDistance} time in {coachWeeks} weeks:</h3>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: '#FFF', margin: '16px 0', backgroundColor: '#18191E', padding: '16px', borderRadius: '16px', border: '1px solid #2A2D3A' }}>
+                  {coachDistance === 'Marathon' ? '3:40 - 3:45' : coachDistance === 'Half Marathon' ? '1:42 - 1:48' : '44:30 - 46:00'}
+                </div>
+                <p style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '24px' }}>Baseret på dine valg.</p>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => setWizardStep(2)} style={{ backgroundColor: '#1E2028', color: '#FFF', border: '1px solid #2A2D3A', padding: '14px 16px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>Tilbage</button>
+                  <button onClick={generatePersonalizedCoachPlan} disabled={loading} style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>{loading ? 'Genererer...' : 'Build My Plan'}</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* FIXED BOTTOM NAVIGATION BAR */}
+      {user && (
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#13151C', borderTop: '1px solid #222530', padding: '8px 0 16px 0', display: 'flex', justifyContent: 'around', zIndex: 900, boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', width: '100%', maxWidth: '480px', margin: '0 auto', justifyContent: 'space-around', boxSizing: 'border-box' }}>
+            <button onClick={() => setActiveTab('today')} style={{ background: 'none', border: 'none', color: activeTab === 'today' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '2px' }}>☀️</span> Today
+            </button>
+            <button onClick={() => setActiveTab('plan')} style={{ background: 'none', border: 'none', color: activeTab === 'plan' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '2px' }}>📅</span> Plan
+            </button>
+            <button onClick={() => setActiveTab('activities')} style={{ background: 'none', border: 'none', color: activeTab === 'activities' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '2px' }}>🗺️</span> Ruter
+            </button>
+            <button onClick={() => setActiveTab('friends')} style={{ background: 'none', border: 'none', color: activeTab === 'friends' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '2px' }}>👥</span> Venner
+            </button>
+            <button onClick={() => setActiveTab('body')} style={{ background: 'none', border: 'none', color: activeTab === 'body' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '2px' }}>🩺</span> Krop & Sko
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* DETALJE MODAL */}
+      {selectedWorkoutModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: '16px', boxSizing: 'border-box' }}>
+          <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', maxWidth: '440px', width: '100%', padding: '20px', maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
+              <div>
+                <span style={{ backgroundColor: '#18191E', color: '#10B981', border: '1px solid #2A2D3A', fontSize: '10px', fontWeight: '800', padding: '2px 6px', borderRadius: '4px' }}>{selectedWorkoutModal.workout_type}</span>
+                <h2 style={{ margin: '6px 0 0 0', fontSize: '18px', fontWeight: '800', color: '#FFF' }}>{selectedWorkoutModal.title}</h2>
+              </div>
+              <button onClick={() => setSelectedWorkoutModal(null)} style={{ backgroundColor: '#1E2028', border: 'none', color: '#9CA3AF', width: '28px', height: '28px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+            </div>
+            <p style={{ color: '#9CA3AF', fontSize: '13px', lineHeight: '1.5', marginBottom: '16px' }}>{selectedWorkoutModal.description}</p>
+            {selectedWorkoutModal.exercises && (
+              <div style={{ marginBottom: '16px' }}>
+                <h4 style={{ margin: '0 0 10px 0', fontSize: '12px', fontWeight: '800', color: '#A855F7', textTransform: 'uppercase' }}>Øvelsesguide</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {selectedWorkoutModal.exercises.map((ex: any, idx: number) => (
+                    <div key={idx} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '12px 14px', borderRadius: '10px' }}>
+                      <div style={{ fontWeight: '800', fontSize: '14px', color: '#FFF', marginBottom: '4px' }}>{ex.name} ({ex.sets})</div>
+                      <div style={{ fontSize: '12px', color: '#9CA3AF' }}>💡 {ex.guide}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            <button onClick={() => toggleWorkoutCompleted(selectedWorkoutModal.id, selectedWorkoutModal.completed)} style={{ width: '100%', backgroundColor: selectedWorkoutModal.completed ? '#1E2028' : '#10B981', color: selectedWorkoutModal.completed ? '#FFF' : '#090A0C', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>
+              {selectedWorkoutModal.completed ? 'Nulstil status' : 'Marker som gennemført'}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+</files>

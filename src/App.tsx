@@ -163,29 +163,29 @@ export default function App() {
   };
 
   const loadWorkouts = async () => {
-    const { data, error } = await supabase.from('workouts').select('*').order('scheduled_date', { ascending: true });
+    const { data, error } = await supabase.from('runner_workouts').select('*').order('scheduled_date', { ascending: true });
     if (!error && data) setWorkouts(data);
   };
 
   const loadSavedRoutes = async () => {
-    const { data, error } = await supabase.from('routes').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('runner_routes').select('*').order('created_at', { ascending: false });
     if (!error && data) setSavedRoutes(data);
   };
 
   const loadShoes = async () => {
-    const { data, error } = await supabase.from('shoes').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('runner_shoes').select('*').order('created_at', { ascending: false });
     if (!error && data) setShoes(data);
   };
 
   const loadBodyMetrics = async () => {
-    const { data, error } = await supabase.from('body_metrics').select('*').order('recorded_date', { ascending: true });
+    const { data, error } = await supabase.from('runner_body_metrics').select('*').order('recorded_date', { ascending: true });
     if (!error && data) setBodyMetrics(data);
   };
 
   const handleAddShoe = async (e: FormEvent) => {
     e.preventDefault();
     if (!user || !shoeName) return;
-    const { error } = await supabase.from('shoes').insert([{
+    const { error } = await supabase.from('runner_shoes').insert([{
       user_id: user.id,
       name: shoeName,
       max_km: parseFloat(shoeMaxKm) || 700,
@@ -198,7 +198,7 @@ export default function App() {
   };
 
   const handleDeleteShoe = async (id: string) => {
-    const { error } = await supabase.from('shoes').delete().eq('id', id);
+    const { error } = await supabase.from('runner_shoes').delete().eq('id', id);
     if (!error) loadShoes();
   };
 
@@ -218,7 +218,7 @@ export default function App() {
     if (thighVal) payload.thigh_cm = parseFloat(thighVal);
 
     if (editingMetricId) {
-      const { error } = await supabase.from('body_metrics').update(payload).eq('id', editingMetricId);
+      const { error } = await supabase.from('runner_body_metrics').update(payload).eq('id', editingMetricId);
       if (!error) {
         setEditingMetricId(null);
         resetWeightForm();
@@ -227,7 +227,7 @@ export default function App() {
         alert('Fejl ved opdatering: ' + error.message);
       }
     } else {
-      const { error } = await supabase.from('body_metrics').insert([payload]);
+      const { error } = await supabase.from('runner_body_metrics').insert([payload]);
       if (!error) {
         resetWeightForm();
         loadBodyMetrics();
@@ -254,7 +254,7 @@ export default function App() {
   };
 
   const handleDeleteMetric = async (id: string) => {
-    const { error } = await supabase.from('body_metrics').delete().eq('id', id);
+    const { error } = await supabase.from('runner_body_metrics').delete().eq('id', id);
     if (!error) loadBodyMetrics();
   };
 
@@ -272,7 +272,7 @@ export default function App() {
 
   const toggleWorkoutCompleted = async (workoutId: string, currentStatus: boolean, e?: MouseEvent) => {
     if (e) e.stopPropagation();
-    const { error } = await supabase.from('workouts').update({ completed: !currentStatus, status: !currentStatus ? 'completed' : 'pending' }).eq('id', workoutId);
+    const { error } = await supabase.from('runner_workouts').update({ completed: !currentStatus, status: !currentStatus ? 'completed' : 'pending' }).eq('id', workoutId);
     if (!error) {
       loadWorkouts();
       if (selectedWorkoutModal && selectedWorkoutModal.id === workoutId) {
@@ -286,7 +286,7 @@ export default function App() {
     if (!user) return;
     setLoading(true);
 
-    await supabase.from('workouts').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    await supabase.from('runner_workouts').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 
     const today = new Date();
     const generatedWorkouts: any[] = [];
@@ -404,7 +404,7 @@ export default function App() {
       });
     }
 
-    const { error } = await supabase.from('workouts').insert(generatedWorkouts);
+    const { error } = await supabase.from('runner_workouts').insert(generatedWorkouts);
 
     if (!error) {
       setShowCoachWizard(false);
@@ -456,7 +456,7 @@ export default function App() {
     if (!user || builderPath.length < 2 || !routeTitle) return;
     setLoading(true);
     const distMeters = calculateBuilderDistance();
-    const { error } = await supabase.from('routes').insert([{
+    const { error } = await supabase.from('runner_routes').insert([{
       user_id: user.id,
       title: routeTitle,
       distance_meters: distMeters,
