@@ -13,14 +13,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// RunQuest Ikoner
 const startIcon = L.divIcon({ html: `<div style="background-color: var(--accent-primary); width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px var(--accent-primary);"></div>`, className: '', iconSize: [12, 12], iconAnchor: [6, 6] });
 const endIcon = L.divIcon({ html: `<div style="background-color: var(--text-primary); width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(255,255,255,0.5);"></div>`, className: '', iconSize: [12, 12], iconAnchor: [6, 6] });
 const waypointIcon = L.divIcon({ html: `<div style="background-color: var(--accent-secondary); width: 8px; height: 8px; border-radius: 50%; border: 2px solid white;"></div>`, className: '', iconSize: [8, 8], iconAnchor: [4, 4] });
 
-// Skiftet til et gratis Dark Mode kort, der ikke kræver API nøgle og passer til designet!
 const MAP_TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-const MAP_ATTRIBUTION = '&copy; OpenStreetMap contributors & CARTO';
+const MAP_ATTRIBUTION = '&copy; OpenStreetMap contributors';
 
 function RouteBuilderClicker({ onPointAdd }: { onPointAdd: (latlng: [number, number]) => void }) {
   useMapEvents({ click(e) { onPointAdd([e.latlng.lat, e.latlng.lng]); } });
@@ -65,9 +63,6 @@ export default function App() {
   const [thighVal, setThighVal] = useState('');
   const [editingMetricId, setEditingMetricId] = useState<string | null>(null);
 
-  const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-
   const [builderWaypoints, setBuilderWaypoints] = useState<[number, number][]>([]);
   const [builderPath, setBuilderPath] = useState<[number, number][]>([]);
   const [routeTitle, setRouteTitle] = useState('');
@@ -85,17 +80,28 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const loadWorkouts = async () => {
+    const { data, error } = await supabase.from('runner_workouts').select('*').order('scheduled_date', { ascending: true });
+    if (!error && data) setWorkouts(data);
+  };
+
+  const loadSavedRoutes = async () => {
+    const { data, error } = await supabase.from('runner_routes').select('*').order('created_at', { ascending: false });
+    if (!error && data) setSavedRoutes(data);
+  };
+
+  const loadShoes = async () => {
+    const { data, error } = await supabase.from('runner_shoes').select('*').order('created_at', { ascending: false });
+    if (!error && data) setShoes(data);
+  };
+
+  const loadBodyMetrics = async () => {
+    const { data, error } = await supabase.from('runner_body_metrics').select('*').order('recorded_date', { ascending: true });
+    if (!error && data) setBodyMetrics(data);
+  };
+
   const loadData = async () => {
-    const [wo, ro, sh, bm] = await Promise.all([
-      supabase.from('runner_workouts').select('*').order('scheduled_date', { ascending: true }),
-      supabase.from('runner_routes').select('*').order('created_at', { ascending: false }),
-      supabase.from('runner_shoes').select('*').order('created_at', { ascending: false }),
-      supabase.from('runner_body_metrics').select('*').order('recorded_date', { ascending: true })
-    ]);
-    if (wo.data) setWorkouts(wo.data);
-    if (ro.data) setSavedRoutes(ro.data);
-    if (sh.data) setShoes(sh.data);
-    if (bm.data) setBodyMetrics(bm.data);
+    await Promise.all([loadWorkouts(), loadSavedRoutes(), loadShoes(), loadBodyMetrics()]);
   };
 
   const handleEmailAuth = async (e: FormEvent) => {
@@ -120,7 +126,6 @@ export default function App() {
     await supabase.auth.signOut();
   };
 
-  // Nøgletal og Lister
   const completedWorkouts = workouts.filter(w => w.completed && w.actual_distance_km).sort((a, b) => new Date(b.scheduled_date).getTime() - new Date(a.scheduled_date).getTime());
   const plannedWorkouts = workouts.filter(w => !w.completed || !w.actual_distance_km);
   const lastWorkout = completedWorkouts.length > 0 ? completedWorkouts[0] : null;
@@ -130,7 +135,6 @@ export default function App() {
   const userLevel = Math.floor(completedWorkouts.length / 5) + 1;
   const userXp = completedWorkouts.length * 150;
   
-  // Data til statistik-graf
   const statChartData = [...completedWorkouts].reverse().slice(-7).map(w => ({
     name: new Date(w.scheduled_date).toLocaleDateString('da-DK', { day: 'numeric', month: 'numeric' }),
     km: w.actual_distance_km
@@ -187,7 +191,6 @@ export default function App() {
   const generatePersonalizedCoachPlan = async () => {
     if (!user) return;
     setLoading(true);
-    // Slet kun de urealiserede plan-pas, behold historikken (completed = false)
     await supabase.from('runner_workouts').delete().eq('completed', false);
     
     const today = new Date();
@@ -286,7 +289,7 @@ export default function App() {
       ) : (
         <div style={{ maxWidth: '480px', margin: '0 auto' }}>
           
-          {/* FASE 2: HJEM (FORSIDEN) */}
+          {/* HJEM */}
           {activeTab === 'hjem' && (
             <div style={{ position: 'relative' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
@@ -407,7 +410,7 @@ export default function App() {
             </div>
           )}
 
-          {/* STATISTIK & HISTORIK (Kun gennemførte ture) */}
+          {/* STATISTIK & HISTORIK */}
           {activeTab === 'statistik' && (
             <div style={{ padding: '24px 20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
@@ -446,7 +449,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Historik Liste */}
               <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>Gennemførte løbeture</h3>
               {completedWorkouts.length === 0 ? (
                 <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '16px', padding: '24px', textAlign: 'center', color: 'var(--text-secondary)' }}>
@@ -472,7 +474,7 @@ export default function App() {
             </div>
           )}
 
-          {/* COACH & PLAN (Kun fremtidige/planlagte ture) */}
+          {/* COACH & PLAN */}
           {activeTab === 'coach' && (
             <div style={{ padding: '24px 20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
@@ -489,7 +491,6 @@ export default function App() {
                 </div>
               ) : (
                 <>
-                  {/* Aktiv Plan Progress */}
                   <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '24px', padding: '24px', border: '1px solid var(--border-subtle)', marginBottom: '32px', backgroundImage: 'linear-gradient(to right, rgba(16,35,43,0.9), rgba(16,35,43,0.4)), url("https://images.unsplash.com/photo-1551632811-561f3222ef86?q=80&w=400&auto=format&fit=crop")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '40px' }}>
                       <span style={{ fontSize: '12px', color: 'var(--bg-main)', fontWeight: '800', backgroundColor: 'var(--accent-primary)', padding: '4px 10px', borderRadius: '12px' }}>Aktiv</span>
@@ -501,7 +502,6 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Kalender / Ugeoversigt */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {Array.from({ length: maxWeekInPlan }, (_, i) => i + 1).map((weekNum) => {
                       const weekWorkouts = plannedWorkouts.filter(w => (w.week_number || 1) === weekNum);
@@ -609,6 +609,23 @@ export default function App() {
                     </div>
                   </div>
                 )}
+                
+                {/* Genindført knapper til ret/slet kropsmål */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px' }}>
+                  {bodyMetrics.map((m) => (
+                    <div key={m.id} style={{ backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-subtle)', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block' }}>{m.recorded_date}</span>
+                        <span style={{ fontWeight: '800', fontSize: '13px', color: 'var(--text-primary)' }}>{m.weight_kg} kg</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button onClick={() => handleEditMetric(m)} style={{ background: 'none', border: 'none', color: '#3B82F6', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>Ret</button>
+                        <button onClick={() => handleDeleteMetric(m.id)} style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>Slet</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
                 <form onSubmit={handleSaveWeightAndMetrics} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
                   <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
                     <input type="number" step="0.1" placeholder="Vægt (kg)*" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '13px' }} required />
@@ -618,6 +635,14 @@ export default function App() {
                     {editingMetricId ? 'Opdater Mål' : 'Tilføj Måling'}
                   </button>
                 </form>
+              </div>
+
+              {/* Genindført Coach Note tekstboks */}
+              <h3 style={{ margin: '24px 0 16px 0', fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)' }}>🩺 Coach Note</h3>
+              <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', padding: '16px', marginBottom: '32px' }}>
+                <textarea placeholder="F.eks. ømhed i højre knæ..." value={bodyIssue} onChange={(e) => setBodyIssue(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '13px', minHeight: '80px', boxSizing: 'border-box', marginBottom: '12px' }} />
+                <button onClick={analyzeBodyIssue} style={{ width: '100%', backgroundColor: 'var(--accent-primary)', color: 'var(--bg-main)', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', marginBottom: '12px' }}>Analyser & Få Øvelser</button>
+                {aiBodyAdvice && <div style={{ backgroundColor: 'var(--bg-main)', border: '1px solid var(--accent-primary)', padding: '12px', borderRadius: '10px', fontSize: '12px', color: 'var(--accent-primary)', whiteSpace: 'pre-line' }}>{aiBodyAdvice}</div>}
               </div>
 
               <button onClick={handleLogout} style={{ width: '100%', backgroundColor: 'transparent', color: '#EF4444', border: '1px solid #EF4444', padding: '16px', borderRadius: '16px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>
@@ -696,7 +721,7 @@ export default function App() {
         </div>
       )}
 
-      {/* FIXED BOTTOM NAVIGATION - RUNQUEST DESIGN */}
+      {/* FIXED BOTTOM NAVIGATION */}
       {user && (
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(7, 17, 22, 0.95)', borderTop: '1px solid var(--border-subtle)', padding: '12px 0 24px 0', display: 'flex', justifyContent: 'space-around', zIndex: 900 }}>
           <div style={{ display: 'flex', width: '100%', maxWidth: '480px', margin: '0 auto', justifyContent: 'space-around' }}>
@@ -749,6 +774,9 @@ export default function App() {
                 </div>
               </div>
             )}
+            <button onClick={(e) => toggleWorkoutCompleted(selectedWorkoutModal.id, selectedWorkoutModal.completed, e)} style={{ width: '100%', backgroundColor: selectedWorkoutModal.completed ? 'var(--bg-main)' : 'var(--accent-primary)', color: selectedWorkoutModal.completed ? 'var(--text-primary)' : 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>
+              {selectedWorkoutModal.completed ? 'Nulstil status' : 'Marker som gennemført'}
+            </button>
           </div>
         </div>
       )}
