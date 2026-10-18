@@ -13,8 +13,9 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
+// Opdateret start ikon med Neon Grøn
 const startIcon = L.divIcon({
-  html: `<div style="background-color: #10B981; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #10B981;"></div>`,
+  html: `<div style="background-color: #25E57B; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #25E57B;"></div>`,
   className: '',
   iconSize: [12, 12],
   iconAnchor: [6, 6],
@@ -56,7 +57,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'today' | 'plan' | 'activities' | 'friends' | 'body'>('today');
   const [isClient, setIsClient] = useState(false);
 
-  // Email login state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
@@ -64,7 +64,6 @@ export default function App() {
 
   const [selectedWorkoutModal, setSelectedWorkoutModal] = useState<any>(null);
 
-  // Multi-step Onboarding Wizard State
   const [showCoachWizard, setShowCoachWizard] = useState(false);
   const [wizardStep, setWizardStep] = useState<number>(1);
   const [coachLevel, setCoachLevel] = useState<'Beginner' | 'Intermediate' | 'Advanced' | 'Elite'>('Intermediate');
@@ -73,26 +72,21 @@ export default function App() {
   const [coachWeeks, setCoachWeeks] = useState<number>(10);
   const [aiMessage, setAiMessage] = useState<string>('');
 
-  // Body & Injury Note State
   const [bodyIssue, setBodyIssue] = useState('');
   const [aiBodyAdvice, setAiBodyAdvice] = useState('');
 
-  // New Shoe Form State
   const [shoeName, setShoeName] = useState('');
   const [shoeMaxKm, setShoeMaxKm] = useState('700');
 
-  // Weight & Measurements Form State
   const [weightVal, setWeightVal] = useState('');
   const [waistVal, setWaistVal] = useState('');
   const [chestVal, setChestVal] = useState('');
   const [thighVal, setThighVal] = useState('');
   const [editingMetricId, setEditingMetricId] = useState<string | null>(null);
 
-  // Countdown timer state in modal
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
-  // Builder State
   const [builderWaypoints, setBuilderWaypoints] = useState<[number, number][]>([]);
   const [builderPath, setBuilderPath] = useState<[number, number][]>([]);
   const [routeTitle, setRouteTitle] = useState('');
@@ -281,7 +275,6 @@ export default function App() {
     }
   };
 
-  // AVANCERET AI TRÆNINGSGENERATOR MED RIGTIG VARIATION
   const generatePersonalizedCoachPlan = async () => {
     if (!user) return;
     setLoading(true);
@@ -329,11 +322,9 @@ export default function App() {
       const friDate = new Date(today.getTime() + (daysOffset + 5) * 86400000).toISOString().split('T')[0];
       const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
 
-      // Varierede løbepas baseret på ugenummer
       const isRecoveryWeek = week % 4 === 0;
       const runMult = isRecoveryWeek ? baseMult * 0.7 : baseMult;
 
-      // Tirsdag: Easy eller Fartlek
       const tuesType = week % 2 === 0 ? 'Fartlek / Leg med tempo' : 'Easy Aerobic Run';
       const tuesDist = Math.round((4 + (week * 0.3)) * runMult * 10) / 10;
       generatedWorkouts.push({
@@ -350,7 +341,6 @@ export default function App() {
         status: 'pending',
       });
 
-      // Torsdag: Intervaller eller Tærskel
       if (coachDays >= 3) {
         const thursType = week % 3 === 0 ? 'VO2 Max Intervaller (1km gentagelser)' : 'Tærskel / Tröskel Intervaller';
         generatedWorkouts.push({
@@ -368,7 +358,6 @@ export default function App() {
         });
       }
 
-      // Fredag: Styrke (Rullende gennem styrkebankerne)
       if (coachDays >= 3) {
         const selectedBank = strengthBanks[(week - 1) % strengthBanks.length];
         generatedWorkouts.push({
@@ -387,7 +376,6 @@ export default function App() {
         });
       }
 
-      // Søndag: Progressiv Langtur
       const longRunDist = Math.round((7 + (week * 0.6)) * runMult * 10) / 10;
       generatedWorkouts.push({
         user_id: user.id,
@@ -409,7 +397,7 @@ export default function App() {
     if (!error) {
       setShowCoachWizard(false);
       setWizardStep(1);
-      setAiMessage('🤖 AI Coach: Din nye, avancerede træningsplan med fuld variation er klar!');
+      setAiMessage('🤖 AI Coach: Din nye, avancerede træningsplan er klar!');
       setActiveTab('plan');
       await loadWorkouts();
     }
@@ -475,48 +463,50 @@ export default function App() {
   const totalPlanDistance = workouts.reduce((acc, curr) => acc + (curr.target_distance_km || 0), 0);
 
   if (!isClient) {
-    return <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#FFFFFF', padding: '40px', textAlign: 'center' }}>Indlæser app...</div>;
+    return <div style={{ backgroundColor: 'var(--bg-main)', minHeight: '100vh', color: 'var(--text-primary)', padding: '40px', textAlign: 'center' }}>Indlæser app...</div>;
   }
 
   return (
-    <div style={{ backgroundColor: '#090A0C', minHeight: '100vh', color: '#F3F4F6', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '90px' }}>
+    <div style={{ backgroundColor: 'var(--bg-main)', minHeight: '100vh', color: 'var(--text-primary)', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '90px' }}>
       <div style={{ maxWidth: '480px', margin: '0 auto', padding: '16px', boxSizing: 'border-box' }}>
         
         {/* TOP HEADER */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingTop: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', color: '#FFF' }}>
-              {user ? user.email.substring(0, 1).toUpperCase() : 'F'}
+        {user && activeTab !== 'today' && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingTop: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--accent-neon)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', color: 'var(--bg-main)' }}>
+                {user ? user.email.substring(0, 1).toUpperCase() : 'F'}
+              </div>
+              <div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Velkommen tilbage</div>
+                <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)' }}>{user ? user.email.split('@')[0] : 'Løber'}</div>
+              </div>
             </div>
-            <div>
-              <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Velkommen tilbage</div>
-              <div style={{ fontSize: '14px', fontWeight: '800', color: '#FFF' }}>{user ? user.email.split('@')[0] : 'Løber'}</div>
-            </div>
+            <button onClick={() => setShowCoachWizard(true)} style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>
+              ⚙️ Plan
+            </button>
           </div>
-          <button onClick={() => setShowCoachWizard(true)} style={{ backgroundColor: '#1E2028', border: '1px solid #2A2D3A', color: '#FFF', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>
-            ⚙️ Plan
-          </button>
-        </div>
+        )}
 
         {!user ? (
-          <div style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: '#13151C', borderRadius: '20px', border: '1px solid #222530', marginTop: '20px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '8px', color: '#FFFFFF' }}>{isSignUp ? 'Opret ny konto' : 'Log ind på din profil'}</h2>
-            <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>Din personlige løbscoach med avanceret træningsvariation.</p>
+          <div style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: 'var(--bg-card)', borderRadius: '20px', border: '1px solid var(--border-subtle)', marginTop: '20px' }}>
+            <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '8px', color: 'var(--text-primary)' }}>{isSignUp ? 'Opret ny konto' : 'Log ind på din profil'}</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>Din personlige løbscoach med avanceret træningsvariation.</p>
             <form onSubmit={handleEmailAuth} style={{ maxWidth: '320px', margin: '0 auto', textAlign: 'left' }}>
               <div style={{ marginBottom: '12px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>E-mail</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="din@email.dk" required style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }} />
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: 'var(--text-muted)' }}>E-mail</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="din@email.dk" required style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', boxSizing: 'border-box' }} />
               </div>
               <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#9CA3AF' }}>Adgangskode</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', boxSizing: 'border-box' }} />
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: 'var(--text-muted)' }}>Adgangskode</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', boxSizing: 'border-box' }} />
               </div>
               {authError && <div style={{ color: '#EF4444', fontSize: '12px', marginBottom: '12px', fontWeight: '600', textAlign: 'center' }}>{authError}</div>}
-              <button type="submit" disabled={loading} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: '800', fontSize: '14px', cursor: 'pointer', marginBottom: '12px' }}>
+              <button type="submit" disabled={loading} style={{ width: '100%', backgroundColor: 'var(--accent-neon)', color: 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: '800', fontSize: '14px', cursor: 'pointer', marginBottom: '12px' }}>
                 {loading ? 'Arbejder...' : isSignUp ? 'Opret konto' : 'Log ind'}
               </button>
               <div style={{ textAlign: 'center' }}>
-                <button type="button" onClick={() => setIsSignUp(!isSignUp)} style={{ background: 'none', border: 'none', color: '#3B82F6', fontSize: '13px', cursor: 'pointer', fontWeight: '600' }}>
+                <button type="button" onClick={() => setIsSignUp(!isSignUp)} style={{ background: 'none', border: 'none', color: 'var(--accent-neon)', fontSize: '13px', cursor: 'pointer', fontWeight: '600' }}>
                   {isSignUp ? 'Har du allerede en konto? Log ind' : 'Opret ny konto'}
                 </button>
               </div>
@@ -524,37 +514,79 @@ export default function App() {
           </div>
         ) : (
           <div>
-            {/* TAB 1: TODAY */}
+            {/* TAB 1: TODAY (RUNQUEST DESIGN) */}
             {activeTab === 'today' && (
-              <div>
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '20px', marginBottom: '20px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <div style={{ margin: '-16px -16px 20px -16px' }}>
+                {/* Hero Billede med Gradient Fade */}
+                <div style={{ 
+                  backgroundImage: 'linear-gradient(to bottom, rgba(11,15,19,0.1) 40%, var(--bg-main) 100%), url("https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=1000&auto=format&fit=crop")',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  height: '480px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-end',
+                  padding: '24px',
+                  boxSizing: 'border-box'
+                }}>
+                  <h1 style={{ fontSize: '56px', fontWeight: '900', color: 'var(--text-primary)', margin: '0 0 -4px 0', letterSpacing: '-1px' }}>Seneste tur</h1>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '15px', fontWeight: '500', margin: '0 0 24px 0' }}>Tjek din kalender for detaljer</p>
+                  
+                  {/* Stats under overskriften */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '24px' }}>
                     <div>
-                      <div style={{ fontSize: '11px', textTransform: 'uppercase', fontWeight: '800', color: '#10B981', letterSpacing: '1px' }}>Aktivt Forløb</div>
-                      <h2 style={{ margin: '2px 0 0 0', fontSize: '18px', fontWeight: '800', color: '#FFFFFF' }}>Run Further Plan</h2>
+                      <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '4px' }}>Tid</div>
+                      <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)' }}>--:--</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>/ min</div>
                     </div>
-                    <div style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '6px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: '800', color: '#10B981' }}>RF</div>
+                    <div>
+                      <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '4px' }}>Puls</div>
+                      <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)' }}>---</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>bpm</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '4px' }}>Mål km</div>
+                      <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)' }}>{totalPlanDistance.toFixed(1)}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>total</div>
+                    </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px', backgroundColor: '#18191E', padding: '12px', borderRadius: '12px' }}>
-                    <div>
-                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Total uger</div>
-                      <div style={{ fontSize: '16px', fontWeight: '800', color: '#FFF' }}>0 / {maxWeekInPlan}</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Total Distance</div>
-                      <div style={{ fontSize: '16px', fontWeight: '800', color: '#10B981' }}>{totalPlanDistance.toFixed(1)} km</div>
-                    </div>
-                  </div>
-                  <button onClick={() => setShowCoachWizard(true)} style={{ width: '100%', backgroundColor: '#1E2028', color: '#FFF', border: '1px solid #2A2D3A', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>Manage Plan</button>
                 </div>
 
-                {aiMessage && <div style={{ backgroundColor: '#18191E', border: '1px solid #A855F7', padding: '12px', borderRadius: '12px', fontSize: '12px', color: '#E9D5FF', marginBottom: '20px' }}>{aiMessage}</div>}
+                {/* Play Knap Area */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '-10px', marginBottom: '30px' }}>
+                  <button onClick={() => setActiveTab('plan')} style={{ 
+                    width: '80px', height: '80px', borderRadius: '50%', 
+                    backgroundColor: 'transparent', border: '2px solid var(--accent-neon)', 
+                    color: 'var(--accent-neon)', fontSize: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', boxShadow: '0 0 20px rgba(37, 229, 123, 0.2)'
+                  }}>
+                    ▶
+                  </button>
+                </div>
 
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '20px', marginBottom: '20px', textAlign: 'center' }}>
-                  <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#18191E', border: '2px solid #10B981', margin: '0 auto 16px auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>🏃‍♂️</div>
-                  <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: '800', color: '#FFF' }}>Dagens Træning</h3>
-                  <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '16px' }}>Klar til at erobre ruten? Tjek din kalender eller plan.</p>
-                  <button onClick={() => setActiveTab('plan')} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Se Træningskalender →</button>
+                {aiMessage && <div style={{ margin: '0 16px 20px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--accent-neon)', padding: '12px', borderRadius: '12px', fontSize: '12px', color: 'var(--accent-neon)' }}>{aiMessage}</div>}
+
+                {/* Nuværende Plan Widget */}
+                <div style={{ padding: '0 16px' }}>
+                  <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '24px', padding: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                      <div>
+                        <div style={{ fontSize: '11px', textTransform: 'uppercase', fontWeight: '800', color: 'var(--accent-neon)', letterSpacing: '1px' }}>Aktivt Forløb</div>
+                        <h2 style={{ margin: '2px 0 0 0', fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>RunQuest Plan</h2>
+                      </div>
+                      <button onClick={() => setShowCoachWizard(true)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '20px', cursor: 'pointer' }}>⚙️</button>
+                    </div>
+                    <div style={{ display: 'flex', gap: '24px', marginTop: '16px' }}>
+                      <div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Uger</div>
+                        <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)' }}>{maxWeekInPlan > 0 ? `1 / ${maxWeekInPlan}` : '0'}</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Mål</div>
+                        <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--accent-neon)' }}>{totalPlanDistance.toFixed(1)} km</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -563,14 +595,14 @@ export default function App() {
             {activeTab === 'plan' && (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '800', color: '#FFF' }}>Training Calendar</h2>
-                  <button onClick={() => setShowCoachWizard(true)} style={{ backgroundColor: '#1E2028', border: '1px solid #2A2D3A', color: '#10B981', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>+ Nyt Forløb</button>
+                  <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)' }}>Training Calendar</h2>
+                  <button onClick={() => setShowCoachWizard(true)} style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', color: 'var(--accent-neon)', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>+ Nyt Forløb</button>
                 </div>
 
                 {workouts.length === 0 ? (
-                  <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '40px 20px', textAlign: 'center' }}>
-                    <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#FFFFFF' }}>Ingen kalender oprettet</h3>
-                    <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Tryk ovenfor for at starte dit personlige forløb med fuld variation.</p>
+                  <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', padding: '40px 20px', textAlign: 'center' }}>
+                    <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: 'var(--text-primary)' }}>Ingen kalender oprettet</h3>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '20px' }}>Tryk ovenfor for at starte dit personlige forløb med fuld variation.</p>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -579,25 +611,27 @@ export default function App() {
                       const weekTotalKm = weekWorkouts.reduce((acc, curr) => acc + (curr.target_distance_km || 0), 0);
 
                       return (
-                        <div key={weekNum} style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', borderBottom: '1px solid #222530', paddingBottom: '10px' }}>
-                            <span style={{ backgroundColor: '#1E2028', color: '#FFF', fontSize: '11px', fontWeight: '800', padding: '4px 8px', borderRadius: '6px', border: '1px solid #2A2D3A' }}>WEEK {weekNum}</span>
-                            <div style={{ fontSize: '12px', color: '#10B981', fontWeight: '800' }}>Total: {weekTotalKm.toFixed(1)} km</div>
+                        <div key={weekNum} style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', padding: '16px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
+                            <span style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '11px', fontWeight: '800', padding: '4px 8px', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>WEEK {weekNum}</span>
+                            <div style={{ fontSize: '12px', color: 'var(--accent-neon)', fontWeight: '800' }}>Total: {weekTotalKm.toFixed(1)} km</div>
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             {weekWorkouts.map((w) => {
                               const isCompleted = w.completed;
                               const formattedDate = w.scheduled_date ? new Date(w.scheduled_date).toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric' }) : '';
                               return (
-                                <div key={w.id} onClick={() => { setSelectedWorkoutModal(w); setTimerSeconds(null); setIsTimerRunning(false); }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#18191E', border: `1px solid ${isCompleted ? '#10B981' : '#2A2D3A'}`, borderRadius: '12px', padding: '12px 14px', cursor: 'pointer' }}>
+                                <div key={w.id} onClick={() => { setSelectedWorkoutModal(w); setTimerSeconds(null); setIsTimerRunning(false); }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-main)', border: `1px solid ${isCompleted ? 'var(--accent-neon)' : 'var(--border-subtle)'}`, borderRadius: '12px', padding: '12px 14px', cursor: 'pointer' }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <div style={{ fontSize: '11px', fontWeight: '800', color: '#6B7280', width: '35px', textTransform: 'uppercase' }}>{formattedDate.split(' ')[0]}</div>
+                                    <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', width: '35px', textTransform: 'uppercase' }}>{formattedDate.split(' ')[0]}</div>
                                     <div>
-                                      <div style={{ fontSize: '14px', fontWeight: '700', color: isCompleted ? '#6B7280' : '#FFF', textDecoration: isCompleted ? 'line-through' : 'none' }}>{w.title}</div>
-                                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>{w.category !== 'strength' ? `${w.target_distance_km}km • ${w.target_pace_min}` : `${w.target_pace_min} • Styrke`}</div>
+                                      <div style={{ fontSize: '14px', fontWeight: '700', color: isCompleted ? 'var(--text-muted)' : 'var(--text-primary)', textDecoration: isCompleted ? 'line-through' : 'none' }}>{w.title}</div>
+                                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                                        {isCompleted && w.actual_distance_km ? `Løbet: ${w.actual_distance_km}km` : (w.category !== 'strength' ? `${w.target_distance_km}km • ${w.target_pace_min}` : `${w.target_pace_min} • Styrke`)}
+                                      </div>
                                     </div>
                                   </div>
-                                  <button onClick={(e) => toggleWorkoutCompleted(w.id, isCompleted, e)} style={{ width: '24px', height: '24px', borderRadius: '50%', border: isCompleted ? 'none' : '1px solid #3F3F46', backgroundColor: isCompleted ? '#10B981' : 'transparent', color: '#090A0C', fontWeight: '900', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{isCompleted ? '✓' : ''}</button>
+                                  <button onClick={(e) => toggleWorkoutCompleted(w.id, isCompleted, e)} style={{ width: '24px', height: '24px', borderRadius: '50%', border: isCompleted ? 'none' : '1px solid var(--text-muted)', backgroundColor: isCompleted ? 'var(--accent-neon)' : 'transparent', color: 'var(--bg-main)', fontWeight: '900', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{isCompleted ? '✓' : ''}</button>
                                 </div>
                               );
                             })}
@@ -613,12 +647,12 @@ export default function App() {
             {/* TAB 3: ACTIVITIES & MAP BUILDER */}
             {activeTab === 'activities' && (
               <div>
-                <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '16px' }}>Rutebygger</h2>
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', overflow: 'hidden', marginBottom: '20px' }}>
+                <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '16px' }}>Rutebygger</h2>
+                <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', overflow: 'hidden', marginBottom: '20px' }}>
                   <div style={{ height: '280px', width: '100%', position: 'relative' }}>
                     <MapContainer center={builderWaypoints.length > 0 ? builderWaypoints[0] : [55.6761, 12.5683]} zoom={13} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
                       <TileLayer url={MAP_TILE_URL} attribution={MAP_ATTRIBUTION} />
-                      <Polyline positions={builderPath} pathOptions={{ color: '#3B82F6', weight: 5, opacity: 0.9 }} />
+                      <Polyline positions={builderPath} pathOptions={{ color: 'var(--accent-neon)', weight: 5, opacity: 0.9 }} />
                       {builderWaypoints.map((pt, idx) => (
                         <Marker key={idx} position={pt} icon={idx === 0 ? startIcon : idx === builderWaypoints.length - 1 ? endIcon : waypointIcon} />
                       ))}
@@ -626,20 +660,20 @@ export default function App() {
                     </MapContainer>
                   </div>
                   <div style={{ padding: '16px' }}>
-                    <input type="text" placeholder="Rutenavn (f.eks. Fælledparken 5k)" value={routeTitle} onChange={(e) => setRouteTitle(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', marginBottom: '12px', boxSizing: 'border-box' }} />
-                    <button onClick={handleSaveRoute} disabled={builderPath.length < 2 || !routeTitle || loading} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>Gem Rute</button>
+                    <input type="text" placeholder="Rutenavn (f.eks. Fælledparken 5k)" value={routeTitle} onChange={(e) => setRouteTitle(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', marginBottom: '12px', boxSizing: 'border-box' }} />
+                    <button onClick={handleSaveRoute} disabled={builderPath.length < 2 || !routeTitle || loading} style={{ width: '100%', backgroundColor: 'var(--accent-neon)', color: 'var(--bg-main)', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>Gem Rute</button>
                   </div>
                 </div>
 
-                <h3 style={{ fontSize: '16px', fontWeight: '800', marginBottom: '12px', color: '#FFF' }}>Gemte Ruter</h3>
+                <h3 style={{ fontSize: '16px', fontWeight: '800', marginBottom: '12px', color: 'var(--text-primary)' }}>Gemte Ruter</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {savedRoutes.map((r) => (
-                    <div key={r.id} style={{ backgroundColor: '#13151C', border: '1px solid #222530', padding: '14px 16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div key={r.id} style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', padding: '14px 16px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
-                        <div style={{ fontWeight: '700', color: '#FFF' }}>{r.title}</div>
-                        <div style={{ fontSize: '12px', color: '#10B981' }}>{(r.distance_meters / 1000).toFixed(2)} km</div>
+                        <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{r.title}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--accent-neon)' }}>{(r.distance_meters / 1000).toFixed(2)} km</div>
                       </div>
-                      <button onClick={() => { setBuilderWaypoints(r.coordinates); setBuilderPath(r.coordinates); setRouteTitle(r.title); }} style={{ backgroundColor: '#1E2028', color: '#3B82F6', border: '1px solid #2A2D3A', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Vis på kort</button>
+                      <button onClick={() => { setBuilderWaypoints(r.coordinates); setBuilderPath(r.coordinates); setRouteTitle(r.title); }} style={{ backgroundColor: 'var(--bg-main)', color: 'var(--accent-neon)', border: '1px solid var(--border-subtle)', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}>Vis på kort</button>
                     </div>
                   ))}
                 </div>
@@ -649,9 +683,9 @@ export default function App() {
             {/* TAB 4: FRIENDS */}
             {activeTab === 'friends' && (
               <div>
-                <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '16px' }}>Venner & Feed</h2>
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '20px', textAlign: 'center' }}>
-                  <p style={{ color: '#9CA3AF', fontSize: '13px', margin: 0 }}>Her kan du og dine venner dele jeres løbeture og heppe på hinanden i lukkede rammer.</p>
+                <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '16px' }}>Community</h2>
+                <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', padding: '20px', textAlign: 'center' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '13px', margin: 0 }}>Her kan du og dine venner dele jeres løbeture og heppe på hinanden i lukkede rammer.</p>
                 </div>
               </div>
             )}
@@ -659,30 +693,30 @@ export default function App() {
             {/* TAB 5: BODY & GEAR */}
             {activeTab === 'body' && (
               <div>
-                <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '16px' }}>Krop, Vægt & Løbesko</h2>
+                <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '16px' }}>Krop, Vægt & Løbesko</h2>
 
                 {/* SKO TÆLLER */}
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px', boxSizing: 'border-box' }}>
-                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>👟 Løbesko Kilometræller</h3>
+                <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', padding: '16px', marginBottom: '20px', boxSizing: 'border-box' }}>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)' }}>👟 Løbesko Kilometræller</h3>
                   <form onSubmit={handleAddShoe} style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
-                    <input type="text" placeholder="Skomodel" value={shoeName} onChange={(e) => setShoeName(e.target.value)} style={{ flex: '2 1 140px', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
-                    <input type="number" placeholder="Max km" value={shoeMaxKm} onChange={(e) => setShoeMaxKm(e.target.value)} style={{ flex: '1 1 80px', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
-                    <button type="submit" style={{ backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>Tilføj</button>
+                    <input type="text" placeholder="Skomodel" value={shoeName} onChange={(e) => setShoeName(e.target.value)} style={{ flex: '2 1 140px', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '12px', boxSizing: 'border-box' }} required />
+                    <input type="number" placeholder="Max km" value={shoeMaxKm} onChange={(e) => setShoeMaxKm(e.target.value)} style={{ flex: '1 1 80px', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '12px', boxSizing: 'border-box' }} required />
+                    <button type="submit" style={{ backgroundColor: 'var(--accent-neon)', color: 'var(--bg-main)', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>Tilføj</button>
                   </form>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {shoes.map((shoe) => {
                       const pct = Math.min(100, Math.round((shoe.current_km / shoe.max_km) * 100));
                       return (
-                        <div key={shoe.id} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '12px', borderRadius: '10px' }}>
+                        <div key={shoe.id} style={{ backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-subtle)', padding: '12px', borderRadius: '10px' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', alignItems: 'center' }}>
-                            <span style={{ fontWeight: '700', fontSize: '13px', color: '#FFF' }}>{shoe.name}</span>
+                            <span style={{ fontWeight: '700', fontSize: '13px', color: 'var(--text-primary)' }}>{shoe.name}</span>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '12px', color: '#10B981', fontWeight: '700' }}>{shoe.current_km} / {shoe.max_km} km</span>
+                              <span style={{ fontSize: '12px', color: 'var(--accent-neon)', fontWeight: '700' }}>{shoe.current_km} / {shoe.max_km} km</span>
                               <button onClick={() => handleDeleteShoe(shoe.id)} style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
                             </div>
                           </div>
-                          <div style={{ width: '100%', height: '6px', backgroundColor: '#2A2D3A', borderRadius: '3px', overflow: 'hidden' }}>
-                            <div style={{ width: `${pct}%`, height: '100%', backgroundColor: pct > 85 ? '#EF4444' : '#10B981' }}></div>
+                          <div style={{ width: '100%', height: '6px', backgroundColor: 'var(--border-subtle)', borderRadius: '3px', overflow: 'hidden' }}>
+                            <div style={{ width: `${pct}%`, height: '100%', backgroundColor: pct > 85 ? '#EF4444' : 'var(--accent-neon)' }}></div>
                           </div>
                         </div>
                       );
@@ -691,19 +725,19 @@ export default function App() {
                 </div>
 
                 {/* VÆGT & KROPSMÅL M/ GRAF */}
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', marginBottom: '20px', boxSizing: 'border-box' }}>
-                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>⚖️ Vægt & Kropsmål</h3>
+                <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', padding: '16px', marginBottom: '20px', boxSizing: 'border-box' }}>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)' }}>⚖️ Vægt & Kropsmål</h3>
                   
                   {bodyMetrics.length > 1 && (
-                    <div style={{ marginBottom: '16px', backgroundColor: '#18191E', padding: '12px', borderRadius: '12px', border: '1px solid #2A2D3A' }}>
-                      <div style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: '700', marginBottom: '8px', textTransform: 'uppercase' }}>Vægtudvikling</div>
+                    <div style={{ marginBottom: '16px', backgroundColor: 'var(--bg-main)', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', marginBottom: '8px', textTransform: 'uppercase' }}>Vægtudvikling</div>
                       <div style={{ height: '140px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                           <AreaChart data={bodyMetrics}>
-                            <XAxis dataKey="recorded_date" stroke="#6B7280" fontSize={10} tickLine={false} />
-                            <YAxis stroke="#6B7280" fontSize={10} domain={['dataMin - 1', 'dataMax + 1']} tickLine={false} />
-                            <Tooltip contentStyle={{ backgroundColor: '#13151C', borderColor: '#2A2D3A', borderRadius: '8px', color: '#FFF', fontSize: '12px' }} />
-                            <Area type="monotone" dataKey="weight_kg" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.2} strokeWidth={2} />
+                            <XAxis dataKey="recorded_date" stroke="var(--text-muted)" fontSize={10} tickLine={false} />
+                            <YAxis stroke="var(--text-muted)" fontSize={10} domain={['dataMin - 1', 'dataMax + 1']} tickLine={false} />
+                            <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '12px' }} />
+                            <Area type="monotone" dataKey="weight_kg" stroke="var(--accent-neon)" fill="var(--accent-neon)" fillOpacity={0.2} strokeWidth={2} />
                           </AreaChart>
                         </ResponsiveContainer>
                       </div>
@@ -712,30 +746,30 @@ export default function App() {
 
                   <form onSubmit={handleSaveWeightAndMetrics} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px', boxSizing: 'border-box' }}>
                     <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                      <input type="number" step="0.1" placeholder="Vægt (kg)*" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} required />
-                      <input type="number" step="0.1" placeholder="Talje (cm)" value={waistVal} onChange={(e) => setWaistVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} />
+                      <input type="number" step="0.1" placeholder="Vægt (kg)*" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '12px', boxSizing: 'border-box' }} required />
+                      <input type="number" step="0.1" placeholder="Talje (cm)" value={waistVal} onChange={(e) => setWaistVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '12px', boxSizing: 'border-box' }} />
                     </div>
                     <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                      <input type="number" step="0.1" placeholder="Bryst (cm)" value={chestVal} onChange={(e) => setChestVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} />
-                      <input type="number" step="0.1" placeholder="Lår (cm)" value={thighVal} onChange={(e) => setThighVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', boxSizing: 'border-box' }} />
+                      <input type="number" step="0.1" placeholder="Bryst (cm)" value={chestVal} onChange={(e) => setChestVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '12px', boxSizing: 'border-box' }} />
+                      <input type="number" step="0.1" placeholder="Lår (cm)" value={thighVal} onChange={(e) => setThighVal(e.target.value)} style={{ flex: 1, minWidth: 0, padding: '10px', borderRadius: '8px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '12px', boxSizing: 'border-box' }} />
                     </div>
                     <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-                      <button type="submit" style={{ flex: 1, backgroundColor: '#3B82F6', color: '#FFF', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>
+                      <button type="submit" style={{ flex: 1, backgroundColor: 'var(--accent-neon)', color: 'var(--bg-main)', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}>
                         {editingMetricId ? 'Opdater Mål' : 'Gem Mål'}
                       </button>
                       {editingMetricId && (
-                        <button type="button" onClick={resetWeightForm} style={{ backgroundColor: '#2A2D3A', color: '#FFF', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>Annuller</button>
+                        <button type="button" onClick={resetWeightForm} style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', border: 'none', padding: '10px 14px', borderRadius: '8px', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>Annuller</button>
                       )}
                     </div>
                   </form>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {bodyMetrics.map((m) => (
-                      <div key={m.id} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div key={m.id} style={{ backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-subtle)', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                          <span style={{ fontSize: '11px', color: '#9CA3AF', display: 'block' }}>{m.recorded_date}</span>
-                          <span style={{ fontWeight: '800', fontSize: '13px', color: '#FFF' }}>{m.weight_kg} kg</span>
-                          <div style={{ fontSize: '11px', color: '#10B981', marginTop: '2px' }}>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block' }}>{m.recorded_date}</span>
+                          <span style={{ fontWeight: '800', fontSize: '13px', color: 'var(--text-primary)' }}>{m.weight_kg} kg</span>
+                          <div style={{ fontSize: '11px', color: 'var(--accent-neon)', marginTop: '2px' }}>
                             {m.waist_cm ? `Talje: ${m.waist_cm}cm ` : ''}
                             {m.chest_cm ? `Bryst: ${m.chest_cm}cm ` : ''}
                             {m.thigh_cm ? `Lår: ${m.thigh_cm}cm` : ''}
@@ -751,13 +785,13 @@ export default function App() {
                 </div>
 
                 {/* COACH NOTE & KROP */}
-                <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', padding: '16px', boxSizing: 'border-box' }}>
-                  <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '800', color: '#FFF' }}>🩺 Coach Note & Krop</h3>
-                  <p style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px' }}>Mærker du ømhed eller irritation? Skriv det her og få specifikke øvelser.</p>
-                  <textarea placeholder="f.eks. Ømhed i højre læg..." value={bodyIssue} onChange={(e) => setBodyIssue(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #2A2D3A', backgroundColor: '#090A0C', color: '#FFF', fontSize: '12px', minHeight: '80px', boxSizing: 'border-box', marginBottom: '10px' }} />
-                  <button onClick={analyzeBodyIssue} style={{ width: '100%', backgroundColor: '#A855F7', color: '#090A0C', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', marginBottom: '12px' }}>Analyser & Få Øvelser</button>
+                <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', padding: '16px', boxSizing: 'border-box' }}>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)' }}>🩺 Coach Note & Krop</h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginBottom: '12px' }}>Mærker du ømhed eller irritation? Skriv det her og få specifikke øvelser.</p>
+                  <textarea placeholder="f.eks. Ømhed i højre læg..." value={bodyIssue} onChange={(e) => setBodyIssue(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '12px', minHeight: '80px', boxSizing: 'border-box', marginBottom: '10px' }} />
+                  <button onClick={analyzeBodyIssue} style={{ width: '100%', backgroundColor: 'var(--accent-neon)', color: 'var(--bg-main)', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer', marginBottom: '12px' }}>Analyser & Få Øvelser</button>
                   {aiBodyAdvice && (
-                    <div style={{ backgroundColor: '#18191E', border: '1px solid #A855F7', padding: '12px', borderRadius: '10px', fontSize: '12px', color: '#E9D5FF', whiteSpace: 'pre-line', lineHeight: '1.4', boxSizing: 'border-box' }}>
+                    <div style={{ backgroundColor: 'var(--bg-main)', border: '1px solid var(--accent-neon)', padding: '12px', borderRadius: '10px', fontSize: '12px', color: 'var(--accent-neon)', whiteSpace: 'pre-line', lineHeight: '1.4', boxSizing: 'border-box' }}>
                       {aiBodyAdvice}
                     </div>
                   )}
@@ -770,65 +804,65 @@ export default function App() {
 
       {/* MULTI-STEP ONBOARDING WIZARD MODAL */}
       {showCoachWizard && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.85)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', boxSizing: 'border-box' }}>
-          <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '24px', maxWidth: '420px', width: '100%', padding: '24px', boxSizing: 'border-box' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(11, 15, 19, 0.85)', backdropFilter: 'blur(8px)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', boxSizing: 'border-box' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '24px', maxWidth: '420px', width: '100%', padding: '24px', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <span style={{ fontSize: '12px', color: '#10B981', fontWeight: '800', textTransform: 'uppercase' }}>Trin {wizardStep} af 3</span>
-              <button onClick={() => setShowCoachWizard(false)} style={{ background: 'none', border: 'none', color: '#9CA3AF', fontSize: '16px', cursor: 'pointer' }}>✕</button>
+              <span style={{ fontSize: '12px', color: 'var(--accent-neon)', fontWeight: '800', textTransform: 'uppercase' }}>Trin {wizardStep} af 3</span>
+              <button onClick={() => setShowCoachWizard(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '16px', cursor: 'pointer' }}>✕</button>
             </div>
 
             {wizardStep === 1 && (
               <div>
-                <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '8px' }}>Unlock Your Potential</h3>
-                <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>What's your running level?</p>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px' }}>Unlock Your Potential</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '20px' }}>What's your running level?</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '20px' }}>
                   {['Beginner', 'Intermediate', 'Advanced', 'Elite'].map((lvl) => (
-                    <button key={lvl} onClick={() => setCoachLevel(lvl as any)} style={{ padding: '14px', borderRadius: '12px', border: coachLevel === lvl ? '2px solid #10B981' : '1px solid #2A2D3A', backgroundColor: coachLevel === lvl ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{lvl}</button>
+                    <button key={lvl} onClick={() => setCoachLevel(lvl as any)} style={{ padding: '14px', borderRadius: '12px', border: coachLevel === lvl ? '2px solid var(--accent-neon)' : '1px solid var(--border-subtle)', backgroundColor: coachLevel === lvl ? 'rgba(37, 229, 123, 0.1)' : 'var(--bg-main)', color: 'var(--text-primary)', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{lvl}</button>
                   ))}
                 </div>
-                <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '8px' }}>What distance are you training for?</h4>
+                <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>What distance are you training for?</h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '24px' }}>
                   {['5k', '10k', 'Half Marathon', 'Marathon'].map((dist) => (
-                    <button key={dist} onClick={() => setCoachDistance(dist)} style={{ padding: '12px', borderRadius: '12px', border: coachDistance === dist ? '2px solid #10B981' : '1px solid #2A2D3A', backgroundColor: coachDistance === dist ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{dist}</button>
+                    <button key={dist} onClick={() => setCoachDistance(dist)} style={{ padding: '12px', borderRadius: '12px', border: coachDistance === dist ? '2px solid var(--accent-neon)' : '1px solid var(--border-subtle)', backgroundColor: coachDistance === dist ? 'rgba(37, 229, 123, 0.1)' : 'var(--bg-main)', color: 'var(--text-primary)', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{dist}</button>
                   ))}
                 </div>
-                <button onClick={() => setWizardStep(2)} style={{ width: '100%', backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
+                <button onClick={() => setWizardStep(2)} style={{ width: '100%', backgroundColor: 'var(--accent-neon)', color: 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
               </div>
             )}
 
             {wizardStep === 2 && (
               <div>
-                <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#FFF', marginBottom: '8px' }}>Træningsmængde</h3>
-                <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '20px' }}>Days per week can you train?</p>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px' }}>Træningsmængde</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '20px' }}>Days per week can you train?</p>
                 <div style={{ display: 'flex', gap: '6px', marginBottom: '20px' }}>
                   {[2, 3, 4, 5, 6, 7].map((d) => (
-                    <button key={d} onClick={() => setCoachDays(d)} style={{ flex: 1, padding: '12px 0', borderRadius: '10px', border: coachDays === d ? '2px solid #10B981' : '1px solid #2A2D3A', backgroundColor: coachDays === d ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{d}</button>
+                    <button key={d} onClick={() => setCoachDays(d)} style={{ flex: 1, padding: '12px 0', borderRadius: '10px', border: coachDays === d ? '2px solid var(--accent-neon)' : '1px solid var(--border-subtle)', backgroundColor: coachDays === d ? 'rgba(37, 229, 123, 0.1)' : 'var(--bg-main)', color: 'var(--text-primary)', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{d}</button>
                   ))}
                 </div>
-                <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#FFF', marginBottom: '8px' }}>How long do you want to train for?</h4>
+                <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>How long do you want to train for?</h4>
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
                   {[8, 10, 12].map((w) => (
-                    <button key={w} onClick={() => setCoachWeeks(w)} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: coachWeeks === w ? '2px solid #10B981' : '1px solid #2A2D3A', backgroundColor: coachWeeks === w ? '#1a2e26' : '#18191E', color: '#FFF', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{w} uger</button>
+                    <button key={w} onClick={() => setCoachWeeks(w)} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: coachWeeks === w ? '2px solid var(--accent-neon)' : '1px solid var(--border-subtle)', backgroundColor: coachWeeks === w ? 'rgba(37, 229, 123, 0.1)' : 'var(--bg-main)', color: 'var(--text-primary)', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{w} uger</button>
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => setWizardStep(1)} style={{ backgroundColor: '#1E2028', color: '#FFF', border: '1px solid #2A2D3A', padding: '14px 16px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>← Tilbage</button>
-                  <button onClick={() => setWizardStep(3)} style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
+                  <button onClick={() => setWizardStep(1)} style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)', padding: '14px 16px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>← Tilbage</button>
+                  <button onClick={() => setWizardStep(3)} style={{ flex: 1, backgroundColor: 'var(--accent-neon)', color: 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
                 </div>
               </div>
             )}
 
             {wizardStep === 3 && (
               <div style={{ textAlign: 'center' }}>
-                <span style={{ fontSize: '12px', textTransform: 'uppercase', color: '#10B981', fontWeight: '800' }}>Klar til generering</span>
-                <h3 style={{ fontSize: '22px', fontWeight: '800', color: '#FFF', margin: '8px 0' }}>Estimated {coachDistance} time in {coachWeeks} weeks:</h3>
-                <div style={{ fontSize: '32px', fontWeight: '900', color: '#FFF', margin: '16px 0', backgroundColor: '#18191E', padding: '16px', borderRadius: '16px', border: '1px solid #2A2D3A' }}>
+                <span style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--accent-neon)', fontWeight: '800' }}>Klar til generering</span>
+                <h3 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', margin: '8px 0' }}>Estimated {coachDistance} time in {coachWeeks} weeks:</h3>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: 'var(--text-primary)', margin: '16px 0', backgroundColor: 'var(--bg-main)', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-subtle)' }}>
                   {coachDistance === 'Marathon' ? '3:40 - 3:45' : coachDistance === 'Half Marathon' ? '1:42 - 1:48' : '44:30 - 46:00'}
                 </div>
-                <p style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '24px' }}>Baseret på dine valg.</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginBottom: '24px' }}>Baseret på dine valg.</p>
                 <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => setWizardStep(2)} style={{ backgroundColor: '#1E2028', color: '#FFF', border: '1px solid #2A2D3A', padding: '14px 16px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>Tilbage</button>
-                  <button onClick={generatePersonalizedCoachPlan} disabled={loading} style={{ flex: 1, backgroundColor: '#10B981', color: '#090A0C', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>{loading ? 'Genererer...' : 'Build My Plan'}</button>
+                  <button onClick={() => setWizardStep(2)} style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)', padding: '14px 16px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>Tilbage</button>
+                  <button onClick={generatePersonalizedCoachPlan} disabled={loading} style={{ flex: 1, backgroundColor: 'var(--accent-neon)', color: 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>{loading ? 'Genererer...' : 'Build My Plan'}</button>
                 </div>
               </div>
             )}
@@ -836,24 +870,24 @@ export default function App() {
         </div>
       )}
 
-      {/* FIXED BOTTOM NAVIGATION BAR */}
+      {/* FIXED BOTTOM NAVIGATION BAR - RUNQUEST DESIGN */}
       {user && (
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#13151C', borderTop: '1px solid #222530', padding: '8px 0 16px 0', display: 'flex', justifyContent: 'around', zIndex: 900, boxSizing: 'border-box' }}>
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(11, 15, 19, 0.9)', backdropFilter: 'blur(10px)', borderTop: '1px solid var(--border-subtle)', padding: '12px 0 20px 0', display: 'flex', justifyContent: 'space-around', zIndex: 900, boxSizing: 'border-box' }}>
           <div style={{ display: 'flex', width: '100%', maxWidth: '480px', margin: '0 auto', justifyContent: 'space-around', boxSizing: 'border-box' }}>
-            <button onClick={() => setActiveTab('today')} style={{ background: 'none', border: 'none', color: activeTab === 'today' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
-              <span style={{ fontSize: '18px', marginBottom: '2px' }}>☀️</span> Today
+            <button onClick={() => setActiveTab('today')} style={{ background: 'none', border: 'none', color: activeTab === 'today' ? 'var(--accent-neon)' : 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '4px' }}>🏠</span> Hjem
             </button>
-            <button onClick={() => setActiveTab('plan')} style={{ background: 'none', border: 'none', color: activeTab === 'plan' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
-              <span style={{ fontSize: '18px', marginBottom: '2px' }}>📅</span> Plan
+            <button onClick={() => setActiveTab('activities')} style={{ background: 'none', border: 'none', color: activeTab === 'activities' ? 'var(--accent-neon)' : 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '4px' }}>🗺️</span> Ruter
             </button>
-            <button onClick={() => setActiveTab('activities')} style={{ background: 'none', border: 'none', color: activeTab === 'activities' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
-              <span style={{ fontSize: '18px', marginBottom: '2px' }}>🗺️</span> Ruter
+            <button onClick={() => setActiveTab('plan')} style={{ background: 'none', border: 'none', color: activeTab === 'plan' ? 'var(--accent-neon)' : 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '4px' }}>📊</span> Statistik
             </button>
-            <button onClick={() => setActiveTab('friends')} style={{ background: 'none', border: 'none', color: activeTab === 'friends' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
-              <span style={{ fontSize: '18px', marginBottom: '2px' }}>👥</span> Venner
+            <button onClick={() => setActiveTab('friends')} style={{ background: 'none', border: 'none', color: activeTab === 'friends' ? 'var(--accent-neon)' : 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '4px' }}>🏆</span> Mål
             </button>
-            <button onClick={() => setActiveTab('body')} style={{ background: 'none', border: 'none', color: activeTab === 'body' ? '#10B981' : '#9CA3AF', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
-              <span style={{ fontSize: '18px', marginBottom: '2px' }}>🩺</span> Krop & Sko
+            <button onClick={() => setActiveTab('body')} style={{ background: 'none', border: 'none', color: activeTab === 'body' ? 'var(--accent-neon)' : 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '11px', fontWeight: '700', cursor: 'pointer' }}>
+              <span style={{ fontSize: '18px', marginBottom: '4px' }}>•••</span> Mere
             </button>
           </div>
         </div>
@@ -861,30 +895,30 @@ export default function App() {
 
       {/* DETALJE MODAL */}
       {selectedWorkoutModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: '16px', boxSizing: 'border-box' }}>
-          <div style={{ backgroundColor: '#13151C', border: '1px solid #222530', borderRadius: '20px', maxWidth: '440px', width: '100%', padding: '20px', maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(11, 15, 19, 0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999, padding: '16px', boxSizing: 'border-box' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', maxWidth: '440px', width: '100%', padding: '20px', maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
               <div>
-                <span style={{ backgroundColor: '#18191E', color: '#10B981', border: '1px solid #2A2D3A', fontSize: '10px', fontWeight: '800', padding: '2px 6px', borderRadius: '4px' }}>{selectedWorkoutModal.workout_type}</span>
-                <h2 style={{ margin: '6px 0 0 0', fontSize: '18px', fontWeight: '800', color: '#FFF' }}>{selectedWorkoutModal.title}</h2>
+                <span style={{ backgroundColor: 'var(--bg-main)', color: 'var(--accent-neon)', border: '1px solid var(--border-subtle)', fontSize: '10px', fontWeight: '800', padding: '2px 6px', borderRadius: '4px' }}>{selectedWorkoutModal.workout_type}</span>
+                <h2 style={{ margin: '6px 0 0 0', fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>{selectedWorkoutModal.title}</h2>
               </div>
-              <button onClick={() => setSelectedWorkoutModal(null)} style={{ backgroundColor: '#1E2028', border: 'none', color: '#9CA3AF', width: '28px', height: '28px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+              <button onClick={() => setSelectedWorkoutModal(null)} style={{ backgroundColor: 'var(--bg-main)', border: 'none', color: 'var(--text-muted)', width: '28px', height: '28px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
             </div>
-            <p style={{ color: '#9CA3AF', fontSize: '13px', lineHeight: '1.5', marginBottom: '16px' }}>{selectedWorkoutModal.description}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '13px', lineHeight: '1.5', marginBottom: '16px' }}>{selectedWorkoutModal.description}</p>
             {selectedWorkoutModal.exercises && (
               <div style={{ marginBottom: '16px' }}>
-                <h4 style={{ margin: '0 0 10px 0', fontSize: '12px', fontWeight: '800', color: '#A855F7', textTransform: 'uppercase' }}>Øvelsesguide</h4>
+                <h4 style={{ margin: '0 0 10px 0', fontSize: '12px', fontWeight: '800', color: 'var(--accent-neon)', textTransform: 'uppercase' }}>Øvelsesguide</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {selectedWorkoutModal.exercises.map((ex: any, idx: number) => (
-                    <div key={idx} style={{ backgroundColor: '#18191E', border: '1px solid #2A2D3A', padding: '12px 14px', borderRadius: '10px' }}>
-                      <div style={{ fontWeight: '800', fontSize: '14px', color: '#FFF', marginBottom: '4px' }}>{ex.name} ({ex.sets})</div>
-                      <div style={{ fontSize: '12px', color: '#9CA3AF' }}>💡 {ex.guide}</div>
+                    <div key={idx} style={{ backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-subtle)', padding: '12px 14px', borderRadius: '10px' }}>
+                      <div style={{ fontWeight: '800', fontSize: '14px', color: 'var(--text-primary)', marginBottom: '4px' }}>{ex.name} ({ex.sets})</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>💡 {ex.guide}</div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-            <button onClick={() => toggleWorkoutCompleted(selectedWorkoutModal.id, selectedWorkoutModal.completed)} style={{ width: '100%', backgroundColor: selectedWorkoutModal.completed ? '#1E2028' : '#10B981', color: selectedWorkoutModal.completed ? '#FFF' : '#090A0C', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>
+            <button onClick={() => toggleWorkoutCompleted(selectedWorkoutModal.id, selectedWorkoutModal.completed)} style={{ width: '100%', backgroundColor: selectedWorkoutModal.completed ? 'var(--bg-main)' : 'var(--accent-neon)', color: selectedWorkoutModal.completed ? 'var(--text-primary)' : 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>
               {selectedWorkoutModal.completed ? 'Nulstil status' : 'Marker som gennemført'}
             </button>
           </div>
