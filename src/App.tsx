@@ -275,6 +275,7 @@ export default function App() {
             <form onSubmit={handleEmailAuth} style={{ textAlign: 'left' }}>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail" required style={{ width: '100%', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)', marginBottom: '12px', boxSizing: 'border-box' }} />
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Adgangskode" required style={{ width: '100%', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)', marginBottom: '20px', boxSizing: 'border-box' }} />
+              {authError && <div style={{ color: '#EF4444', fontSize: '13px', fontWeight: '600', textAlign: 'center', marginBottom: '16px' }}>{authError}</div>}
               <button type="submit" disabled={loading} style={{ width: '100%', backgroundColor: 'var(--accent-primary)', color: 'var(--bg-main)', border: 'none', padding: '16px', borderRadius: '14px', fontWeight: '800', fontSize: '15px', cursor: 'pointer', marginBottom: '16px' }}>
                 {loading ? 'Indlæser...' : isSignUp ? 'Opret konto' : 'Log ind'}
               </button>
@@ -610,7 +611,6 @@ export default function App() {
                   </div>
                 )}
                 
-                {/* Genindført knapper til ret/slet kropsmål */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px' }}>
                   {bodyMetrics.map((m) => (
                     <div key={m.id} style={{ backgroundColor: 'var(--bg-main)', border: '1px solid var(--border-subtle)', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -637,7 +637,6 @@ export default function App() {
                 </form>
               </div>
 
-              {/* Genindført Coach Note tekstboks */}
               <h3 style={{ margin: '24px 0 16px 0', fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)' }}>🩺 Coach Note</h3>
               <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '20px', padding: '16px', marginBottom: '32px' }}>
                 <textarea placeholder="F.eks. ømhed i højre knæ..." value={bodyIssue} onChange={(e) => setBodyIssue(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', fontSize: '13px', minHeight: '80px', boxSizing: 'border-box', marginBottom: '12px' }} />
