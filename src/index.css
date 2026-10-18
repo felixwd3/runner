@@ -36,3 +36,11 @@ button:focus, button:active {
   width: 0px;
   background: transparent;
 }
+
+/* Gør det lyse standardkort mørkt og eksklusivt */
+.leaflet-layer,
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out,
+.leaflet-control-attribution {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
