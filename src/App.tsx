@@ -684,30 +684,70 @@ export default function App() {
         </div>
       )}
 
-      {/* FIXED BOTTOM NAVIGATION */}
-      {user && (
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(7, 17, 22, 0.95)', borderTop: '1px solid var(--border-subtle)', padding: '12px 0 24px 0', display: 'flex', justifyContent: 'space-around', zIndex: 900 }}>
-          <div style={{ display: 'flex', width: '100%', maxWidth: '480px', margin: '0 auto', justifyContent: 'space-around' }}>
-            <button onClick={() => setActiveTab('hjem')} style={{ background: 'none', border: 'none', color: activeTab === 'hjem' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-              Hjem
-            </button>
-            <button onClick={() => setActiveTab('ruter')} style={{ background: 'none', border: 'none', color: activeTab === 'ruter' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              Ruter
-            </button>
-            <button onClick={() => setActiveTab('statistik')} style={{ background: 'none', border: 'none', color: activeTab === 'statistik' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
-              Statistik
-            </button>
-            <button onClick={() => setActiveTab('coach')} style={{ background: 'none', border: 'none', color: activeTab === 'coach' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-              Coach
-            </button>
-            <button onClick={() => setActiveTab('mere')} style={{ background: 'none', border: 'none', color: activeTab === 'mere' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-              Mere
-            </button>
+      {/* MULTI-STEP ONBOARDING WIZARD MODAL */}
+      {showCoachWizard && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(7, 17, 22, 0.85)', backdropFilter: 'blur(8px)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', boxSizing: 'border-box' }}>
+          <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '24px', maxWidth: '420px', width: '100%', padding: '24px', boxSizing: 'border-box' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--accent-primary)', fontWeight: '800', textTransform: 'uppercase' }}>Trin {wizardStep} af 3</span>
+              <button onClick={() => setShowCoachWizard(false)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '16px', cursor: 'pointer' }}>✕</button>
+            </div>
+
+            {wizardStep === 1 && (
+              <div>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px' }}>Unlock Your Potential</h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '20px' }}>What's your running level?</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '20px' }}>
+                  {['Beginner', 'Intermediate', 'Advanced', 'Elite'].map((lvl) => (
+                    <button key={lvl} onClick={() => setCoachLevel(lvl as any)} style={{ padding: '14px', borderRadius: '12px', border: coachLevel === lvl ? '2px solid var(--accent-primary)' : '1px solid var(--border-subtle)', backgroundColor: coachLevel === lvl ? 'rgba(80, 230, 172, 0.1)' : 'var(--bg-main)', color: 'var(--text-primary)', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{lvl}</button>
+                  ))}
+                </div>
+                <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>What distance are you training for?</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '24px' }}>
+                  {['5k', '10k', 'Half Marathon', 'Marathon'].map((dist) => (
+                    <button key={dist} onClick={() => setCoachDistance(dist)} style={{ padding: '12px', borderRadius: '12px', border: coachDistance === dist ? '2px solid var(--accent-primary)' : '1px solid var(--border-subtle)', backgroundColor: coachDistance === dist ? 'rgba(80, 230, 172, 0.1)' : 'var(--bg-main)', color: 'var(--text-primary)', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{dist}</button>
+                  ))}
+                </div>
+                <button onClick={() => setWizardStep(2)} style={{ width: '100%', backgroundColor: 'var(--accent-primary)', color: 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
+              </div>
+            )}
+
+            {wizardStep === 2 && (
+              <div>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px' }}>Træningsmængde</h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '20px' }}>Days per week can you train?</p>
+                <div style={{ display: 'flex', gap: '6px', marginBottom: '20px' }}>
+                  {[2, 3, 4, 5, 6, 7].map((d) => (
+                    <button key={d} onClick={() => setCoachDays(d)} style={{ flex: 1, padding: '12px 0', borderRadius: '10px', border: coachDays === d ? '2px solid var(--accent-primary)' : '1px solid var(--border-subtle)', backgroundColor: coachDays === d ? 'rgba(80, 230, 172, 0.1)' : 'var(--bg-main)', color: 'var(--text-primary)', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}>{d}</button>
+                  ))}
+                </div>
+                <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>How long do you want to train for?</h4>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+                  {[8, 10, 12].map((w) => (
+                    <button key={w} onClick={() => setCoachWeeks(w)} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: coachWeeks === w ? '2px solid var(--accent-primary)' : '1px solid var(--border-subtle)', backgroundColor: coachWeeks === w ? 'rgba(80, 230, 172, 0.1)' : 'var(--bg-main)', color: 'var(--text-primary)', fontWeight: '700', fontSize: '12px', cursor: 'pointer' }}>{w} uger</button>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => setWizardStep(1)} style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)', padding: '14px 16px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>← Tilbage</button>
+                  <button onClick={() => setWizardStep(3)} style={{ flex: 1, backgroundColor: 'var(--accent-primary)', color: 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>Næste trin →</button>
+                </div>
+              </div>
+            )}
+
+            {wizardStep === 3 && (
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--accent-primary)', fontWeight: '800' }}>Klar til generering</span>
+                <h3 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', margin: '8px 0' }}>Estimated {coachDistance} time in {coachWeeks} weeks:</h3>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: 'var(--text-primary)', margin: '16px 0', backgroundColor: 'var(--bg-main)', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-subtle)' }}>
+                  {coachDistance === 'Marathon' ? '3:40 - 3:45' : coachDistance === 'Half Marathon' ? '1:42 - 1:48' : '44:30 - 46:00'}
+                </div>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginBottom: '24px' }}>Baseret på dine valg.</p>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => setWizardStep(2)} style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)', padding: '14px 16px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>Tilbage</button>
+                  <button onClick={generatePersonalizedCoachPlan} disabled={loading} style={{ flex: 1, backgroundColor: 'var(--accent-primary)', color: 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', fontSize: '14px', cursor: 'pointer' }}>{loading ? 'Genererer...' : 'Build My Plan'}</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
