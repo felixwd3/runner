@@ -8,22 +8,17 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Tillad CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // SIKKERHEDSRETTELSE: Kontrollér webhook-hemmeligheden fra Make.com
+    // Tjek Webhook Secret
     const secretToken = req.headers.get('x-webhook-secret');
     const expectedSecret = Deno.env.get('WEBHOOK_SECRET');
-    
     if (!expectedSecret || secretToken !== expectedSecret) {
       console.warn("Uautoriseret adgangsforsøg til workout-receiver");
-      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 401,
-      });
+      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 });
     }
 
     const url = new URL(req.url)
@@ -34,8 +29,6 @@ serve(async (req) => {
       throw new Error("Manglende user_id i URL eller gpx_text i body")
     }
 
-    // Vi bruger fortsat service_role, da Make.com er en server-klient uden bruger-session, 
-    // men kaldet er nu beskyttet af vores WEBHOOK_SECRET.
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     const supabase = createClient(supabaseUrl, supabaseKey)
@@ -47,11 +40,30 @@ serve(async (req) => {
       throw new Error("Ugyldig GPX-fil: Ingen ruter fundet")
     }
 
+    const points = gpx.tracks[0].points;
+    const runDate = new Date(points[0].time || Date.now());
+    
+    // SIKKERHEDSRETTELSE: Opret unikt fingeraftryk baseret på starttidspunkt
+    const externalId = runDate.toISOString(); 
+
+    // Tjek om turen allerede findes
+    const { data: existingRuns } = await supabase
+      .from('runner_workouts')
+      .select('id')
+      .eq('user_id', user_id)
+      .eq('external_id', externalId)
+      .limit(1);
+
+    if (existingRuns && existingRuns.length > 0) {
+      // Returner 200 (så Make.com ikke fejler og prøver igen), men afvis importen
+      return new Response(JSON.stringify({ success: true, message: `Løbetur allerede importeret (dublet afvist)` }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 });
+    }
+
+    // Hvis vi når hertil, er turen ny. Udregn data.
     const distanceMeters = Math.round(gpx.tracks[0].distance.total)
     const distanceKm = parseFloat((distanceMeters / 1000).toFixed(2))
     const coordinates = gpx.tracks[0].points.map((p: any) => [p.lat, p.lon])
     
-    const points = gpx.tracks[0].points;
     const startTime = new Date(points[0].time).getTime();
     const endTime = new Date(points[points.length - 1].time).getTime();
     const durationSeconds = Math.round((endTime - startTime) / 1000);
@@ -75,9 +87,9 @@ serve(async (req) => {
       avgHr = Math.round(totalHr / hrMatches.length);
     }
 
-    const runDate = new Date(points[0].time || Date.now())
     const todayStr = runDate.toISOString().split('T')[0]
 
+    // Indsæt kortruten
     await supabase.from('runner_routes').insert([{
       user_id,
       title: `Løbetur - ${runDate.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' })}`,
@@ -99,9 +111,11 @@ serve(async (req) => {
       actual_distance_km: distanceKm,
       actual_duration_seconds: durationSeconds,
       actual_pace_min: actualPaceMin,
-      avg_heart_rate: avgHr
+      avg_heart_rate: avgHr,
+      external_id: externalId // Gem fingeraftrykket!
     }
 
+    // Opdater kalender
     if (workouts && workouts.length > 0) {
       await supabase.from('runner_workouts').update(workoutPayload).eq('id', workouts[0].id)
     } else {
@@ -114,6 +128,7 @@ serve(async (req) => {
       }])
     }
 
+    // Opdater skotæller kun ÉN gang
     const { data: shoes } = await supabase
       .from('runner_shoes')
       .select('id, current_km, max_km')
