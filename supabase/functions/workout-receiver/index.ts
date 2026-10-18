@@ -4,15 +4,28 @@ import GpxParser from "npm:gpxparser@3.0.8"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-webhook-secret',
 }
 
 serve(async (req) => {
+  // Tillad CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
+    // SIKKERHEDSRETTELSE: Kontrollér webhook-hemmeligheden fra Make.com
+    const secretToken = req.headers.get('x-webhook-secret');
+    const expectedSecret = Deno.env.get('WEBHOOK_SECRET');
+    
+    if (!expectedSecret || secretToken !== expectedSecret) {
+      console.warn("Uautoriseret adgangsforsøg til workout-receiver");
+      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
+    }
+
     const url = new URL(req.url)
     const user_id = url.searchParams.get('user_id')
     const gpx_text = await req.text()
@@ -21,6 +34,8 @@ serve(async (req) => {
       throw new Error("Manglende user_id i URL eller gpx_text i body")
     }
 
+    // Vi bruger fortsat service_role, da Make.com er en server-klient uden bruger-session, 
+    // men kaldet er nu beskyttet af vores WEBHOOK_SECRET.
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     const supabase = createClient(supabaseUrl, supabaseKey)
@@ -32,18 +47,15 @@ serve(async (req) => {
       throw new Error("Ugyldig GPX-fil: Ingen ruter fundet")
     }
 
-    // 1. Udregn distance
     const distanceMeters = Math.round(gpx.tracks[0].distance.total)
     const distanceKm = parseFloat((distanceMeters / 1000).toFixed(2))
     const coordinates = gpx.tracks[0].points.map((p: any) => [p.lat, p.lon])
     
-    // 2. Udregn tid i sekunder
     const points = gpx.tracks[0].points;
     const startTime = new Date(points[0].time).getTime();
     const endTime = new Date(points[points.length - 1].time).getTime();
     const durationSeconds = Math.round((endTime - startTime) / 1000);
 
-    // 3. Udregn Pace (Min/Km)
     let actualPaceMin = "-:-";
     if (distanceKm > 0 && durationSeconds > 0) {
       const paceSeconds = durationSeconds / distanceKm;
@@ -52,7 +64,6 @@ serve(async (req) => {
       actualPaceMin = `${paceMins}:${paceSecsLeft.toString().padStart(2, '0')}`;
     }
 
-    // 4. Find gennemsnitspuls (Skjult i GPX extensions)
     const hrMatches = gpx_text.match(/<[^>]*hr>(\d+)<\/[^>]*hr>/ig);
     let avgHr = null;
     if (hrMatches && hrMatches.length > 0) {
