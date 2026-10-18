@@ -25,6 +25,16 @@ function RouteBuilderClicker({ onPointAdd }: { onPointAdd: (latlng: [number, num
   return null;
 }
 
+// Format sekunder til MM:SS eller HH:MM:SS
+const formatDuration = (totalSeconds: number) => {
+  if (!totalSeconds) return '--:--';
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+};
+
 export default function App() {
   const [user, setUser] = useState<any>(null);
   const [workouts, setWorkouts] = useState<any[]>([]);
@@ -316,9 +326,24 @@ export default function App() {
                       {new Date(lastWorkout.scheduled_date).toLocaleDateString('da-DK', { weekday: 'long', day: 'numeric', month: 'short' })}
                     </p>
                     <div style={{ display: 'flex', gap: '32px', marginBottom: '16px' }}>
-                      <div><div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Tid</div><div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>--:--</div></div>
-                      <div><div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Pace</div><div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>-:- <span style={{fontSize:'14px', color:'var(--text-secondary)', fontWeight:'500'}}>/km</span></div></div>
-                      <div><div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Mål km</div><div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>{totalPlanDistance.toFixed(1)}</div></div>
+                      <div>
+                        <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Tid</div>
+                        <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                          {lastWorkout.actual_duration_seconds ? formatDuration(lastWorkout.actual_duration_seconds) : '--:--'}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Pace</div>
+                        <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                          {lastWorkout.actual_pace_min || '-:-'} <span style={{fontSize:'14px', color:'var(--text-secondary)', fontWeight:'500'}}>/km</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Puls</div>
+                        <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                          {lastWorkout.avg_heart_rate || '---'} <span style={{fontSize:'14px', color:'var(--text-secondary)', fontWeight:'500'}}>bpm</span>
+                        </div>
+                      </div>
                     </div>
                   </>
                 ) : (
@@ -464,7 +489,9 @@ export default function App() {
                         <div>
                           <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>{formattedDate}</div>
                           <div style={{ fontSize: '15px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>{w.title}</div>
-                          <div style={{ fontSize: '12px', color: 'var(--accent-primary)', fontWeight: '600' }}>{w.actual_distance_km} km</div>
+                          <div style={{ fontSize: '12px', color: 'var(--accent-primary)', fontWeight: '600' }}>
+                            {w.actual_distance_km} km • {w.actual_pace_min || '-:-'}/km
+                          </div>
                         </div>
                         <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'rgba(80, 230, 172, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>👟</div>
                       </div>
@@ -716,34 +743,6 @@ export default function App() {
                 </div>
               </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* FIXED BOTTOM NAVIGATION */}
-      {user && (
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(7, 17, 22, 0.95)', borderTop: '1px solid var(--border-subtle)', padding: '12px 0 24px 0', display: 'flex', justifyContent: 'space-around', zIndex: 900 }}>
-          <div style={{ display: 'flex', width: '100%', maxWidth: '480px', margin: '0 auto', justifyContent: 'space-around' }}>
-            <button onClick={() => setActiveTab('hjem')} style={{ background: 'none', border: 'none', color: activeTab === 'hjem' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-              Hjem
-            </button>
-            <button onClick={() => setActiveTab('ruter')} style={{ background: 'none', border: 'none', color: activeTab === 'ruter' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              Ruter
-            </button>
-            <button onClick={() => setActiveTab('statistik')} style={{ background: 'none', border: 'none', color: activeTab === 'statistik' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
-              Statistik
-            </button>
-            <button onClick={() => setActiveTab('coach')} style={{ background: 'none', border: 'none', color: activeTab === 'coach' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-              Coach
-            </button>
-            <button onClick={() => setActiveTab('mere')} style={{ background: 'none', border: 'none', color: activeTab === 'mere' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-              Mere
-            </button>
           </div>
         </div>
       )}

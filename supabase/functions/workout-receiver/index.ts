@@ -13,11 +13,8 @@ serve(async (req) => {
   }
 
   try {
-    // 1. Hent user_id fra selve linket i stedet for JSON
     const url = new URL(req.url)
     const user_id = url.searchParams.get('user_id')
-    
-    // 2. Hent den rå GPX-fil direkte fra anmodningen
     const gpx_text = await req.text()
 
     if (!user_id || !gpx_text) {
@@ -35,10 +32,39 @@ serve(async (req) => {
       throw new Error("Ugyldig GPX-fil: Ingen ruter fundet")
     }
 
+    // 1. Udregn distance
     const distanceMeters = Math.round(gpx.tracks[0].distance.total)
     const distanceKm = parseFloat((distanceMeters / 1000).toFixed(2))
     const coordinates = gpx.tracks[0].points.map((p: any) => [p.lat, p.lon])
-    const runDate = new Date(gpx.tracks[0].points[0]?.time || Date.now())
+    
+    // 2. Udregn tid i sekunder
+    const points = gpx.tracks[0].points;
+    const startTime = new Date(points[0].time).getTime();
+    const endTime = new Date(points[points.length - 1].time).getTime();
+    const durationSeconds = Math.round((endTime - startTime) / 1000);
+
+    // 3. Udregn Pace (Min/Km)
+    let actualPaceMin = "-:-";
+    if (distanceKm > 0 && durationSeconds > 0) {
+      const paceSeconds = durationSeconds / distanceKm;
+      const paceMins = Math.floor(paceSeconds / 60);
+      const paceSecsLeft = Math.floor(paceSeconds % 60);
+      actualPaceMin = `${paceMins}:${paceSecsLeft.toString().padStart(2, '0')}`;
+    }
+
+    // 4. Find gennemsnitspuls (Skjult i GPX extensions)
+    const hrMatches = gpx_text.match(/<[^>]*hr>(\d+)<\/[^>]*hr>/ig);
+    let avgHr = null;
+    if (hrMatches && hrMatches.length > 0) {
+      let totalHr = 0;
+      hrMatches.forEach((match: string) => {
+        const val = match.match(/\d+/);
+        if (val) totalHr += parseInt(val[0], 10);
+      });
+      avgHr = Math.round(totalHr / hrMatches.length);
+    }
+
+    const runDate = new Date(points[0].time || Date.now())
     const todayStr = runDate.toISOString().split('T')[0]
 
     await supabase.from('runner_routes').insert([{
@@ -56,21 +82,24 @@ serve(async (req) => {
       .eq('completed', false)
       .limit(1)
 
+    const workoutPayload = {
+      completed: true,
+      status: 'completed',
+      actual_distance_km: distanceKm,
+      actual_duration_seconds: durationSeconds,
+      actual_pace_min: actualPaceMin,
+      avg_heart_rate: avgHr
+    }
+
     if (workouts && workouts.length > 0) {
-      await supabase.from('runner_workouts').update({
-        completed: true,
-        status: 'completed',
-        actual_distance_km: distanceKm
-      }).eq('id', workouts[0].id)
+      await supabase.from('runner_workouts').update(workoutPayload).eq('id', workouts[0].id)
     } else {
       await supabase.from('runner_workouts').insert([{
         user_id,
         title: 'Uplanlagt løbetur',
         category: 'running',
         scheduled_date: todayStr,
-        completed: true,
-        status: 'completed',
-        actual_distance_km: distanceKm
+        ...workoutPayload
       }])
     }
 
@@ -87,7 +116,7 @@ serve(async (req) => {
       }).eq('id', activeShoe.id)
     }
 
-    return new Response(JSON.stringify({ success: true, message: `Rute på ${distanceKm}km gemt!` }), {
+    return new Response(JSON.stringify({ success: true, message: `Rute gemt med pace ${actualPaceMin}` }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
