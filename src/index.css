@@ -1,10 +1,18 @@
 :root {
-  --bg-main: #0B0F13;
-  --bg-card: #151A21;
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --accent-neon: #25E57B;
-  --text-primary: #FFFFFF;
-  --text-muted: #8B95A1;
+  /* RunQuest Farvepalet */
+  --bg-main: #071116;
+  --bg-card: #10232B;
+  --bg-secondary: #0D1C23;
+  --border-subtle: #203740;
+  
+  --accent-primary: #50E6AC;
+  --accent-secondary: #76DCCB;
+  
+  --text-primary: #F4F8F7;
+  --text-secondary: #91A7AD;
+  
+  --status-success: #42D99A;
+  --status-warning: #F4B942;
 }
 
 html, body {
@@ -15,6 +23,7 @@ html, body {
   width: 100%;
   overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 button:focus, button:active {
@@ -22,7 +31,7 @@ button:focus, button:active {
   box-shadow: none !important;
 }
 
-/* Gør scrollbars usynlige for et renere app-look */
+/* Gør scrollbars usynlige for et rent, nativt app-look */
 ::-webkit-scrollbar {
   width: 0px;
   background: transparent;
