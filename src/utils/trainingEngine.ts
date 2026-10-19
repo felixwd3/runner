@@ -1,3 +1,5 @@
+// Fil: src/utils/trainingEngine.ts
+
 export type CoachLevel = 'Beginner' | 'Intermediate' | 'Advanced' | 'Elite';
 
 export interface TrainingGoal {
@@ -29,13 +31,15 @@ export interface WorkoutPayload {
 }
 
 /**
- * Ren TypeScript-funktion, der genererer et array af træningspas.
- * Ingen Supabase-kald eller React-states herinde.
+ * Trin 3: Progressiv træningsmotor, der skræddersyer ugerne 
+ * baseret på antal uger til måldatoen, niveau og valgte løbedage.
  */
 export function generateTrainingPlan(userId: string, goal: TrainingGoal): WorkoutPayload[] {
   const today = new Date();
   const generatedWorkouts: WorkoutPayload[] = [];
-  const baseMult = goal.level === 'Beginner' ? 0.75 : goal.level === 'Advanced' ? 1.25 : goal.level === 'Elite' ? 1.5 : 1.0;
+  
+  // Basismultiplikator ud fra niveau
+  let baseMult = goal.level === 'Beginner' ? 0.75 : goal.level === 'Advanced' ? 1.25 : goal.level === 'Elite' ? 1.5 : 1.0;
 
   const strengthBanks = [
     {
@@ -58,49 +62,89 @@ export function generateTrainingPlan(userId: string, goal: TrainingGoal): Workou
     }
   ];
 
+  // Træningspas fordeles progressivt hen over de beregnede uger frem mod måldatoen
   for (let week = 1; week <= goal.weeks; week++) {
+    const isTaperWeek = (week === goal.weeks && goal.weeks > 2); // Nedtrapning i sidste uge før løb
+    const isRecoveryWeek = (week % 4 === 0 && !isTaperWeek); // Restitutionsuge hver 4. uge
+
+    const runMult = isTaperWeek ? baseMult * 0.5 : isRecoveryWeek ? baseMult * 0.7 : baseMult + (week * 0.03);
+
     const daysOffset = (week - 1) * 7;
     const tuesDate = new Date(today.getTime() + (daysOffset + 2) * 86400000).toISOString().split('T')[0];
     const thursDate = new Date(today.getTime() + (daysOffset + 4) * 86400000).toISOString().split('T')[0];
     const friDate = new Date(today.getTime() + (daysOffset + 5) * 86400000).toISOString().split('T')[0];
     const sunDate = new Date(today.getTime() + (daysOffset + 7) * 86400000).toISOString().split('T')[0];
 
-    const runMult = (week % 4 === 0) ? baseMult * 0.7 : baseMult;
-    
-    // 1. Tirsdag (Easy)
-    const tuesDist = Math.round((4 + (week * 0.3)) * runMult * 10) / 10;
+    // 1. Tirsdag: Rolig tur / Restitution
+    const tuesDist = isTaperWeek ? 3.0 : Math.round((4 + (week * 0.2)) * runMult * 10) / 10;
     generatedWorkouts.push({
-      user_id: userId, week_number: week, title: `${tuesDist}km Rolig tur`, category: 'running', workout_type: 'Easy',
-      target_distance_km: tuesDist, target_pace_min: '5:30 - 6:15', description: 'Rolig Zone 2 restitutionstur.',
-      scheduled_date: tuesDate, completed: false, status: 'pending',
+      user_id: userId, 
+      week_number: week, 
+      title: isTaperWeek ? `Nedtrapning: ${tuesDist}km Let tur` : `${tuesDist}km Rolig tur`, 
+      category: 'running', 
+      workout_type: isTaperWeek ? 'Taper' : 'Easy',
+      target_distance_km: tuesDist, 
+      target_pace_min: '5:30 - 6:15', 
+      description: isTaperWeek ? 'Kort og let tur for at holde kroppen igang.' : 'Rolig Zone 2 restitutionstur.',
+      scheduled_date: tuesDate, 
+      completed: false, 
+      status: 'pending',
     });
 
-    // 2. Torsdag (Intervaller - HVIS >= 3 Dage)
-    if (goal.daysPerWeek >= 3) {
-      const thursDist = Math.round((5 + (week * 0.2)) * runMult * 10) / 10;
+    // 2. Torsdag: Intervaller (hvis brugeren har valgt 3+ dage)
+    if (goal.daysPerWeek >= 3 && !isTaperWeek) {
+      const thursDist = Math.round((5 + (week * 0.15)) * runMult * 10) / 10;
       generatedWorkouts.push({
-        user_id: userId, week_number: week, title: `${thursDist}km Tærskel Intervaller`, category: 'running', workout_type: 'Interval',
-        target_distance_km: thursDist, target_pace_min: '4:30 - 4:55', description: '1.5km opvarmning -> Hårdt tempo -> Nedvarmning.',
-        scheduled_date: thursDate, completed: false, status: 'pending',
+        user_id: userId, 
+        week_number: week, 
+        title: `${thursDist}km Tærskel Intervaller`, 
+        category: 'running', 
+        workout_type: 'Interval',
+        target_distance_km: thursDist, 
+        target_pace_min: '4:30 - 4:55', 
+        description: '1.5km opvarmning -> Hårdt tempo -> Nedvarmning.',
+        scheduled_date: thursDate, 
+        completed: false, 
+        status: 'pending',
       });
     }
 
-    // 3. Fredag (Styrke - HVIS >= 4 Dage)
-    if (goal.daysPerWeek >= 4) {
+    // 3. Fredag: Hjemmestyrke (hvis brugeren har valgt 4+ dage)
+    if (goal.daysPerWeek >= 4 && !isTaperWeek) {
       const bank = strengthBanks[(week - 1) % strengthBanks.length];
       generatedWorkouts.push({
-        user_id: userId, week_number: week, title: `Styrke: ${bank.title}`, category: 'strength', workout_type: 'Styrke',
-        target_distance_km: 0, target_pace_min: '30 min', description: bank.desc,
-        scheduled_date: friDate, completed: false, status: 'pending', exercises: bank.exercises
+        user_id: userId, 
+        week_number: week, 
+        title: `Styrke: ${bank.title}`, 
+        category: 'strength', 
+        workout_type: 'Styrke',
+        target_distance_km: 0, 
+        target_pace_min: '30 min', 
+        description: bank.desc,
+        scheduled_date: friDate, 
+        completed: false, 
+        status: 'pending', 
+        exercises: bank.exercises
       });
     }
 
-    // 4. Søndag (Long Run)
-    const longRunDist = Math.round((7 + (week * 0.6)) * runMult * 10) / 10;
-      generatedWorkouts.push({
-      user_id: userId, week_number: week, title: `${longRunDist}km Progressiv Langtur`, category: 'running', workout_type: 'Long Run',
-      target_distance_km: longRunDist, target_pace_min: '5:45 - 6:30', description: `Ugentlig langtur mod dit mål. Start roligt ud!`,
-      scheduled_date: sunDate, completed: false, status: 'pending',
+    // 4. Søndag: Langtur (Progressiv opbygning mod målet)
+    const maxLongRun = goal.distance === 'Marathon' ? 32 : goal.distance === 'Half Marathon' ? 21 : 12;
+    const calculatedLongRun = Math.min(maxLongRun, Math.round((6 + (week * 0.7)) * runMult * 10) / 10);
+    const longRunDist = isTaperWeek ? 6.0 : calculatedLongRun;
+
+    generatedWorkouts.push({
+      user_id: userId, 
+      week_number: week, 
+      title: isTaperWeek ? `Sidste lette langtur (${longRunDist}km)` : `${longRunDist}km Progressiv Langtur`, 
+      category: 'running', 
+      workout_type: 'Long Run',
+      target_distance_km: longRunDist, 
+      target_pace_min: '5:45 - 6:30', 
+      description: isTaperWeek ? 'Rolig tur for at bevare formen uden at slide benene.' : `Ugentlig langtur mod dit mål (${goal.distance}). Start roligt ud!`,
+      scheduled_date: sunDate, 
+      completed: false, 
+      status: 'pending',
     });
   }
 

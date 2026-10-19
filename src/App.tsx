@@ -37,12 +37,24 @@ const formatDuration = (totalSeconds: number) => {
 
 const getActivityTypeAndPace = (w: any) => {
   if (w.category === 'strength') return { type: 'styrke', paceSecs: 0 };
-  if (!w.actual_pace_min || !w.actual_pace_min.includes(':')) return { type: 'løb', paceSecs: 0 };
+  
+  // Hvis pacet mangler eller er defekt (-:-), smider vi den i gåture
+  if (!w.actual_pace_min || w.actual_pace_min === '-:-' || !w.actual_pace_min.includes(':')) {
+    return { type: 'gåtur', paceSecs: 0 };
+  }
+  
   const parts = w.actual_pace_min.split(':');
   const paceSecs = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+  
+  // Sikkerhedsnet mod forkerte tal
+  if (isNaN(paceSecs)) return { type: 'gåtur', paceSecs: 0 };
+  
   let type = 'løb';
-  if (paceSecs > 540) type = 'gåtur';
-  if (paceSecs < 180) type = 'cykel';
+  // Langsommere end 8:00 min/km = Gåtur
+  if (paceSecs >= 480) type = 'gåtur';
+  // Hurtigere end 3:45 min/km = Cykel
+  else if (paceSecs <= 225) type = 'cykel';
+  
   return { type, paceSecs };
 };
 
