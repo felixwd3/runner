@@ -35,14 +35,27 @@ const formatDuration = (totalSeconds: number) => {
   return `${m}:${s.toString().padStart(2, '0')}`;
 };
 
+// OPPDATERET LOGIK: Smartere frasortering
 const getActivityTypeAndPace = (w: any) => {
   if (w.category === 'strength') return { type: 'styrke', paceSecs: 0 };
-  if (!w.actual_pace_min || !w.actual_pace_min.includes(':')) return { type: 'løb', paceSecs: 0 };
+  
+  // Hvis pacet mangler eller er defekt (-:-), smider vi den i gåture
+  if (!w.actual_pace_min || w.actual_pace_min === '-:-' || !w.actual_pace_min.includes(':')) {
+    return { type: 'gåtur', paceSecs: 0 };
+  }
+  
   const parts = w.actual_pace_min.split(':');
   const paceSecs = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+  
+  // Sikkerhedsnet mod forkerte tal
+  if (isNaN(paceSecs)) return { type: 'gåtur', paceSecs: 0 };
+  
   let type = 'løb';
-  if (paceSecs > 540) type = 'gåtur';
-  if (paceSecs < 180) type = 'cykel';
+  // Langsommere end 8:00 min/km = Gåtur
+  if (paceSecs >= 480) type = 'gåtur';
+  // Hurtigere end 3:45 min/km = Cykel
+  else if (paceSecs <= 225) type = 'cykel';
+  
   return { type, paceSecs };
 };
 
@@ -66,18 +79,14 @@ export default function App() {
 
   const [showCoachWizard, setShowCoachWizard] = useState(false);
   const [wizardStep, setWizardStep] = useState<number>(1);
-  
-  // --- FASE 2 STATES ---
   const [coachDistance, setCoachDistance] = useState<string>('10k');
   const [coachDays, setCoachDays] = useState<number>(4);
-  const [targetDate, setTargetDate] = useState<string>(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 56); // 8 uger ude i fremtiden som standard
-    return d.toISOString().split('T')[0];
-  });
+  const defaultDate = new Date();
+  defaultDate.setDate(defaultDate.getDate() + 56);
+  const [targetDate, setTargetDate] = useState<string>(defaultDate.toISOString().split('T')[0]);
   const [manualLongestRun, setManualLongestRun] = useState<string>('5');
-  
   const [aiMessage, setAiMessage] = useState<string>('');
+
   const [bodyIssue, setBodyIssue] = useState('');
   const [aiBodyAdvice, setAiBodyAdvice] = useState('');
 
@@ -183,13 +192,15 @@ export default function App() {
     km: w.actual_distance_km
   }));
 
-  // --- FASE 2: Løberprofil baseret på data ---
   const calculateRunnerProfile = () => {
-    if (completedRuns.length === 0) return null;
-    const longestRun = Math.max(...completedRuns.map(w => w.actual_distance_km || 0));
+    const validRuns = completedRuns.filter(w => (w.actual_distance_km || 0) >= 1.5);
+    if (validRuns.length === 0) return null;
+    
+    const longestRun = Math.max(...validRuns.map(w => w.actual_distance_km || 0));
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 28);
-    const recentRuns = completedRuns.filter(w => new Date(w.scheduled_date) >= thirtyDaysAgo);
+    const recentRuns = validRuns.filter(w => new Date(w.scheduled_date) >= thirtyDaysAgo);
+    
     const recentVolume = recentRuns.reduce((sum, w) => sum + (w.actual_distance_km || 0), 0);
     const avgWeeklyVolume = Math.round((recentVolume / 4) * 10) / 10;
 
@@ -250,12 +261,10 @@ export default function App() {
     }
   };
 
-  // --- FASE 2: Tilpasset generator-kald ---
   const generatePersonalizedCoachPlan = async () => {
     if (!user) return;
     setLoading(true);
     
-    // BEVARET SIKKERHED: Slet kun uafsluttede pas for DEN AKTIVE BRUGER
     await supabase.from('runner_workouts').delete().eq('user_id', user.id).eq('completed', false);
     
     const today = new Date();
@@ -269,7 +278,6 @@ export default function App() {
     if (effectiveLongest >= 18) tempLevel = 'Advanced';
     if (effectiveLongest >= 30) tempLevel = 'Elite';
 
-    // Generer planen via den uafhængige træningsmotor
     const generatedWorkouts = generateTrainingPlan(user.id, {
       level: tempLevel as any,
       distance: coachDistance,
@@ -768,7 +776,6 @@ export default function App() {
               <button onClick={() => setShowCoachWizard(false)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '16px', cursor: 'pointer' }}>✕</button>
             </div>
 
-            {/* FASE 2: OPPDATERET TRIN 1 */}
             {wizardStep === 1 && (
               <div>
                 <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '16px' }}>Din Løberprofil</h3>
@@ -803,7 +810,6 @@ export default function App() {
               </div>
             )}
 
-            {/* FASE 2: OPPDATERET TRIN 2 */}
             {wizardStep === 2 && (
               <div>
                 <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px' }}>Træningsmængde</h3>
@@ -826,7 +832,6 @@ export default function App() {
               </div>
             )}
 
-            {/* FASE 2: OPPDATERET TRIN 3 */}
             {wizardStep === 3 && (
               <div style={{ textAlign: 'center' }}>
                 <span style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--accent-primary)', fontWeight: '800' }}>Klar til generering</span>
@@ -872,34 +877,6 @@ export default function App() {
             )}
             <button onClick={(e) => toggleWorkoutCompleted(selectedWorkoutModal.id, selectedWorkoutModal.completed, e)} style={{ width: '100%', backgroundColor: selectedWorkoutModal.completed ? 'var(--bg-main)' : 'var(--accent-primary)', color: selectedWorkoutModal.completed ? 'var(--text-primary)' : 'var(--bg-main)', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}>
               {selectedWorkoutModal.completed ? 'Nulstil status' : 'Marker som gennemført'}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* FIXED BOTTOM NAVIGATION */}
-      {user && (
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(7, 17, 22, 0.95)', borderTop: '1px solid var(--border-subtle)', padding: '12px 0 24px 0', display: 'flex', justifyContent: 'space-around', zIndex: 900 }}>
-          <div style={{ display: 'flex', width: '100%', maxWidth: '480px', margin: '0 auto', justifyContent: 'space-around' }}>
-            <button onClick={() => setActiveTab('hjem')} style={{ background: 'none', border: 'none', color: activeTab === 'hjem' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-              Hjem
-            </button>
-            <button onClick={() => setActiveTab('ruter')} style={{ background: 'none', border: 'none', color: activeTab === 'ruter' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              Ruter
-            </button>
-            <button onClick={() => setActiveTab('statistik')} style={{ background: 'none', border: 'none', color: activeTab === 'statistik' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
-              Statistik
-            </button>
-            <button onClick={() => setActiveTab('coach')} style={{ background: 'none', border: 'none', color: activeTab === 'coach' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-              Coach
-            </button>
-            <button onClick={() => setActiveTab('mere')} style={{ background: 'none', border: 'none', color: activeTab === 'mere' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-              Mere
             </button>
           </div>
         </div>
