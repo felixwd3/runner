@@ -35,27 +35,14 @@ const formatDuration = (totalSeconds: number) => {
   return `${m}:${s.toString().padStart(2, '0')}`;
 };
 
-// OPPDATERET LOGIK: Smartere frasortering
 const getActivityTypeAndPace = (w: any) => {
   if (w.category === 'strength') return { type: 'styrke', paceSecs: 0 };
-  
-  // Hvis pacet mangler eller er defekt (-:-), smider vi den i gåture
-  if (!w.actual_pace_min || w.actual_pace_min === '-:-' || !w.actual_pace_min.includes(':')) {
-    return { type: 'gåtur', paceSecs: 0 };
-  }
-  
+  if (!w.actual_pace_min || !w.actual_pace_min.includes(':')) return { type: 'løb', paceSecs: 0 };
   const parts = w.actual_pace_min.split(':');
   const paceSecs = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-  
-  // Sikkerhedsnet mod forkerte tal
-  if (isNaN(paceSecs)) return { type: 'gåtur', paceSecs: 0 };
-  
   let type = 'løb';
-  // Langsommere end 8:00 min/km = Gåtur
-  if (paceSecs >= 480) type = 'gåtur';
-  // Hurtigere end 3:45 min/km = Cykel
-  else if (paceSecs <= 225) type = 'cykel';
-  
+  if (paceSecs > 540) type = 'gåtur';
+  if (paceSecs < 180) type = 'cykel';
   return { type, paceSecs };
 };
 
@@ -352,7 +339,7 @@ export default function App() {
   if (!isClient) return <div style={{ backgroundColor: 'var(--bg-main)', minHeight: '100vh' }}></div>;
 
   return (
-    <div style={{ backgroundColor: 'var(--bg-main)', minHeight: '100vh', color: 'var(--text-primary)', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '100px' }}>
+    <div style={{ backgroundColor: 'var(--bg-main)', minHeight: '100vh', color: 'var(--text-primary)', fontFamily: 'Inter, -apple-system, sans-serif', paddingBottom: '120px' }}>
       
       {!user ? (
         <div style={{ padding: '40px 20px', maxWidth: '400px', margin: '0 auto', textAlign: 'center' }}>
@@ -776,6 +763,7 @@ export default function App() {
               <button onClick={() => setShowCoachWizard(false)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '16px', cursor: 'pointer' }}>✕</button>
             </div>
 
+            {/* FASE 2: OPPDATERET TRIN 1 */}
             {wizardStep === 1 && (
               <div>
                 <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '16px' }}>Din Løberprofil</h3>
@@ -810,6 +798,7 @@ export default function App() {
               </div>
             )}
 
+            {/* FASE 2: OPPDATERET TRIN 2 */}
             {wizardStep === 2 && (
               <div>
                 <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px' }}>Træningsmængde</h3>
@@ -832,6 +821,7 @@ export default function App() {
               </div>
             )}
 
+            {/* FASE 2: OPPDATERET TRIN 3 */}
             {wizardStep === 3 && (
               <div style={{ textAlign: 'center' }}>
                 <span style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--accent-primary)', fontWeight: '800' }}>Klar til generering</span>
@@ -881,6 +871,35 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* FIXED BOTTOM NAVIGATION */}
+      {user && (
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(7, 17, 22, 0.95)', borderTop: '1px solid var(--border-subtle)', padding: '12px 0 calc(24px + env(safe-area-inset-bottom))', display: 'flex', justifyContent: 'space-around', zIndex: 900 }}>
+          <div style={{ display: 'flex', width: '100%', maxWidth: '480px', margin: '0 auto', justifyContent: 'space-around' }}>
+            <button onClick={() => setActiveTab('hjem')} style={{ background: 'none', border: 'none', color: activeTab === 'hjem' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              Hjem
+            </button>
+            <button onClick={() => setActiveTab('ruter')} style={{ background: 'none', border: 'none', color: activeTab === 'ruter' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              Ruter
+            </button>
+            <button onClick={() => setActiveTab('statistik')} style={{ background: 'none', border: 'none', color: activeTab === 'statistik' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
+              Statistik
+            </button>
+            <button onClick={() => setActiveTab('coach')} style={{ background: 'none', border: 'none', color: activeTab === 'coach' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+              Coach
+            </button>
+            <button onClick={() => setActiveTab('mere')} style={{ background: 'none', border: 'none', color: activeTab === 'mere' ? 'var(--accent-primary)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '10px', fontWeight: '600', cursor: 'pointer', gap: '6px' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+              Mere
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
